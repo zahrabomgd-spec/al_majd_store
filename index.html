@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بقالة المجد</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7f6; margin: 0; padding: 0; color: #333; }
+        
+        .header { background: #0b4f34; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0; font-size: 1.2rem; white-space: nowrap; }
+        
+        .header-btns { display: flex; gap: 8px; }
+        .btn-top { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+        
+        .container { max-width: 800px; margin: auto; padding: 12px; }
+
+        .categories-bar { display: flex; gap: 8px; margin: 10px 0 15px 0; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .categories-bar::-webkit-scrollbar { display: none; }
+        .cat-btn { background: #e2e8f0; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; color: #4a5568; font-size: 0.85rem; white-space: nowrap; }
+        .cat-btn.active { background: #10b981; color: white; }
+
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @media (min-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .card { background: white; border-radius: 10px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; position: relative; text-align: right; }
+        
+        .img-wrap { position: relative; width: 100%; height: 120px; border-radius: 8px; overflow: hidden; background: #eee; }
+        .img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .cat-tag { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.6); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; }
+
+        /* أزرار التعديل والحذف مخفية افتراضياً ولا تظهر إلا عند تفعيل وضع الأدمن */
+        .admin-controls { display: none; position: absolute; top: 6px; left: 6px; gap: 4px; z-index: 10; }
+        body.admin-mode .admin-controls { display: flex; }
+        
+        .action-btn { background: white; border: none; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.3); font-size: 0.75rem; }
+        .edit-btn { color: #d97706; }
+        .del-btn { color: #dc2626; }
+
+        .card h3 { font-size: 0.9rem; margin: 8px 0 4px 0; color: #1f2937; height: 36px; overflow: hidden; line-height: 1.2; }
+        .price { color: #10b981; font-weight: bold; font-size: 0.95rem; margin-bottom: 8px; }
+        
+        .btn-cart { width: 100%; background: #0b4f34; color: white; border: none; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .btn-cart:hover { background: #10b981; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 12px; position: relative; text-align: right; max-height: 90vh; overflow-y: auto; }
+        .close-btn { position: absolute; top: 10px; left: 10px; background: #eee; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+        
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
+        .submit-btn { width: 100%; background: #0b4f34; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.85rem; }
+        .whatsapp-btn { width: 100%; background: #25D366; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; margin-top: 10px; }
+    </style>
+    <link rel="manifest" href="manifest.json">
+</head>
+<body id="page-body">
+
+    <div class="header">
+        <div class="header-btns">
+            <button class="btn-top" onclick="openAdminCheck()">⚙️ لوحة</button>
+        </div>
+        <h1>بقالة المجد</h1>
+        <div class="header-btns">
+            <button class="btn-top" onclick="openCart()">🛒 <span id="cart-count">0</span></button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="categories-bar" id="categories-bar">
+            <button class="cat-btn active" onclick="filterCat('الكل', this)">الكل</button>
+        </div>
+        <div class="grid" id="product-grid"></div>
+    </div>
+
+    <!-- نافذة كلمة المرور -->
+    <div class="modal" id="pass-modal">
+        <div class="modal-content" style="text-align: center;">
+            <button class="close-btn" onclick="closeModals()">✕</button>
+            <h3>كلمة سر لوحة التحكم</h3>
+            <form onsubmit="verifyPass(event)">
+                <div class="form-group">
+                    <input type="password" id="pass-input" required placeholder="أدخل كلمة السر (123)" style="text-align: center;">
+                </div>
+                <button type="submit" class="submit-btn">دخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة الإضافة والتعديل -->
+    <div class="modal" id="admin-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModals()">✕</button>
+            <h3 id="modal-title">إضافة منتج جديد</h3>
+            <form id="prod-form" action="/add" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="p-id" name="id">
+                <div class="form-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" id="p-name" name="name" required placeholder="مثال: سكر ناعم">
+                </div>
+                <div class="form-group">
+                    <label>القسم</label>
+                    <select id="p-cat" name="category" required>
+                        <option value="زيوت وألبان">زيوت وألبان</option>
+                        <option value="مواد جافة">مواد جافة</option>
+                        <option value="معلبات">معلبات</option>
+                        <option value="منظفات">منظفات</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>السعر</label>
+                    <input type="text" id="p-price" name="price" required placeholder="مثال: 75,000 ل.س">
+                </div>
+                <div class="form-group">
+                    <label>الصورة</label>
+                    <input type="file" name="image" accept="image/*">
+                </div>
+                <button type="submit" class="submit-btn" id="form-btn">حفظ المنتج</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة السلة -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModals()">✕</button>
+            <h3>سلة المشتريات</h3>
+            <div id="cart-items" style="max-height: 200px; overflow-y: auto;">
+                <p style="color: #888; text-align: center;">السلة فارغة</p>
+            </div>
+            <p id="cart-total-text" style="font-weight: bold; margin-top: 10px;">المجموع: 0 منتجات</p>
+            <button class="whatsapp-btn" onclick="sendWhatsApp()">📲 إرسال الطلب عبر واتساب</button>
+        </div>
+    </div>
+
+    <script>
+        const phone = "963992480155";
+        let products = [];
+        let cart = [];
+        let isAdmin = false;
+
+        async function loadData() {
+            const res = await fetch('/products');
+            products = await res.json();
+            
+            const cats = ['الكل', ...new Set(products.map(p => p.category || 'أخرى'))];
+            const bar = document.getElementById('categories-bar');
+            bar.innerHTML = '';
+            cats.forEach(c => {
+                bar.innerHTML += `<button class="cat-btn ${c === 'الكل' ? 'active' : ''}" onclick="filterCat('${c}', this)">${c}</button>`;
+            });
+
+            render(products);
+        }
+
+        function render(list) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            if (list.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">لا توجد منتجات مضافة.</p>';
+                return;
+            }
+
+            list.forEach(p => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <div>
+                            <div class="img-wrap">
+                                <img src="${p.image || 'https://via.placeholder.com/150'}" alt="${p.name}">
+                                <span class="cat-tag">${p.category || 'أخرى'}</span>
+                                <div class="admin-controls">
+                                    <button class="action-btn edit-btn" onclick='openEdit(${JSON.stringify(p)})' title="تعديل">✏️</button>
+                                    <form action="/delete/${p.id}" method="POST" style="margin:0;">
+                                        <button class="action-btn del-btn" onclick="return confirm('حذف المنتج؟')" title="حذف">🗑️</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <h3>${p.name}</h3>
+                            <div class="price">${p.price}</div>
+                        </div>
+                        <div>
+                            <button class="btn-cart" onclick='addToCart(${JSON.stringify(p)})'>🛒 إضافة للسلة</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterCat(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (cat === 'الكل') {
+                render(products);
+            } else {
+                render(products.filter(p => (p.category || 'أخرى') === cat));
+            }
+        }
+
+        function openAdminCheck() {
+            if (isAdmin) {
+                openAddModal();
+            } else {
+                document.getElementById('pass-modal').style.display = 'flex';
+            }
+        }
+
+        async function verifyPass(e) {
+            e.preventDefault();
+            const pass = document.getElementById('pass-input').value;
+            const res = await fetch('/verify-admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pass })
+            });
+            const data = await res.json();
+            if (data.success) {
+                isAdmin = true;
+                document.getElementById('page-body').classList.add('admin-mode');
+                closeModals();
+                document.getElementById('pass-input').value = '';
+                openAddModal();
+            } else {
+                alert('كلمة السر خاطئة!');
+            }
+        }
+
+        function openAddModal() {
+            document.getElementById('modal-title').innerText = "إضافة منتج جديد";
+            document.getElementById('prod-form').action = "/add";
+            document.getElementById('prod-form').reset();
+            document.getElementById('p-id').value = "";
+            document.getElementById('form-btn').innerText = "حفظ المنتج";
+            document.getElementById('admin-modal').style.display = 'flex';
+        }
+
+        function openEdit(p) {
+            document.getElementById('modal-title').innerText = "تعديل المنتج";
+            document.getElementById('prod-form').action = `/update/${p.id}`;
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-cat').value = p.category || 'أخرى';
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-id').value = p.id;
+            document.getElementById('form-btn').innerText = "تحديث البيانات";
+            document.getElementById('admin-modal').style.display = 'flex';
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        }
+
+        function addToCart(p) {
+            const item = cart.find(i => i.id === p.id);
+            if (item) item.qty++;
+            else cart.push({ ...p, qty: 1 });
+            updateCartUI();
+            alert(`تمت إضافة "${p.name}" للسلة`);
+        }
+
+        function updateCartUI() {
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+            document.getElementById('cart-count').innerText = count;
+            const container = document.getElementById('cart-items');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center;">السلة فارغة</p>';
+                document.getElementById('cart-total-text').innerText = "المجموع: 0 منتجات";
+                return;
+            }
+
+            container.innerHTML = '';
+            cart.forEach((i, idx) => {
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <div><strong>${i.name}</strong><br><small>${i.price} × ${i.qty}</small></div>
+                        <button onclick="cart.splice(${idx},1);updateCartUI()" style="background:#fee2e2; color:#dc2626; border:none; padding:3px 6px; border-radius:4px; cursor:pointer;">حذف</button>
+                    </div>
+                `;
+            });
+            document.getElementById('cart-total-text').innerText = `إجمالي القطع: ${count}`;
+        }
+
+        function openCart() {
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+
+        function sendWhatsApp() {
+            if (cart.length === 0) {
+                alert("السلة فارغة!");
+                return;
+            }
+            let msg = "مرحباً بقالة المجد، أود طلب المنتجات التالية:\n\n";
+            cart.forEach((i, idx) => {
+                msg += `${idx + 1}. ${i.name} - السعر: ${i.price} (العدد: ${i.qty})\n`;
+            });
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
