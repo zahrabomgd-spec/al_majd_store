@@ -4,59 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بقالة المجد الفاخرة</title>
-    <link rel="stylesheet" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Tahoma, sans-serif; background-color: #f4f6f5; margin: 0; padding: 0; direction: rtl; }
-        header { background-color: #0b4f34; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .product-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
-        .product-card h3 { font-size: 16px; margin: 10px 0; color: #333; }
-        .product-card p { color: #0b4f34; font-weight: bold; margin: 10px 0; }
-        .btn { background-color: #0b4f34; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; width: 100%; }
-        .btn:active { background-color: #083724; }
+        :root { --primary: #0b4f34; --secondary: #198754; --bg: #f8f9fa; --text: #333; }
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        header { background: linear-gradient(135deg, #0b4f34, #146c43); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        h1 { margin: 0; font-size: 22px; }
+        .header-btns { display: flex; gap: 10px; align-items: center; }
+        .icon-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .icon-btn:hover { background: rgba(255,255,255,0.3); }
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+        .admin-panel { background: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: none; border-right: 5px solid var(--secondary); }
+        .admin-panel h3 { margin-top: 0; color: var(--primary); }
+        .form-control { width: 100%; padding: 10px; margin: 8px 0 15px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .btn { background-color: var(--secondary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.2s; }
+        .btn:hover { background-color: #146c43; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
+        .product-img { width: 100%; height: 140px; background: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #adb5bd; }
+        .product-body { padding: 15px; }
+        .product-title { font-size: 16px; font-weight: 700; margin: 0 0 8px 0; color: #212529; }
+        .product-price { color: var(--primary); font-weight: 700; font-size: 17px; margin-bottom: 12px; }
+        .actions { padding: 0 15px 15px 15px; display: flex; gap: 8px; }
+        .btn-delete { background-color: #dc3545; width: auto; padding: 8px 12px; font-size: 13px; }
+        .btn-delete:hover { background-color: #bb2d3b; }
     </style>
 </head>
 <body>
 
     <header>
-        <h2>بقالة المجد الفاخرة</h2>
-        <span id="cart-count" style="background: #198754; padding: 5px 10px; border-radius: 5px;">🛒 0</span>
+        <h1>بقالة المجد 🛒</h1>
+        <div class="header-btns">
+            <button class="icon-btn" onclick="toggleAdmin()">⚙️ الإدارة</button>
+            <button class="icon-btn" id="cart-btn">🛍️ <span id="cart-count">0</span></button>
+        </div>
     </header>
 
     <div class="container">
-        <h2>المنتجات المتوفرة</h2>
-        <div id="products-list" class="products-grid">
-            <!-- المنتجات ستظهر هنا تلقائياً -->
+        <!-- لوحة التحكم الاحترافية -->
+        <div id="admin-panel" class="admin-panel">
+            <h3>لوحة إدارة المتجر</h3>
+            <label>اسم المنتج:</label>
+            <input type="text" id="p-name" class="form-control" placeholder="أدخل اسم المنتج...">
+            <label>السعر (ل.س):</label>
+            <input type="number" id="p-price" class="form-control" placeholder="أدخل السعر...">
+            <button class="btn" onclick="addProduct()">إضافة المنتج للمتجر</button>
         </div>
+
+        <h2 style="font-size: 20px; margin-bottom: 15px; border-right: 4px solid var(--primary); padding-right: 10px;">المنتجات المتوفرة</h2>
+        <div id="products-list" class="products-grid"></div>
     </div>
 
     <script>
-        // المنتجات الأساسية الافتراضية
         const defaultProducts = [
-            {id: 1, name: "سكر أبيض ممتاز (1كغ)", price: 45000, category: "مواد جافة"},
-            {id: 2, name: "سمنة بلدي فاخرة", price: 120000, category: "زيوت وألبان"},
-            {id: 3, name: "زيت زیتون بكر ممتاز", price: 85000, category: "زيوت وألبان"},
-            {id: 4, name: "عدس حب طازج (1كغ)", price: 50000, category: "حبوب وبقوليات"}
+            {id: 1, name: "سكر أبيض ممتاز (1كغ)", price: 45000, icon: "🍚"},
+            {id: 2, name: "سمنة بلدي فاخرة", price: 120000, icon: "🧈"},
+            {id: 3, name: "زيت زیتون بكر ممتاز", price: 85000, icon: "🫒"},
+            {id: 4, name: "عدس حب طازج (1كغ)", price: 50000, icon: "🥣"}
         ];
 
-        // حفظ المنتجات في التخزين المحلي إذا لم تكن موجودة
         if (!localStorage.getItem("al_majd_products")) {
             localStorage.setItem("al_majd_products", JSON.stringify(defaultProducts));
         }
 
-        // عرض المنتجات على الشاشة
+        function toggleAdmin() {
+            let pass = prompt("أدخل كلمة المرور (الافتراضية: 123):");
+            if (pass === "123") {
+                let panel = document.getElementById("admin-panel");
+                panel.style.display = panel.style.display === "block" ? "none" : "block";
+            } else if (pass !== null) {
+                alert("كلمة المرور غير صحيحة!");
+            }
+        }
+
+        function addProduct() {
+            let name = document.getElementById("p-name").value.trim();
+            let price = document.getElementById("p-price").value.trim();
+            if(!name || !price) {
+                alert("يرجى ملء كافة الحقول بشكل صحيح");
+                return;
+            }
+            let products = JSON.parse(localStorage.getItem("al_majd_products")) || [];
+            products.push({id: Date.now(), name: name, price: Number(price), icon: "📦"});
+            localStorage.setItem("al_majd_products", JSON.stringify(products));
+            document.getElementById("p-name").value = "";
+            document.getElementById("p-price").value = "";
+            renderProducts();
+            alert("تمت الإضافة بنجاح!");
+        }
+
+        function deleteProduct(id) {
+            if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+                let products = JSON.parse(localStorage.getItem("al_majd_products")) || [];
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem("al_majd_products", JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
         function renderProducts() {
             const products = JSON.parse(localStorage.getItem("al_majd_products")) || [];
             const container = document.getElementById("products-list");
             container.innerHTML = "";
+            
+            if(products.length === 0) {
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #777;'>لا توجد منتجات حالياً.</p>";
+                return;
+            }
 
             products.forEach(p => {
                 container.innerHTML += `
                     <div class="product-card">
-                        <h3>${p.name}</h3>
-                        <p>${p.price} ل.س</p>
-                        <button class="btn" onclick="alert('تمت إضافة ${p.name} إلى السلة')">إضافة للسلة</button>
+                        <div>
+                            <div class="product-img">${p.icon || '📦'}</div>
+                            <div class="product-body">
+                                <div class="product-title">${p.name}</div>
+                                <div class="product-price">${p.price.toLocaleString()} ل.س</div>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn" onclick="alert('تمت إضافة ${p.name} للسلة')">شراء</button>
+                            <button class="btn btn-delete" onclick="deleteProduct(${p.id})">حذف</button>
+                        </div>
                     </div>
                 `;
             });
