@@ -40,7 +40,7 @@
         .search-input { flex: 1; border: none; padding: 10px 15px; font-size: 13px; outline: none; }
         .search-btn { background: var(--ali-red); color: white; border: none; padding: 0 20px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
-        /* تصنيفات سريعة قابلة للضغط */
+        /* تصنيفات سريعة */
         .category-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
         .chip { background: white; border: 1px solid #e5e5e5; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; color: #555; cursor: pointer; transition: 0.2s; }
         .chip:hover { border-color: var(--ali-red); color: var(--ali-red); }
@@ -79,13 +79,20 @@
         .btn-add-cart { background: #fff0f0; color: var(--ali-red); border: 1px solid #ffcccc; width: 100%; padding: 7px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; transition: 0.2s; }
         .btn-add-cart:hover { background: var(--ali-red); color: white; }
 
-        /* لوحة التحكم السرية */
-        .admin-panel { background: white; padding: 18px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: none; border-right: 5px solid var(--ali-red); }
-        .admin-panel h3 { margin-top: 0; color: var(--ali-red); font-size: 15px; }
+        /* لوحة التحكم الاحترافية الجديدة */
+        .admin-panel { background: white; padding: 18px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: none; border: 2px solid var(--ali-red); }
+        .admin-nav { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .admin-tab-btn { flex: 1; padding: 9px; border: none; background: #f0f0f0; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; color: #555; transition: 0.2s; }
+        .admin-tab-btn.active { background: var(--ali-red); color: white; }
+
         .form-input { width: 100%; padding: 9px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
-        .btn-submit { background: var(--ali-red); color: white; border: none; width: 100%; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; }
-        .admin-item-row { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; font-size: 12px; border: 1px solid #eee; }
-        .btn-del-admin { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .btn-submit { background: var(--ali-red); color: white; border: none; width: 100%; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; }
+
+        .admin-item-row { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 10px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #eee; }
+        .admin-item-info { font-size: 13px; font-weight: 700; color: #333; }
+        .admin-item-actions { display: flex; gap: 6px; }
+        .btn-edit-admin { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
+        .btn-del-admin { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
 
         /* نافذة السلة */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; }
@@ -125,7 +132,7 @@
             <button class="search-btn" onclick="filterProducts()">بحث</button>
         </div>
 
-        <!-- أوسمة التصنيفات التفاعلية -->
+        <!-- أوسمة التصنيفات -->
         <div class="category-chips">
             <div class="chip active" onclick="filterCategory('all', this)">🔥 جميع المنتجات</div>
             <div class="chip" onclick="filterCategory('veg', this)">🥬 خضار وفواكه</div>
@@ -134,16 +141,52 @@
             <div class="chip" onclick="filterCategory('drinks', this)">☕ مشروبات ومعلبات</div>
         </div>
 
-        <!-- لوحة الإدارة المخفية -->
+        <!-- لوحة الإدارة المقسمة بخيارين -->
         <div id="admin-panel" class="admin-panel">
-            <h3>⚙️ لوحة إدارة متجر المجد إكسبرس</h3>
-            <input type="text" id="p-name" class="form-input" placeholder="اسم المنتج...">
-            <input type="number" id="p-price" class="form-input" placeholder="السعر الخالي (ل.س)...">
-            <input type="text" id="p-img" class="form-input" placeholder="رابط الصورة (اختياري)...">
-            <button class="btn-submit" onclick="addProduct()">نشر المنتج في المتجر</button>
-            
-            <h4 style="margin: 15px 0 8px 0; font-size: 13px; color: #555;">حذف المنتجات الحالية:</h4>
-            <div id="admin-products-list"></div>
+            <div class="admin-nav">
+                <button id="tab-add-btn" class="admin-tab-btn active" onclick="switchAdminTab('add')">➕ إضافة منتج جديد</button>
+                <button id="tab-edit-btn" class="admin-tab-btn" onclick="switchAdminTab('edit')">✏️ تعديل وتعديل المنتجات</button>
+            </div>
+
+            <!-- خيار 1: إضافة منتج -->
+            <div id="admin-add-section">
+                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">إدخال بيانات المنتج الجديد:</h4>
+                <input type="text" id="p-name" class="form-input" placeholder="اسم المنتج (مثال: تفاح أحمر)...">
+                <input type="number" id="p-price" class="form-input" placeholder="السعر (ل.س)...">
+                <select id="p-cat" class="form-input">
+                    <option value="veg">🥬 خضار وفواكه</option>
+                    <option value="food">🌾 مواد غذائية وحبوب</option>
+                    <option value="oils">🧈 زيوت وسمنة</option>
+                    <option value="drinks">☕ مشروبات ومعلبات</option>
+                </select>
+                <input type="text" id="p-img" class="form-input" placeholder="رابط الصورة (اختياري)...">
+                <button class="btn-submit" onclick="addProduct()">نشر المنتج فوراً في المتجر</button>
+            </div>
+
+            <!-- خيار 2: تعديل منتج -->
+            <div id="admin-edit-section" style="display:none;">
+                <!-- استمارة التعديل التي تظهر عند الضغط على زر تعديل لأي منتج -->
+                <div id="edit-form-box" style="display:none; background:#f0f7ff; border:2px dashed #1565c0; padding:12px; border-radius:8px; margin-bottom:15px;">
+                    <h4 style="margin:0 0 10px 0; color:#1565c0; font-size:14px;">تعديل بيانات المنتج المحدد:</h4>
+                    <input type="hidden" id="edit-p-id">
+                    <input type="text" id="edit-p-name" class="form-input" placeholder="اسم المنتج">
+                    <input type="number" id="edit-p-price" class="form-input" placeholder="السعر (ل.س)">
+                    <select id="edit-p-cat" class="form-input">
+                        <option value="veg">🥬 خضار وفواكه</option>
+                        <option value="food">🌾 مواد غذائية وحبوب</option>
+                        <option value="oils">🧈 زيوت وسمنة</option>
+                        <option value="drinks">☕ مشروبات ومعلبات</option>
+                    </select>
+                    <input type="text" id="edit-p-img" class="form-input" placeholder="رابط الصورة">
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn-submit" style="background:#28a745;" onclick="saveProductEdit()">حفظ التعديل ✅</button>
+                        <button class="btn-submit" style="background:#6c757d;" onclick="cancelEdit()">إلغاء ✕</button>
+                    </div>
+                </div>
+
+                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">اضغط على "تعديل" أمام أي منتج لتحديثه:</h4>
+                <div id="admin-products-list"></div>
+            </div>
         </div>
 
         <div class="section-header">
@@ -168,7 +211,6 @@
     <div id="toast">تمت إضافة المنتج إلى السلة 🛒</div>
 
     <script>
-        // قائمة الـ 30 منتجاً الشاملة (15 مواد غذائية + 15 خضار وفواكه)
         const initialProducts = [
             // الخضار والفواكه (15 منتج)
             {id: 16, name: "طماطم (بندورة) بلدية طازجة (1كغ)", price: 12000, oldPrice: 15000, discount: "-20%", rating: "4.9", sold: "520+", cat: "veg", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&auto=format&fit=crop&q=60"},
@@ -205,11 +247,7 @@
             {id: 15, name: "ملح طعام نقي مكرر (1كغ)", price: 10000, oldPrice: 12000, discount: "-16%", rating: "4.9", sold: "800+", cat: "food", img: "https://images.unsplash.com/photo-1518110168401-f28423130775?w=300&auto=format&fit=crop&q=60"}
         ];
 
-        // حفظ القائمة الجديدة المحدثة
         if (!localStorage.getItem("al_majd_ali_v7")) {
-            localStorage.setItem("al_majd_ali_v7", JSON.stringify(initialProducts));
-        } else {
-            // تحديث تلقائي للمرة الأولى لضمان نزول الـ 30 منتج
             localStorage.setItem("al_majd_ali_v7", JSON.stringify(initialProducts));
         }
 
@@ -225,20 +263,42 @@
         }
 
         function openAdmin() {
-            let pass = prompt("أدخل الرمز السري للتعديل:");
+            let pass = prompt("أدخل الرمز السري للوحة التحكم:");
             if (pass === "123") {
                 let panel = document.getElementById("admin-panel");
                 panel.style.display = panel.style.display === "block" ? "none" : "block";
-                renderAdminList();
+                switchAdminTab('add');
             } else if (pass !== null) {
                 alert("الرمز السري غير صحيح!");
+            }
+        }
+
+        function switchAdminTab(tab) {
+            let addTabBtn = document.getElementById("tab-add-btn");
+            let editTabBtn = document.getElementById("tab-edit-btn");
+            let addSection = document.getElementById("admin-add-section");
+            let editSection = document.getElementById("admin-edit-section");
+
+            if(tab === 'add') {
+                addTabBtn.classList.add("active");
+                editTabBtn.classList.remove("active");
+                addSection.style.display = "block";
+                editSection.style.display = "none";
+            } else {
+                editTabBtn.classList.add("active");
+                addTabBtn.classList.remove("active");
+                addSection.style.display = "none";
+                editSection.style.display = "block";
+                renderAdminList();
             }
         }
 
         function addProduct() {
             let name = document.getElementById("p-name").value.trim();
             let price = document.getElementById("p-price").value.trim();
+            let cat = document.getElementById("p-cat").value;
             let img = document.getElementById("p-img").value.trim();
+
             if(!name || !price) { alert("يرجى إدخال اسم المنتج والسعر"); return; }
 
             let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
@@ -250,7 +310,7 @@
                 discount: "-15%",
                 rating: "5.0",
                 sold: "1+",
-                cat: "food",
+                cat: cat,
                 img: img || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&auto=format&fit=crop&q=60"
             });
             localStorage.setItem("al_majd_ali_v7", JSON.stringify(products));
@@ -259,12 +319,84 @@
             document.getElementById("p-price").value = "";
             document.getElementById("p-img").value = "";
             renderProducts();
-            renderAdminList();
             alert("تم نشر المنتج بنجاح!");
         }
 
+        function renderAdminList() {
+            const products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            const container = document.getElementById("admin-products-list");
+            container.innerHTML = "";
+
+            if(products.length === 0) {
+                container.innerHTML = "<p style='color:#888; text-align:center;'>لا توجد منتجات لتعديلها.</p>";
+                return;
+            }
+
+            products.forEach(p => {
+                container.innerHTML += `
+                    <div class="admin-item-row">
+                        <div class="admin-item-info">
+                            <div>${p.name}</div>
+                            <div style="font-size:11px; color:#777;">${p.price.toLocaleString()} ل.س</div>
+                        </div>
+                        <div class="admin-item-actions">
+                            <button class="btn-edit-admin" onclick="startEditProduct(${p.id})">✏️ تعديل</button>
+                            <button class="btn-del-admin" onclick="deleteProduct(${p.id})">🗑️ حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function startEditProduct(id) {
+            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            let item = products.find(p => p.id === id);
+            if(!item) return;
+
+            document.getElementById("edit-p-id").value = item.id;
+            document.getElementById("edit-p-name").value = item.name;
+            document.getElementById("edit-p-price").value = item.price;
+            document.getElementById("edit-p-cat").value = item.cat || "food";
+            document.getElementById("edit-p-img").value = item.img || "";
+
+            let formBox = document.getElementById("edit-form-box");
+            formBox.style.display = "block";
+            formBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function saveProductEdit() {
+            let id = Number(document.getElementById("edit-p-id").value);
+            let name = document.getElementById("edit-p-name").value.trim();
+            let price = Number(document.getElementById("edit-p-price").value);
+            let cat = document.getElementById("edit-p-cat").value;
+            let img = document.getElementById("edit-p-img").value.trim();
+
+            if(!name || !price) { alert("يرجى ملء الاسم والسعر"); return; }
+
+            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            let itemIndex = products.findIndex(p => p.id === id);
+
+            if(itemIndex !== -1) {
+                products[itemIndex].name = name;
+                products[itemIndex].price = price;
+                products[itemIndex].oldPrice = Math.round(price * 1.15);
+                products[itemIndex].cat = cat;
+                if(img) products[itemIndex].img = img;
+
+                localStorage.setItem("al_majd_ali_v7", JSON.stringify(products));
+                renderProducts();
+                renderAdminList();
+                cancelEdit();
+                alert("تم تحديث بيانات المنتج بنجاح! ✅");
+            }
+        }
+
+        function cancelEdit() {
+            document.getElementById("edit-form-box").style.display = "none";
+        }
+
         function deleteProduct(id) {
-            if(confirm("هل تريد حذف هذا المنتج؟")) {
+            if(confirm("هل أنت تأكد من إزالة هذا المنتج من المتجر؟")) {
                 let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
                 products = products.filter(p => p.id !== id);
                 localStorage.setItem("al_majd_ali_v7", JSON.stringify(products));
@@ -413,20 +545,6 @@
                         <div style="padding: 0 10px 10px 10px;">
                             <button class="btn-add-cart" onclick="addToCart(${p.id})">إضافة للسلة 🛒</button>
                         </div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderAdminList() {
-            const products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
-            const container = document.getElementById("admin-products-list");
-            container.innerHTML = "";
-            products.forEach(p => {
-                container.innerHTML += `
-                    <div class="admin-item-row">
-                        <span>${p.name} (${p.price.toLocaleString()} ل.س)</span>
-                        <button class="btn-del-admin" onclick="deleteProduct(${p.id})">حذف</button>
                     </div>
                 `;
             });
