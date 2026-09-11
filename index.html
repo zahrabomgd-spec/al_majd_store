@@ -18,7 +18,7 @@
         body { background-color: var(--ali-bg); color: var(--ali-text); margin: 0; padding: 0; }
 
         /* شريط العروض الأعلى */
-        .top-banner { background: linear-gradient(90deg, #ff4747, #ff6e00); color: white; text-align: center; font-size: 11px; font-weight: 700; padding: 5px 10px; }
+        .top-banner { background: linear-gradient(90deg, #ff4747, #ff6e00); color: white; text-align: center; font-size: 11px; font-weight: 700; padding: 6px 10px; }
 
         /* الهيدر الرئيسي */
         header { background: #ffffff; border-bottom: 1px solid #eee; padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -35,17 +35,18 @@
 
         .container { max-width: 1200px; margin: 15px auto; padding: 0 10px; }
 
-        /* شريط البحث النمط العصري */
+        /* شريط البحث العصري */
         .search-box { display: flex; margin-bottom: 15px; background: white; border: 2px solid var(--ali-red); border-radius: 25px; overflow: hidden; }
         .search-input { flex: 1; border: none; padding: 10px 15px; font-size: 13px; outline: none; }
         .search-btn { background: var(--ali-red); color: white; border: none; padding: 0 20px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
-        /* تصنيفات سريعة */
+        /* تصنيفات سريعة قابلة للضغط */
         .category-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
-        .chip { background: white; border: 1px solid #e5e5e5; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; white-space: nowrap; color: #555; }
+        .chip { background: white; border: 1px solid #e5e5e5; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; color: #555; cursor: pointer; transition: 0.2s; }
+        .chip:hover { border-color: var(--ali-red); color: var(--ali-red); }
         .chip.active { background: #fff0f0; color: var(--ali-red); border-color: var(--ali-red); }
 
-        /* شبكة منتجات علي إكسبرس */
+        /* شبكة المنتجات */
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .section-title { font-size: 17px; font-weight: 800; color: #111; display: flex; align-items: center; gap: 6px; }
         .section-title::before { content: ''; width: 4px; height: 18px; background: var(--ali-red); border-radius: 2px; }
@@ -102,13 +103,13 @@
 </head>
 <body>
 
-    <div class="top-banner">🔥 عروض علي إكسبرس الفائقة - شحن وسرعة في التوصيل ⚡</div>
+    <div class="top-banner">🔥 عروض المجد إكسبرس الفائقة - شحن وسرعة في التوصيل ⚡</div>
 
     <header>
         <div class="header-container">
             <div class="logo-area">
                 <span class="logo-badge">EXPRESS</span>
-                <h1 class="store-name">بقالة المجد</h1>
+                <h1 class="store-name">المجد إكسبرس</h1>
             </div>
             <div class="header-actions">
                 <button class="cart-btn" onclick="openCart()">🛒 السلة (<span id="cart-count">0</span>)</button>
@@ -120,22 +121,22 @@
     <div class="container">
         <!-- شريط البحث -->
         <div class="search-box">
-            <input type="text" id="search-input" class="search-input" placeholder="ابحث في بقالة المجد (أرز، زيت، سكر...)" oninput="filterProducts()">
+            <input type="text" id="search-input" class="search-input" placeholder="ابحث في المجد إكسبرس (بندورة، أرز، زيت...)" oninput="filterProducts()">
             <button class="search-btn" onclick="filterProducts()">بحث</button>
         </div>
 
-        <!-- أوسمة التصنيفات -->
+        <!-- أوسمة التصنيفات التفاعلية -->
         <div class="category-chips">
-            <div class="chip active">🔥 العروض الكبرى</div>
-            <div class="chip">المواد الغذائية</div>
-            <div class="chip">الزيوت والسمنة</div>
-            <div class="chip">الحبوب والبقوليات</div>
-            <div class="chip">المشروبات والمعلبات</div>
+            <div class="chip active" onclick="filterCategory('all', this)">🔥 جميع المنتجات</div>
+            <div class="chip" onclick="filterCategory('veg', this)">🥬 خضار وفواكه</div>
+            <div class="chip" onclick="filterCategory('food', this)">🌾 مواد غذائية وحبوب</div>
+            <div class="chip" onclick="filterCategory('oils', this)">🧈 زيوت وسمنة</div>
+            <div class="chip" onclick="filterCategory('drinks', this)">☕ مشروبات ومعلبات</div>
         </div>
 
         <!-- لوحة الإدارة المخفية -->
         <div id="admin-panel" class="admin-panel">
-            <h3>⚙️ لوحة إدارة المتجر والتعديل</h3>
+            <h3>⚙️ لوحة إدارة متجر المجد إكسبرس</h3>
             <input type="text" id="p-name" class="form-input" placeholder="اسم المنتج...">
             <input type="number" id="p-price" class="form-input" placeholder="السعر الخالي (ل.س)...">
             <input type="text" id="p-img" class="form-input" placeholder="رابط الصورة (اختياري)...">
@@ -146,7 +147,7 @@
         </div>
 
         <div class="section-header">
-            <div class="section-title">التخفيضات الممتازة الأسبوعية</div>
+            <div class="section-title" id="section-title-text">جميع المنتجات والعروض الممتازة</div>
         </div>
         <div id="products-list" class="products-grid"></div>
     </div>
@@ -167,30 +168,61 @@
     <div id="toast">تمت إضافة المنتج إلى السلة 🛒</div>
 
     <script>
+        // قائمة الـ 30 منتجاً الشاملة (15 مواد غذائية + 15 خضار وفواكه)
         const initialProducts = [
-            {id: 1, name: "سكر أبيض ممتاز عالي الجودة (1كغ)", price: 45000, oldPrice: 52000, discount: "-13%", rating: "4.9", sold: "240+", img: "https://images.unsplash.com/photo-1581441363689-1f3c3c34254c?w=300&auto=format&fit=crop&q=60"},
-            {id: 2, name: "سمنة بلدي صافية فاخرة (1كغ)", price: 120000, oldPrice: 135000, discount: "-11%", rating: "5.0", sold: "180+", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&auto=format&fit=crop&q=60"},
-            {id: 3, name: "زيت زيتون بكر ممتاز عصرة أولى (1L)", price: 85000, oldPrice: 98000, discount: "-15%", rating: "4.8", sold: "310+", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&auto=format&fit=crop&q=60"},
-            {id: 4, name: "عدس حب طازج منتقى بعناية (1كغ)", price: 50000, oldPrice: 58000, discount: "-14%", rating: "4.7", sold: "150+", img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
-            {id: 5, name: "أرز إسباني فاخر طويل الحبة (1كغ)", price: 65000, oldPrice: 75000, discount: "-13%", rating: "4.9", sold: "420+", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&auto=format&fit=crop&q=60"},
-            {id: 6, name: "شاي أحمر فاخر صندوق هدايا (500غ)", price: 75000, oldPrice: 85000, discount: "-12%", rating: "5.0", sold: "95+", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=60"},
-            {id: 7, name: "بن عربي مع هيل مطحون طازج (250غ)", price: 60000, oldPrice: 70000, discount: "-14%", rating: "4.9", sold: "210+", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&auto=format&fit=crop&q=60"},
-            {id: 8, name: "معجون طماطم مركز مضاعف (800غ)", price: 35000, oldPrice: 42000, discount: "-16%", rating: "4.6", sold: "530+", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&auto=format&fit=crop&q=60"},
-            {id: 9, name: "زيت عباد الشمس نقي للقلي (1 ليتر)", price: 55000, oldPrice: 62000, discount: "-11%", rating: "4.8", sold: "600+", img: "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=300&auto=format&fit=crop&q=60"},
-            {id: 10, name: "برغل ناعم أشقر طازج (1كغ)", price: 40000, oldPrice: 46000, discount: "-13%", rating: "4.7", sold: "110+", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&auto=format&fit=crop&q=60"},
-            {id: 11, name: "معكرونة مضلعة ممتازة (500غ)", price: 25000, oldPrice: 30000, discount: "-16%", rating: "4.8", sold: "340+", img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?w=300&auto=format&fit=crop&q=60"},
-            {id: 12, name: "طحين أبيض متعدد الاستعمالات (1كغ)", price: 30000, oldPrice: 35000, discount: "-14%", rating: "4.9", sold: "280+", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=60"},
-            {id: 13, name: "حليب مجفف كامل الدسم غني (900غ)", price: 140000, oldPrice: 160000, discount: "-12%", rating: "5.0", sold: "170+", img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&auto=format&fit=crop&q=60"},
-            {id: 14, name: "حمص حب ممتاز للطبخ (1كغ)", price: 55000, oldPrice: 65000, discount: "-15%", rating: "4.8", sold: "190+", img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
-            {id: 15, name: "ملح طعام نقي مكرر (1كغ)", price: 10000, oldPrice: 12000, discount: "-16%", rating: "4.9", sold: "800+", img: "https://images.unsplash.com/photo-1518110168401-f28423130775?w=300&auto=format&fit=crop&q=60"}
+            // الخضار والفواكه (15 منتج)
+            {id: 16, name: "طماطم (بندورة) بلدية طازجة (1كغ)", price: 12000, oldPrice: 15000, discount: "-20%", rating: "4.9", sold: "520+", cat: "veg", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&auto=format&fit=crop&q=60"},
+            {id: 17, name: "خيار بلدي طازج (1كغ)", price: 14000, oldPrice: 17000, discount: "-17%", rating: "4.8", sold: "410+", cat: "veg", img: "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=300&auto=format&fit=crop&q=60"},
+            {id: 18, name: "بطاطا طازجة للطبخ والقلي (1كغ)", price: 10000, oldPrice: 12000, discount: "-16%", rating: "4.9", sold: "890+", cat: "veg", img: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&auto=format&fit=crop&q=60"},
+            {id: 19, name: "بصل أحمر بلدي طازج (1كغ)", price: 9000, oldPrice: 11000, discount: "-18%", rating: "4.7", sold: "630+", cat: "veg", img: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300&auto=format&fit=crop&q=60"},
+            {id: 20, name: "تفاح أحمر بلدي مقرمش (1كغ)", price: 25000, oldPrice: 30000, discount: "-16%", rating: "5.0", sold: "310+", cat: "veg", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300&auto=format&fit=crop&q=60"},
+            {id: 21, name: "موز طازج حلو المذاق (1كغ)", price: 35000, oldPrice: 40000, discount: "-12%", rating: "4.9", sold: "450+", cat: "veg", img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&auto=format&fit=crop&q=60"},
+            {id: 22, name: "برتقال أبو صرة للعصير والطعام (1كغ)", price: 18000, oldPrice: 22000, discount: "-18%", rating: "4.8", sold: "270+", cat: "veg", img: "https://images.unsplash.com/photo-1547514701-42782101795e?w=300&auto=format&fit=crop&q=60"},
+            {id: 23, name: "ليمون حامض بلدي طازج (1كغ)", price: 20000, oldPrice: 25000, discount: "-20%", rating: "4.9", sold: "380+", cat: "veg", img: "https://images.unsplash.com/photo-1534531173927-aeb928d54385?w=300&auto=format&fit=crop&q=60"},
+            {id: 24, name: "باقة خضار ورقية طازجة (نعناع، بقدونس)", price: 5000, oldPrice: 6500, discount: "-23%", rating: "5.0", sold: "720+", cat: "veg", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&auto=format&fit=crop&q=60"},
+            {id: 25, name: "باذنجان أسود بلدي طازج (1كغ)", price: 12000, oldPrice: 15000, discount: "-20%", rating: "4.7", sold: "190+", cat: "veg", img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&auto=format&fit=crop&q=60"},
+            {id: 26, name: "كوسا طازجة للمحشي (1كغ)", price: 15000, oldPrice: 18000, discount: "-16%", rating: "4.8", sold: "220+", cat: "veg", img: "https://images.unsplash.com/photo-1598170845058-12ef4a457511?w=300&auto=format&fit=crop&q=60"},
+            {id: 27, name: "ثوم بلدي فاخر جاف (1كغ)", price: 45000, oldPrice: 52000, discount: "-13%", rating: "4.9", sold: "160+", cat: "veg", img: "https://images.unsplash.com/photo-1587049352847-81a56d773cae?w=300&auto=format&fit=crop&q=60"},
+            {id: 28, name: "عنب بلدي أبيض حلو (1كغ)", price: 30000, oldPrice: 36000, discount: "-16%", rating: "5.0", sold: "280+", cat: "veg", img: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=300&auto=format&fit=crop&q=60"},
+            {id: 29, name: "بطيخ أحمر حلو على السكين (حبه ~5كغ)", price: 40000, oldPrice: 48000, discount: "-16%", rating: "4.9", sold: "140+", cat: "veg", img: "https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=300&auto=format&fit=crop&q=60"},
+            {id: 30, name: "جزر بلدي طازج (1كغ)", price: 11000, oldPrice: 13500, discount: "-18%", rating: "4.8", sold: "330+", cat: "veg", img: "https://images.unsplash.com/photo-1447175008436-08417192a626?w=300&auto=format&fit=crop&q=60"},
+
+            // المواد الغذائية والتموينية (15 منتج)
+            {id: 1, name: "سكر أبيض ممتاز عالي الجودة (1كغ)", price: 45000, oldPrice: 52000, discount: "-13%", rating: "4.9", sold: "240+", cat: "food", img: "https://images.unsplash.com/photo-1581441363689-1f3c3c34254c?w=300&auto=format&fit=crop&q=60"},
+            {id: 2, name: "سمنة بلدي صافية فاخرة (1كغ)", price: 120000, oldPrice: 135000, discount: "-11%", rating: "5.0", sold: "180+", cat: "oils", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&auto=format&fit=crop&q=60"},
+            {id: 3, name: "زيت زيتون بكر ممتاز عصرة أولى (1L)", price: 85000, oldPrice: 98000, discount: "-15%", rating: "4.8", sold: "310+", cat: "oils", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&auto=format&fit=crop&q=60"},
+            {id: 4, name: "عدس حب طازج منتقى بعناية (1كغ)", price: 50000, oldPrice: 58000, discount: "-14%", rating: "4.7", sold: "150+", cat: "food", img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
+            {id: 5, name: "أرز إسباني فاخر طويل الحبة (1كغ)", price: 65000, oldPrice: 75000, discount: "-13%", rating: "4.9", sold: "420+", cat: "food", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&auto=format&fit=crop&q=60"},
+            {id: 6, name: "شاي أحمر فاخر صندوق هدايا (500غ)", price: 75000, oldPrice: 85000, discount: "-12%", rating: "5.0", sold: "95+", cat: "drinks", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=60"},
+            {id: 7, name: "بن عربي مع هيل مطحون طازج (250غ)", price: 60000, oldPrice: 70000, discount: "-14%", rating: "4.9", sold: "210+", cat: "drinks", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&auto=format&fit=crop&q=60"},
+            {id: 8, name: "معجون طماطم مركز مضاعف (800غ)", price: 35000, oldPrice: 42000, discount: "-16%", rating: "4.6", sold: "530+", cat: "drinks", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&auto=format&fit=crop&q=60"},
+            {id: 9, name: "زيت عباد الشمس نقي للقلي (1 ليتر)", price: 55000, oldPrice: 62000, discount: "-11%", rating: "4.8", sold: "600+", cat: "oils", img: "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=300&auto=format&fit=crop&q=60"},
+            {id: 10, name: "برغل ناعم أشقر طازج (1كغ)", price: 40000, oldPrice: 46000, discount: "-13%", rating: "4.7", sold: "110+", cat: "food", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&auto=format&fit=crop&q=60"},
+            {id: 11, name: "معكرونة مضلعة ممتازة (500غ)", price: 25000, oldPrice: 30000, discount: "-16%", rating: "4.8", sold: "340+", cat: "food", img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?w=300&auto=format&fit=crop&q=60"},
+            {id: 12, name: "طحين أبيض متعدد الاستعمالات (1كغ)", price: 30000, oldPrice: 35000, discount: "-14%", rating: "4.9", sold: "280+", cat: "food", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=60"},
+            {id: 13, name: "حليب مجفف كامل الدسم غني (900غ)", price: 140000, oldPrice: 160000, discount: "-12%", rating: "5.0", sold: "170+", cat: "drinks", img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&auto=format&fit=crop&q=60"},
+            {id: 14, name: "حمص حب ممتاز للطبخ (1كغ)", price: 55000, oldPrice: 65000, discount: "-15%", rating: "4.8", sold: "190+", cat: "food", img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
+            {id: 15, name: "ملح طعام نقي مكرر (1كغ)", price: 10000, oldPrice: 12000, discount: "-16%", rating: "4.9", sold: "800+", cat: "food", img: "https://images.unsplash.com/photo-1518110168401-f28423130775?w=300&auto=format&fit=crop&q=60"}
         ];
 
-        if (!localStorage.getItem("al_majd_ali_v6")) {
-            localStorage.setItem("al_majd_ali_v6", JSON.stringify(initialProducts));
+        // حفظ القائمة الجديدة المحدثة
+        if (!localStorage.getItem("al_majd_ali_v7")) {
+            localStorage.setItem("al_majd_ali_v7", JSON.stringify(initialProducts));
+        } else {
+            // تحديث تلقائي للمرة الأولى لضمان نزول الـ 30 منتج
+            localStorage.setItem("al_majd_ali_v7", JSON.stringify(initialProducts));
         }
 
+        let currentCat = 'all';
         let cart = JSON.parse(localStorage.getItem("al_majd_ali_cart")) || [];
         updateCartBadge();
+
+        function filterCategory(cat, el) {
+            currentCat = cat;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            if(el) el.classList.add('active');
+            filterProducts();
+        }
 
         function openAdmin() {
             let pass = prompt("أدخل الرمز السري للتعديل:");
@@ -209,7 +241,7 @@
             let img = document.getElementById("p-img").value.trim();
             if(!name || !price) { alert("يرجى إدخال اسم المنتج والسعر"); return; }
 
-            let products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
             products.unshift({
                 id: Date.now(),
                 name: name,
@@ -218,30 +250,31 @@
                 discount: "-15%",
                 rating: "5.0",
                 sold: "1+",
+                cat: "food",
                 img: img || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&auto=format&fit=crop&q=60"
             });
-            localStorage.setItem("al_majd_ali_v6", JSON.stringify(products));
+            localStorage.setItem("al_majd_ali_v7", JSON.stringify(products));
             
             document.getElementById("p-name").value = "";
             document.getElementById("p-price").value = "";
             document.getElementById("p-img").value = "";
             renderProducts();
             renderAdminList();
-            alert("تم إدراج المنتج بنجاح!");
+            alert("تم نشر المنتج بنجاح!");
         }
 
         function deleteProduct(id) {
             if(confirm("هل تريد حذف هذا المنتج؟")) {
-                let products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
+                let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
                 products = products.filter(p => p.id !== id);
-                localStorage.setItem("al_majd_ali_v6", JSON.stringify(products));
+                localStorage.setItem("al_majd_ali_v7", JSON.stringify(products));
                 renderProducts();
                 renderAdminList();
             }
         }
 
         function addToCart(id) {
-            let products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
             let item = products.find(p => p.id === id);
             if(!item) return;
 
@@ -321,7 +354,7 @@
 
         function sendWhatsAppOrder() {
             if(cart.length === 0) { alert("السلة فارغة!"); return; }
-            let msg = "مرحباً بقالة المجد (Al-Majd Express)، أرغب بطلب المنتجات التالية:\n\n";
+            let msg = "مرحباً متجر المجد إكسبرس (Al-Majd Express)، أرغب بطلب المنتجات التالية:\n\n";
             let total = 0;
             cart.forEach(item => {
                 let sum = item.price * item.qty;
@@ -334,18 +367,24 @@
 
         function filterProducts() {
             let query = document.getElementById("search-input").value.toLowerCase();
-            let products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
-            let filtered = products.filter(p => p.name.toLowerCase().includes(query));
+            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            
+            let filtered = products.filter(p => {
+                let matchesSearch = p.name.toLowerCase().includes(query);
+                let matchesCat = (currentCat === 'all') || (p.cat === currentCat);
+                return matchesSearch && matchesCat;
+            });
+
             renderProducts(filtered);
         }
 
         function renderProducts(itemsToRender = null) {
-            const products = itemsToRender || JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
+            const products = itemsToRender || JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
             const container = document.getElementById("products-list");
             container.innerHTML = "";
 
             if(products.length === 0) {
-                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888; padding: 20px;'>لا توجد منتجات مطابقة للبحث.</p>";
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888; padding: 25px;'>لا توجد منتجات متوفرة في هذا القسم حالياً.</p>";
                 return;
             }
 
@@ -380,7 +419,7 @@
         }
 
         function renderAdminList() {
-            const products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
+            const products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
             const container = document.getElementById("admin-products-list");
             container.innerHTML = "";
             products.forEach(p => {
