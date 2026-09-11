@@ -3,92 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بقالة المجد الفاخرة</title>
+    <title>بقالة المجد - Al-Majd Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0b4f34; --secondary: #198754; --bg: #f8f9fa; --text: #333; }
+        :root { --ali-red: #ff4747; --ali-dark: #222; --ali-bg: #f5f5f5; --ali-border: #e5e5e5; }
         * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        header { background: linear-gradient(135deg, #0b4f34, #146c43); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        h1 { margin: 0; font-size: 22px; }
-        .header-btns { display: flex; gap: 10px; align-items: center; }
-        .icon-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
-        .icon-btn:hover { background: rgba(255,255,255,0.3); }
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
-        .admin-panel { background: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: none; border-right: 5px solid var(--secondary); }
-        .admin-panel h3 { margin-top: 0; color: var(--primary); }
-        .form-control { width: 100%; padding: 10px; margin: 8px 0 15px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
-        .btn { background-color: var(--secondary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.2s; }
-        .btn:hover { background-color: #146c43; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 20px; }
-        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
-        .product-img { width: 100%; height: 140px; background: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #adb5bd; }
-        .product-body { padding: 15px; }
-        .product-title { font-size: 16px; font-weight: 700; margin: 0 0 8px 0; color: #212529; }
-        .product-price { color: var(--primary); font-weight: 700; font-size: 17px; margin-bottom: 12px; }
-        .actions { padding: 0 15px 15px 15px; display: flex; gap: 8px; }
-        .btn-delete { background-color: #dc3545; width: auto; padding: 8px 12px; font-size: 13px; }
-        .btn-delete:hover { background-color: #bb2d3b; }
+        body { background-color: var(--ali-bg); color: var(--ali-dark); margin: 0; padding: 0; }
+        
+        /* شريط العرض العلوي */
+        header { background: #ffffff; border-bottom: 1px solid var(--ali-border); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-area h1 { font-size: 18px; color: var(--ali-dark); margin: 0; font-weight: 700; }
+        .logo-badge { background: var(--ali-red); color: white; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+        
+        .header-actions { display: flex; gap: 8px; align-items: center; }
+        .btn-action { background: #f0f0f0; border: none; padding: 6px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 4px; color: #444; }
+        .btn-action:hover { background: #e2e2e2; }
+        
+        .container { max-width: 1200px; margin: 15px auto; padding: 0 10px; }
+        
+        /* لوحة التحكم */
+        .admin-panel { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: none; border: 1px solid var(--ali-border); }
+        .admin-panel h3 { margin: 0 0 10px 0; font-size: 15px; color: var(--ali-red); }
+        .form-input { width: 100%; padding: 8px 10px; margin-bottom: 10px; border: 1px solid var(--ali-border); border-radius: 6px; font-size: 13px; }
+        .btn-submit { background: var(--ali-red); color: white; border: none; width: 100%; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        
+        /* شبكة المنتجات على طراز علي إكسبرس */
+        .section-title { font-size: 15px; font-weight: 700; margin: 10px 0 12px 5px; color: #333; display: flex; align-items: center; gap: 5px; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        @media (min-width: 600px) { .products-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
+        @media (min-width: 900px) { .products-grid { grid-template-columns: repeat(5, 1fr); gap: 12px; } }
+        
+        .product-card { background: white; border-radius: 6px; overflow: hidden; border: 1px solid var(--ali-border); display: flex; flex-direction: column; justify-content: space-between; transition: box-shadow 0.2s; }
+        .product-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        
+        .product-img-box { width: 100%; height: 130px; background: #fafafa; display: flex; align-items: center; justify-content: center; font-size: 35px; border-bottom: 1px solid var(--ali-border); position: relative; }
+        .product-info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-title { font-size: 13px; color: #222; margin: 0 0 6px 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 36px; }
+        
+        .price-row { display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px; }
+        .currency { font-size: 10px; color: var(--ali-red); font-weight: 700; }
+        .price-amount { font-size: 15px; color: var(--ali-red); font-weight: 700; }
+        
+        .card-actions { display: flex; gap: 5px; }
+        .btn-buy { background: #fff0f0; color: var(--ali-red); border: 1px solid #ffcccc; flex-grow: 1; padding: 6px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; }
+        .btn-buy:hover { background: var(--ali-red); color: white; }
+        .btn-del { background: #f5f5f5; color: #777; border: 1px solid #ddd; padding: 6px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+        .btn-del:hover { background: #ffebee; color: #c62828; border-color: #ef9a9a; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>بقالة المجد 🛒</h1>
-        <div class="header-btns">
-            <button class="icon-btn" onclick="toggleAdmin()">⚙️ الإدارة</button>
-            <button class="icon-btn" id="cart-btn">🛍️ <span id="cart-count">0</span></button>
+        <div class="logo-area">
+            <h1>بقالة المجد</h1>
+            <span class="logo-badge">Express</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn-action" onclick="toggleAdmin()">⚙️ الإدارة</button>
+            <button class="btn-action">🛒 <span id="cart-count">0</span></button>
         </div>
     </header>
 
     <div class="container">
-        <!-- لوحة التحكم الاحترافية -->
+        <!-- لوحة التحكم -->
         <div id="admin-panel" class="admin-panel">
-            <h3>لوحة إدارة المتجر</h3>
-            <label>اسم المنتج:</label>
-            <input type="text" id="p-name" class="form-control" placeholder="أدخل اسم المنتج...">
-            <label>السعر (ل.س):</label>
-            <input type="number" id="p-price" class="form-control" placeholder="أدخل السعر...">
-            <button class="btn" onclick="addProduct()">إضافة المنتج للمتجر</button>
+            <h3>إضافة منتج جديد</h3>
+            <input type="text" id="p-name" class="form-input" placeholder="اسم المنتج (مثال: زيت زتون)">
+            <input type="number" id="p-price" class="form-input" placeholder="السعر (ل.س)">
+            <button class="btn-submit" onclick="addProduct()">نشر المنتج</button>
         </div>
 
-        <h2 style="font-size: 20px; margin-bottom: 15px; border-right: 4px solid var(--primary); padding-right: 10px;">المنتجات المتوفرة</h2>
+        <div class="section-title">🔥 المنتجات الأكثر مبيعاً</div>
         <div id="products-list" class="products-grid"></div>
     </div>
 
     <script>
         const defaultProducts = [
-            {id: 1, name: "سكر أبيض ممتاز (1كغ)", price: 45000, icon: "🍚"},
-            {id: 2, name: "سمنة بلدي فاخرة", price: 120000, icon: "🧈"},
-            {id: 3, name: "زيت زیتون بكر ممتاز", price: 85000, icon: "🫒"},
-            {id: 4, name: "عدس حب طازج (1كغ)", price: 50000, icon: "🥣"}
+            {id: 1, name: "سكر أبيض ممتاز عالي القودة (1كغ)", price: 45000, icon: "🍚"},
+            {id: 2, name: "سمنة بلدي صافية فاخرة", price: 120000, icon: "🧈"},
+            {id: 3, name: "زيت زیتون بكر ممتاز عصرة أولى", price: 85000, icon: "🫒"},
+            {id: 4, name: "عدس حب طازج منتقى بعناية (1كغ)", price: 50000, icon: "🥣"}
         ];
 
-        if (!localStorage.getItem("al_majd_products")) {
-            localStorage.setItem("al_majd_products", JSON.stringify(defaultProducts));
+        if (!localStorage.getItem("al_majd_express")) {
+            localStorage.setItem("al_majd_express", JSON.stringify(defaultProducts));
         }
 
         function toggleAdmin() {
-            let pass = prompt("أدخل كلمة المرور (الافتراضية: 123):");
+            let pass = prompt("أدخل كلمة المرور (123):");
             if (pass === "123") {
                 let panel = document.getElementById("admin-panel");
                 panel.style.display = panel.style.display === "block" ? "none" : "block";
             } else if (pass !== null) {
-                alert("كلمة المرور غير صحيحة!");
+                alert("كلمة المرور خطأ!");
             }
         }
 
         function addProduct() {
             let name = document.getElementById("p-name").value.trim();
             let price = document.getElementById("p-price").value.trim();
-            if(!name || !price) {
-                alert("يرجى ملء كافة الحقول بشكل صحيح");
-                return;
-            }
-            let products = JSON.parse(localStorage.getItem("al_majd_products")) || [];
-            products.push({id: Date.now(), name: name, price: Number(price), icon: "📦"});
-            localStorage.setItem("al_majd_products", JSON.stringify(products));
+            if(!name || !price) { alert("الرجاء تعبئة الحقول"); return; }
+            
+            let products = JSON.parse(localStorage.getItem("al_majd_express")) || [];
+            products.unshift({id: Date.now(), name: name, price: Number(price), icon: "📦"});
+            localStorage.setItem("al_majd_express", JSON.stringify(products));
+            
             document.getElementById("p-name").value = "";
             document.getElementById("p-price").value = "";
             renderProducts();
@@ -96,37 +116,37 @@
         }
 
         function deleteProduct(id) {
-            if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
-                let products = JSON.parse(localStorage.getItem("al_majd_products")) || [];
+            if(confirm("هل تريد حذف هذا المنتج؟")) {
+                let products = JSON.parse(localStorage.getItem("al_majd_express")) || [];
                 products = products.filter(p => p.id !== id);
-                localStorage.setItem("al_majd_products", JSON.stringify(products));
+                localStorage.setItem("al_majd_express", JSON.stringify(products));
                 renderProducts();
             }
         }
 
         function renderProducts() {
-            const products = JSON.parse(localStorage.getItem("al_majd_products")) || [];
+            const products = JSON.parse(localStorage.getItem("al_majd_express")) || [];
             const container = document.getElementById("products-list");
             container.innerHTML = "";
             
-            if(products.length === 0) {
-                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #777;'>لا توجد منتجات حالياً.</p>";
-                return;
-            }
-
             products.forEach(p => {
                 container.innerHTML += `
                     <div class="product-card">
                         <div>
-                            <div class="product-img">${p.icon || '📦'}</div>
-                            <div class="product-body">
+                            <div class="product-img-box">${p.icon || '📦'}</div>
+                            <div class="product-info">
                                 <div class="product-title">${p.name}</div>
-                                <div class="product-price">${p.price.toLocaleString()} ل.س</div>
+                                <div class="price-row">
+                                    <span class="price-amount">${p.price.toLocaleString()}</span>
+                                    <span class="currency">ل.س</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="actions">
-                            <button class="btn" onclick="alert('تمت إضافة ${p.name} للسلة')">شراء</button>
-                            <button class="btn btn-delete" onclick="deleteProduct(${p.id})">حذف</button>
+                        <div style="padding: 0 8px 8px 8px;">
+                            <div class="card-actions">
+                                <button class="btn-buy" onclick="alert('تمت إضافة ${p.name} إلى السلة')">شراء سريع</button>
+                                <button class="btn-del" onclick="deleteProduct(${p.id})">🗑️</button>
+                            </div>
                         </div>
                     </div>
                 `;
