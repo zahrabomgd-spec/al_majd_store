@@ -79,7 +79,7 @@
         .btn-add-cart { background: #fff0f0; color: var(--ali-red); border: 1px solid #ffcccc; width: 100%; padding: 7px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; transition: 0.2s; }
         .btn-add-cart:hover { background: var(--ali-red); color: white; }
 
-        /* لوحة التحكم الاحترافية */
+        /* لوحة التحكم */
         .admin-panel { background: white; padding: 18px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: none; border: 2px solid var(--ali-red); }
         .admin-nav { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .admin-tab-btn { flex: 1; padding: 9px; border: none; background: #f0f0f0; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; color: #555; transition: 0.2s; }
@@ -110,6 +110,7 @@
         .payment-section { margin-top: 15px; border-top: 1px solid #eee; padding-top: 12px; }
         .payment-option { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
         .payment-info-box { display: none; background: #e8f4fd; border: 1px solid #b6e0fe; padding: 10px; border-radius: 8px; font-size: 12px; color: #0c5460; margin-top: 8px; line-height: 1.5; }
+        .payment-code-badge { font-family: monospace; font-size: 11px; font-weight: 800; color: #1565c0; background: #fff; padding: 6px; border-radius: 6px; border: 1px dashed #1565c0; display: block; margin: 6px 0; word-break: break-all; text-align: center; }
 
         .checkout-btn { background: #25d366; color: white; border: none; width: 100%; padding: 11px; border-radius: 20px; font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 14px; }
 
@@ -259,9 +260,9 @@
 
                 <div id="sham-cash-info" class="payment-info-box">
                     <strong>📌 معلومات تحويل شام كاش:</strong><br>
-                    يرجى تحويل قيمة الطلب إلى الحساب التالي عبر تطبيق شام كاش:<br>
-                    <span dir="ltr" style="font-weight:800; font-size:14px; color:#1565c0; display:block; margin:4px 0;">+963992480155</span>
-                    ثم إرسال صورة إشعار التحويل عبر الواتساب لتأكيد الطلب.
+                    يرجى التحويل إلى رمز الدفع الخاص بمتجرنا عبر تطبيق شام كاش:<br>
+                    <span class="payment-code-badge" dir="ltr">298943552427ab9ae58697c9b040eab2</span>
+                    ثم إرفاق إشعار التحويل عند إرسال الطلب عبر الواتساب لتأكيده.
                 </div>
             </div>
 
@@ -560,7 +561,7 @@
 
             let selectedMethod = document.querySelector('input[name="pay_method"]:checked').value;
             let methodText = (selectedMethod === "sham_cash") 
-                ? "📲 عبر شام كاش (تم تحويل/جاري تحويل المبلغ إلى +963992480155)" 
+                ? "📲 عبر شام كاش (رمز التحويل: 298943552427ab9ae58697c9b040eab2)" 
                 : "💵 نقداً عند الاستلام";
 
             let msg = "مرحباً متجر المجد إكسبرس (Al-Majd Express)، أرغب بطلب المنتجات التالية:\n\n";
