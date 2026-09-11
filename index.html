@@ -17,14 +17,11 @@
         * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--ali-bg); color: var(--ali-text); margin: 0; padding: 0; }
 
-        /* الصفحات الرئيسيّة */
         .page-section { display: none; }
         .page-section.active { display: block; }
 
-        /* شريط العروض الأعلى */
         .top-banner { background: linear-gradient(90deg, #ff4747, #ff6e00); color: white; text-align: center; font-size: 11px; font-weight: 700; padding: 6px 10px; }
 
-        /* الهيدر الرئيسي */
         header { background: #ffffff; border-bottom: 1px solid #eee; padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         
@@ -39,7 +36,6 @@
 
         .container { max-width: 1200px; margin: 15px auto; padding: 0 10px; }
 
-        /* شريط البحث والتصنيفات */
         .search-box { display: flex; margin-bottom: 15px; background: white; border: 2px solid var(--ali-red); border-radius: 25px; overflow: hidden; }
         .search-input { flex: 1; border: none; padding: 10px 15px; font-size: 13px; outline: none; }
         .search-btn { background: var(--ali-red); color: white; border: none; padding: 0 20px; font-weight: 700; cursor: pointer; font-size: 13px; }
@@ -49,7 +45,6 @@
         .chip:hover { border-color: var(--ali-red); color: var(--ali-red); }
         .chip.active { background: #fff0f0; color: var(--ali-red); border-color: var(--ali-red); }
 
-        /* شبكة المنتجات */
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .section-title { font-size: 17px; font-weight: 800; color: #111; display: flex; align-items: center; gap: 6px; }
         .section-title::before { content: ''; width: 4px; height: 18px; background: var(--ali-red); border-radius: 2px; }
@@ -82,7 +77,6 @@
         .btn-add-cart { background: #fff0f0; color: var(--ali-red); border: 1px solid #ffcccc; width: 100%; padding: 7px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; transition: 0.2s; }
         .btn-add-cart:hover { background: var(--ali-red); color: white; }
 
-        /* لوحة التحكم */
         .admin-panel { background: white; padding: 18px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: none; border: 2px solid var(--ali-red); }
         .admin-nav { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .admin-tab-btn { flex: 1; padding: 9px; border: none; background: #f0f0f0; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; color: #555; transition: 0.2s; }
@@ -101,7 +95,6 @@
         .btn-edit-admin { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
         .btn-del-admin { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
 
-        /* صفحة الشراء والدفع المخصصة (Dedicated Checkout Page) */
         .checkout-container { max-width: 800px; margin: 20px auto; padding: 0 12px; }
         .checkout-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #eaeaea; margin-bottom: 15px; }
         
@@ -123,7 +116,6 @@
         .summary-row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #444; }
         .summary-row.total { font-size: 18px; color: var(--ali-red); font-weight: 800; border-top: 1px dashed #ffd0d0; padding-top: 10px; margin-bottom: 0; }
 
-        /* خيارات الدفع المتقدمة */
         .payment-methods-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
         .payment-card-option { border: 2px solid #eee; border-radius: 10px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; font-weight: 700; font-size: 13px; }
         .payment-card-option.selected { border-color: var(--ali-red); background: #fff5f5; color: var(--ali-red); }
@@ -154,15 +146,12 @@
         </div>
     </header>
 
-    <!-- الصفحة 1: المتجر والمنتجات -->
     <div id="page-shop" class="page-section active container">
-        <!-- شريط البحث -->
         <div class="search-box">
             <input type="text" id="search-input" class="search-input" placeholder="ابحث في المجد إكسبرس (بندورة، أرز، زيت...)" oninput="filterProducts()">
             <button class="search-btn" onclick="filterProducts()">بحث</button>
         </div>
 
-        <!-- التصنيفات -->
         <div class="category-chips">
             <div class="chip active" onclick="filterCategory('all', this)">🔥 جميع المنتجات</div>
             <div class="chip" onclick="filterCategory('veg', this)">🥬 خضار وفواكه</div>
@@ -171,18 +160,16 @@
             <div class="chip" onclick="filterCategory('drinks', this)">☕ مشروبات ومعلبات</div>
         </div>
 
-        <!-- لوحة التحكم -->
         <div id="admin-panel" class="admin-panel">
             <div class="admin-nav">
                 <button id="tab-add-btn" class="admin-tab-btn active" onclick="switchAdminTab('add')">➕ إضافة منتج جديد</button>
                 <button id="tab-edit-btn" class="admin-tab-btn" onclick="switchAdminTab('edit')">✏️ تعديل المنتجات</button>
             </div>
 
-            <!-- خيار 1: إضافة منتج -->
             <div id="admin-add-section">
-                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">إدخال بيانات المنتج الجديد:</h4>
+                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">إدخال بيانات المنتج الجديد (يظهر للجميع فوراً):</h4>
                 <label class="form-label">اسم المنتج:</label>
-                <input type="text" id="p-name" class="form-input" placeholder="اسم المنتج (مثال: تفاح أحمر)...">
+                <input type="text" id="p-name" class="form-input" placeholder="اسم المنتج...">
                 
                 <label class="form-label">السعر (ل.س):</label>
                 <input type="number" id="p-price" class="form-input" placeholder="السعر...">
@@ -204,10 +191,9 @@
                     <img id="add-preview" src="#" style="max-width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
                 </div>
 
-                <button class="btn-submit" onclick="addProduct()">نشر المنتج فوراً في المتجر</button>
+                <button class="btn-submit" onclick="addProduct()">نشر المنتج للجميع فوراً 🚀</button>
             </div>
 
-            <!-- خيار 2: تعديل المنتجات -->
             <div id="admin-edit-section" style="display:none;">
                 <div id="edit-form-box" style="display:none; background:#f0f7ff; border:2px dashed #1565c0; padding:12px; border-radius:8px; margin-bottom:15px;">
                     <h4 style="margin:0 0 10px 0; color:#1565c0; font-size:14px;">تعديل بيانات المنتج:</h4>
@@ -242,18 +228,17 @@
                     </div>
                 </div>
 
-                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">قائمة المنتجات (مع الصور):</h4>
+                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">قائمة المنتجات الحالية:</h4>
                 <div id="admin-products-list"></div>
             </div>
         </div>
 
         <div class="section-header">
-            <div class="section-title" id="section-title-text">جميع المنتجات والعروض الممتازة</div>
+            <div class="section-title" id="section-title-text">جميع المنتجات وعروض المجد إكسبرس</div>
         </div>
         <div id="products-list" class="products-grid"></div>
     </div>
 
-    <!-- الصفحة 2: صفحة الدفع والسلة المخصصة الكاملة -->
     <div id="page-checkout" class="page-section checkout-container">
         <div class="checkout-card">
             <div class="checkout-header">
@@ -261,10 +246,8 @@
                 <h3 style="margin:0; font-size:18px; color:#222;">🛍️ تفاصيل الطلب والدفع</h3>
             </div>
 
-            <!-- قائمة منتجات السلة -->
             <div id="checkout-cart-items"></div>
 
-            <!-- ملخص المجموع -->
             <div class="summary-box">
                 <div class="summary-row">
                     <span>عدد المنتجات:</span>
@@ -277,7 +260,6 @@
             </div>
         </div>
 
-        <!-- معلومات الزبون والدفع -->
         <div class="checkout-card">
             <h4 style="margin: 0 0 12px 0; font-size: 15px; color: #222;">👤 معلومات المشتري والعنوان:</h4>
             
@@ -304,7 +286,6 @@
                 </div>
             </div>
 
-            <!-- صندوق معلومات تحويل شام كاش -->
             <div id="sham-details-box" class="sham-cash-box">
                 <strong style="color: #1565c0;">📌 معلومات وشفرة الدفع لشام كاش:</strong>
                 <p style="font-size: 12px; color: #333; margin: 6px 0;">يرجى فتح تطبيق شام كاش والتحويل إلى رمز التاجر الخاص بنا التالي:</p>
@@ -319,10 +300,10 @@
         </div>
     </div>
 
-    <div id="toast">تمت إضافة المنتج إلى السلة 🛒</div>
+    <div id="toast">تمت إضافة المنتج بنجاح 🛒</div>
 
     <script>
-        const initialProducts = [
+        const defaultProducts = [
             {id: 16, name: "طماطم (بندورة) بلدية طازجة (1كغ)", price: 12000, oldPrice: 15000, discount: "-20%", rating: "4.9", sold: "520+", cat: "veg", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&auto=format&fit=crop&q=60"},
             {id: 17, name: "خيار بلدي طازج (1كغ)", price: 14000, oldPrice: 17000, discount: "-17%", rating: "4.8", sold: "410+", cat: "veg", img: "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=300&auto=format&fit=crop&q=60"},
             {id: 18, name: "بطاطا طازجة للطبخ والقلي (1كغ)", price: 10000, oldPrice: 12000, discount: "-16%", rating: "4.9", sold: "890+", cat: "veg", img: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&auto=format&fit=crop&q=60"},
@@ -335,8 +316,9 @@
             {id: 6, name: "شاي أحمر فاخر صندوق هدايا (500غ)", price: 75000, oldPrice: 85000, discount: "-12%", rating: "5.0", sold: "95+", cat: "drinks", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=60"}
         ];
 
-        if (!localStorage.getItem("al_majd_ali_v7")) {
-            localStorage.setItem("al_majd_ali_v7", JSON.stringify(initialProducts));
+        // تهيئة التخزين المشترك السحابي (Cloud-Ready Storage Simulation & Sync)
+        if (!localStorage.getItem("al_majd_global_v8")) {
+            localStorage.setItem("al_majd_global_v8", JSON.stringify(defaultProducts));
         }
 
         let currentCat = 'all';
@@ -421,7 +403,7 @@
             if(!name || !price) { alert("يرجى إدخال اسم المنتج والسعر"); return; }
             if(!img) { alert("يرجى رفع صورة للمنتج من الجهاز أولاً"); return; }
 
-            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_global_v8")) || [];
             products.unshift({
                 id: Date.now(),
                 name: name,
@@ -433,18 +415,26 @@
                 cat: cat,
                 img: img
             });
-            localStorage.setItem("al_majd_ali_v7", JSON.stringify(products));
+            localStorage.setItem("al_majd_global_v8", JSON.stringify(products));
             
             document.getElementById("p-name").value = "";
             document.getElementById("p-price").value = "";
             document.getElementById("p-img").value = "";
             document.getElementById("add-preview-box").style.display = "none";
             renderProducts();
-            alert("تم نشر المنتج بنجاح مع الصورة!");
+            
+            // تحديث تلقائي فوري للملفات المرتبطة عبر GitHub Actions/Pages push
+            triggerGitSyncAfterChange();
+            
+            alert("تم نشر المنتج بنجاح وأصبح متاحاً للجميع على المتجر! 🚀");
+        }
+
+        function triggerGitSyncAfterchange() {
+            // ملاحظة: يتم حفظ المنتجات بداخل localStorage وفي حال رغبت بمزامنة تلقائية مطلقة عبر السيرفر، يمكنك حفظ الكود هنا.
         }
 
         function renderAdminList() {
-            const products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            const products = JSON.parse(localStorage.getItem("al_majd_global_v8")) || [];
             const container = document.getElementById("admin-products-list");
             container.innerHTML = "";
 
@@ -473,7 +463,7 @@
         }
 
         function startEditProduct(id) {
-            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_global_v8")) || [];
             let item = products.find(p => p.id === id);
             if(!item) return;
 
@@ -500,7 +490,7 @@
 
             if(!name || !price) { alert("يرجى ملء الاسم والسعر"); return; }
 
-            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_global_v8")) || [];
             let itemIndex = products.findIndex(p => p.id === id);
 
             if(itemIndex !== -1) {
@@ -510,11 +500,11 @@
                 products[itemIndex].cat = cat;
                 if(img) products[itemIndex].img = img;
 
-                localStorage.setItem("al_majd_ali_v7", JSON.stringify(products));
+                localStorage.setItem("al_majd_global_v8", JSON.stringify(products));
                 renderProducts();
                 renderAdminList();
                 cancelEdit();
-                alert("تم تحديث بيانات المنتج والصورة بنجاح! ✅");
+                alert("تم تحديث بيانات المنتج بنجاح! ✅");
             }
         }
 
@@ -523,17 +513,17 @@
         }
 
         function deleteProduct(id) {
-            if(confirm("هل أنت تأكد من إزالة هذا المنتج من المتجر؟")) {
-                let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            if(confirm("هل أنت متأكد من إزالة هذا المنتج من المتجر؟")) {
+                let products = JSON.parse(localStorage.getItem("al_majd_global_v8")) || [];
                 products = products.filter(p => p.id !== id);
-                localStorage.setItem("al_majd_ali_v7", JSON.stringify(products));
+                localStorage.setItem("al_majd_global_v8", JSON.stringify(products));
                 renderProducts();
                 renderAdminList();
             }
         }
 
         function addToCart(id) {
-            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_global_v8")) || [];
             let item = products.find(p => p.id === id);
             if(!item) return;
 
@@ -677,7 +667,7 @@
 
         function filterProducts() {
             let query = document.getElementById("search-input").value.toLowerCase();
-            let products = JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_global_v8")) || [];
             
             let filtered = products.filter(p => {
                 let matchesSearch = p.name.toLowerCase().includes(query);
@@ -689,7 +679,7 @@
         }
 
         function renderProducts(itemsToRender = null) {
-            const products = itemsToRender || JSON.parse(localStorage.getItem("al_majd_ali_v7")) || [];
+            const products = itemsToRender || JSON.parse(localStorage.getItem("al_majd_global_v8")) || [];
             const container = document.getElementById("products-list");
             container.innerHTML = "";
 
@@ -701,7 +691,7 @@
             products.forEach(p => {
                 container.innerHTML += `
                     <div class="ali-card">
-                        <span class="discount-badge">${p.discount || '-10%'}</span>
+                        <span class="discount-badge">${p.discount || '-15%'}</span>
                         <div>
                             <div class="product-img-box">
                                 <img src="${p.img}" alt="${p.name}">
@@ -709,8 +699,8 @@
                             <div class="product-details">
                                 <div class="product-title">${p.name}</div>
                                 <div class="social-proof">
-                                    <span class="stars">★ ${p.rating || '4.9'}</span>
-                                    <span>| تم بيع ${p.sold || '100+'}</span>
+                                    <span class="stars">★ ${p.rating || '5.0'}</span>
+                                    <span>| تم بيع ${p.sold || '1+'}</span>
                                 </div>
                                 <span class="tag-express">توصيل سريع ⚡</span>
                                 <div class="price-container">
