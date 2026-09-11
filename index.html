@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بقالة المجد | Al-Majd Express</title>
+    <title>بقالة المجد إكسبرس | Al-Majd Express</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -17,6 +17,10 @@
         * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--ali-bg); color: var(--ali-text); margin: 0; padding: 0; }
 
+        /* الصفحات الرئيسيّة */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
         /* شريط العروض الأعلى */
         .top-banner { background: linear-gradient(90deg, #ff4747, #ff6e00); color: white; text-align: center; font-size: 11px; font-weight: 700; padding: 6px 10px; }
 
@@ -24,23 +28,22 @@
         header { background: #ffffff; border-bottom: 1px solid #eee; padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         
-        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-area { display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .logo-badge { background: var(--ali-red); color: white; font-size: 11px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
         .store-name { font-size: 20px; font-weight: 800; color: var(--ali-red); margin: 0; line-height: 1; }
 
         .header-actions { display: flex; align-items: center; gap: 10px; }
-        .cart-btn { background: var(--ali-red); color: white; border: none; padding: 7px 15px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .cart-btn { background: var(--ali-red); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
         .cart-btn:hover { background: var(--ali-dark-red); }
         .dots-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #555; padding: 2px 6px; border-radius: 50%; }
 
         .container { max-width: 1200px; margin: 15px auto; padding: 0 10px; }
 
-        /* شريط البحث */
+        /* شريط البحث والتصنيفات */
         .search-box { display: flex; margin-bottom: 15px; background: white; border: 2px solid var(--ali-red); border-radius: 25px; overflow: hidden; }
         .search-input { flex: 1; border: none; padding: 10px 15px; font-size: 13px; outline: none; }
         .search-btn { background: var(--ali-red); color: white; border: none; padding: 0 20px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
-        /* تصنيفات سريعة */
         .category-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
         .chip { background: white; border: 1px solid #e5e5e5; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; color: #555; cursor: pointer; transition: 0.2s; }
         .chip:hover { border-color: var(--ali-red); color: var(--ali-red); }
@@ -85,7 +88,8 @@
         .admin-tab-btn { flex: 1; padding: 9px; border: none; background: #f0f0f0; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; color: #555; transition: 0.2s; }
         .admin-tab-btn.active { background: var(--ali-red); color: white; }
 
-        .form-input { width: 100%; padding: 9px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+        .form-input { width: 100%; padding: 9px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
+        .form-input:focus { border-color: var(--ali-red); }
         .form-label { font-size: 12px; font-weight: 700; color: #444; margin-bottom: 4px; display: block; }
         .btn-submit { background: var(--ali-red); color: white; border: none; width: 100%; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
@@ -97,22 +101,38 @@
         .btn-edit-admin { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
         .btn-del-admin { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
 
-        /* نافذة السلة والدفع */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .modal-card { background: white; width: 92%; max-width: 440px; border-radius: 12px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 12px; }
-        .modal-header h3 { margin: 0; font-size: 16px; color: #222; }
-        .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; font-size: 13px; }
-        .qty-controls { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-        .qty-btn { background: #eee; border: none; width: 22px; height: 22px; border-radius: 4px; font-weight: 700; cursor: pointer; }
+        /* صفحة الشراء والدفع المخصصة (Dedicated Checkout Page) */
+        .checkout-container { max-width: 800px; margin: 20px auto; padding: 0 12px; }
+        .checkout-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #eaeaea; margin-bottom: 15px; }
         
-        .payment-section { margin-top: 15px; border-top: 1px solid #eee; padding-top: 12px; }
-        .payment-option { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
-        .payment-info-box { display: none; background: #e8f4fd; border: 1px solid #b6e0fe; padding: 10px; border-radius: 8px; font-size: 12px; color: #0c5460; margin-top: 8px; line-height: 1.5; }
-        .payment-code-badge { font-family: monospace; font-size: 11px; font-weight: 800; color: #1565c0; background: #fff; padding: 6px; border-radius: 6px; border: 1px dashed #1565c0; display: block; margin: 6px 0; word-break: break-all; text-align: center; }
+        .checkout-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #f4f4f4; padding-bottom: 12px; }
+        .back-btn { background: #f0f0f0; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; color: #333; display: flex; align-items: center; gap: 5px; }
+        .back-btn:hover { background: #e0e0e0; }
 
-        .checkout-btn { background: #25d366; color: white; border: none; width: 100%; padding: 11px; border-radius: 20px; font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 14px; }
+        .checkout-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f5f5f5; }
+        .checkout-item-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #eee; margin-left: 12px; }
+        .checkout-item-details { flex-grow: 1; }
+        .checkout-item-title { font-size: 14px; font-weight: 700; color: #222; margin-bottom: 4px; }
+        .checkout-item-price { font-size: 13px; color: var(--ali-red); font-weight: 800; }
+
+        .qty-controls { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+        .qty-btn { background: #eee; border: none; width: 26px; height: 26px; border-radius: 6px; font-weight: 800; cursor: pointer; font-size: 14px; }
+        .qty-btn:hover { background: var(--ali-red); color: white; }
+
+        .summary-box { background: #fff8f8; border: 1px solid #ffe0e0; border-radius: 10px; padding: 15px; margin-top: 15px; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #444; }
+        .summary-row.total { font-size: 18px; color: var(--ali-red); font-weight: 800; border-top: 1px dashed #ffd0d0; padding-top: 10px; margin-bottom: 0; }
+
+        /* خيارات الدفع المتقدمة */
+        .payment-methods-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+        .payment-card-option { border: 2px solid #eee; border-radius: 10px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; font-weight: 700; font-size: 13px; }
+        .payment-card-option.selected { border-color: var(--ali-red); background: #fff5f5; color: var(--ali-red); }
+
+        .sham-cash-box { background: #e8f4fd; border: 2px solid #2196f3; padding: 15px; border-radius: 10px; margin-top: 12px; display: none; }
+        .sham-cash-code { background: #ffffff; color: #1565c0; font-family: monospace; font-size: 14px; font-weight: 800; padding: 10px; border-radius: 8px; border: 2px dashed #1565c0; text-align: center; word-break: break-all; margin: 10px 0; }
+
+        .send-order-btn { background: #25d366; color: white; border: none; width: 100%; padding: 14px; border-radius: 30px; font-weight: 800; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; box-shadow: 0 4px 15px rgba(37,211,102,0.3); }
+        .send-order-btn:hover { background: #1eb954; }
 
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: white; padding: 9px 20px; border-radius: 25px; font-size: 12px; display: none; z-index: 3000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     </style>
@@ -123,18 +143,19 @@
 
     <header>
         <div class="header-container">
-            <div class="logo-area">
+            <div class="logo-area" onclick="showShopPage()">
                 <span class="logo-badge">EXPRESS</span>
                 <h1 class="store-name">المجد إكسبرس</h1>
             </div>
             <div class="header-actions">
-                <button class="cart-btn" onclick="openCart()">🛒 السلة (<span id="cart-count">0</span>)</button>
+                <button class="cart-btn" onclick="showCheckoutPage()">🛒 السلة والإنهاء (<span id="cart-count">0</span>)</button>
                 <button class="dots-btn" onclick="openAdmin()" title="الإدارة">⋮</button>
             </div>
         </div>
     </header>
 
-    <div class="container">
+    <!-- الصفحة 1: المتجر والمنتجات -->
+    <div id="page-shop" class="page-section active container">
         <!-- شريط البحث -->
         <div class="search-box">
             <input type="text" id="search-input" class="search-input" placeholder="ابحث في المجد إكسبرس (بندورة، أرز، زيت...)" oninput="filterProducts()">
@@ -150,7 +171,7 @@
             <div class="chip" onclick="filterCategory('drinks', this)">☕ مشروبات ومعلبات</div>
         </div>
 
-        <!-- لوحة التحكم المقسمة -->
+        <!-- لوحة التحكم -->
         <div id="admin-panel" class="admin-panel">
             <div class="admin-nav">
                 <button id="tab-add-btn" class="admin-tab-btn active" onclick="switchAdminTab('add')">➕ إضافة منتج جديد</button>
@@ -232,41 +253,69 @@
         <div id="products-list" class="products-grid"></div>
     </div>
 
-    <!-- نافذة السلة وإتمام الشراء -->
-    <div id="cart-modal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>🛍️ سلة التسوق (Al-Majd Express)</h3>
-                <button class="close-btn" onclick="closeCart()">✕</button>
+    <!-- الصفحة 2: صفحة الدفع والسلة المخصصة الكاملة -->
+    <div id="page-checkout" class="page-section checkout-container">
+        <div class="checkout-card">
+            <div class="checkout-header">
+                <button class="back-btn" onclick="showShopPage()">➔ العودة للتسوق</button>
+                <h3 style="margin:0; font-size:18px; color:#222;">🛍️ تفاصيل الطلب والدفع</h3>
             </div>
+
+            <!-- قائمة منتجات السلة -->
+            <div id="checkout-cart-items"></div>
+
+            <!-- ملخص المجموع -->
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>عدد المنتجات:</span>
+                    <span id="summary-items-count">0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>المجموع الكلي:</span>
+                    <span id="summary-total-price">0 ل.س</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- معلومات الزبون والدفع -->
+        <div class="checkout-card">
+            <h4 style="margin: 0 0 12px 0; font-size: 15px; color: #222;">👤 معلومات المشتري والعنوان:</h4>
             
-            <div id="cart-items-list"></div>
+            <label class="form-label">اسمك الكامل:</label>
+            <input type="text" id="cust-name" class="form-input" placeholder="أدخل اسمك الكريم...">
+
+            <label class="form-label">رقم التواصل / الواتساب:</label>
+            <input type="tel" id="cust-phone" class="form-input" placeholder="09xxxxxxxx">
+
+            <label class="form-label">عنوان التوصيل (المنطقة / الشارع / ملاحظات):</label>
+            <input type="text" id="cust-address" class="form-input" placeholder="مثال: دمشق - الميدان - قرب...">
+
+            <h4 style="margin: 18px 0 10px 0; font-size: 15px; color: #222;">💳 اختر طريقة الدفع المناسبة:</h4>
             
-            <div id="cart-total" style="font-weight:800; font-size:16px; margin-top:14px; text-align:left; color:var(--ali-red);">المجموع: 0 ل.س</div>
+            <div class="payment-methods-grid">
+                <div id="opt-cod" class="payment-card-option selected" onclick="selectPaymentMethod('cod')">
+                    <input type="radio" name="checkout_pay" id="pay_cod" value="cod" checked>
+                    <span>💵 الدفع نقداً عند الاستلام</span>
+                </div>
 
-            <!-- خيارات طريقة الدفع -->
-            <div class="payment-section">
-                <span class="form-label" style="font-size:13px; font-weight:800; margin-bottom:8px;">اختر طريقة الدفع:</span>
-                
-                <label class="payment-option">
-                    <input type="radio" name="pay_method" value="cod" checked onchange="togglePaymentInfo()">
-                    💵 ادفع نقداً عند الاستلام
-                </label>
-
-                <label class="payment-option">
-                    <input type="radio" name="pay_method" value="sham_cash" onchange="togglePaymentInfo()">
-                    📲 الدفع عبر شام كاش
-                </label>
-
-                <div id="sham-cash-info" class="payment-info-box">
-                    <strong>📌 معلومات تحويل شام كاش:</strong><br>
-                    يرجى التحويل إلى رمز الدفع الخاص بمتجرنا عبر تطبيق شام كاش:<br>
-                    <span class="payment-code-badge" dir="ltr">298943552427ab9ae58697c9b040eab2</span>
-                    ثم إرفاق إشعار التحويل عند إرسال الطلب عبر الواتساب لتأكيده.
+                <div id="opt-sham" class="payment-card-option" onclick="selectPaymentMethod('sham')">
+                    <input type="radio" name="checkout_pay" id="pay_sham" value="sham">
+                    <span>📲 الدفع عبر شام كاش (Sham Cash)</span>
                 </div>
             </div>
 
-            <button class="checkout-btn" onclick="sendWhatsAppOrder()">إتمام الطلب عبر واتساب 📱</button>
+            <!-- صندوق معلومات تحويل شام كاش -->
+            <div id="sham-details-box" class="sham-cash-box">
+                <strong style="color: #1565c0;">📌 معلومات وشفرة الدفع لشام كاش:</strong>
+                <p style="font-size: 12px; color: #333; margin: 6px 0;">يرجى فتح تطبيق شام كاش والتحويل إلى رمز التاجر الخاص بنا التالي:</p>
+                <div class="sham-cash-code" dir="ltr">298943552427ab9ae58697c9b040eab2</div>
+                <small style="color: #666;">* بعد إتمام التحويل، يرجى الاحتفاظ بإشعار الدفع لتأكيده معنا عند فتح الواتساب.</small>
+            </div>
+
+            <button class="send-order-btn" onclick="sendWhatsAppOrder()">
+                <span>إرسال الطلب عبر الواتساب</span>
+                <span style="font-size: 18px;">📱</span>
+            </button>
         </div>
     </div>
 
@@ -293,6 +342,19 @@
         let currentCat = 'all';
         let cart = JSON.parse(localStorage.getItem("al_majd_ali_cart")) || [];
         updateCartBadge();
+
+        function showShopPage() {
+            document.getElementById("page-checkout").classList.remove("active");
+            document.getElementById("page-shop").classList.add("active");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showCheckoutPage() {
+            renderCheckoutCart();
+            document.getElementById("page-shop").classList.remove("active");
+            document.getElementById("page-checkout").classList.add("active");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function handleFileUpload(event, hiddenInputId, previewImgId) {
             const file = event.target.files[0];
@@ -498,83 +560,118 @@
             document.getElementById("cart-count").innerText = totalQty;
         }
 
-        function togglePaymentInfo() {
-            let selectedMethod = document.querySelector('input[name="pay_method"]:checked').value;
-            let infoBox = document.getElementById("sham-cash-info");
-            infoBox.style.display = (selectedMethod === "sham_cash") ? "block" : "none";
+        function selectPaymentMethod(method) {
+            document.getElementById("pay_cod").checked = (method === 'cod');
+            document.getElementById("pay_sham").checked = (method === 'sham');
+
+            document.getElementById("opt-cod").classList.toggle("selected", method === 'cod');
+            document.getElementById("opt-sham").classList.toggle("selected", method === 'sham');
+
+            document.getElementById("sham-details-box").style.display = (method === 'sham') ? "block" : "none";
         }
 
-        function openCart() {
-            let list = document.getElementById("cart-items-list");
-            list.innerHTML = "";
+        function renderCheckoutCart() {
+            const container = document.getElementById("checkout-cart-items");
+            container.innerHTML = "";
 
             if(cart.length === 0) {
-                list.innerHTML = "<p style='text-align:center; color:#888; padding:20px;'>سلة التسوق فارغة حالياً</p>";
-                document.getElementById("cart-total").innerText = "المجموع: 0 ل.س";
-            } else {
-                let total = 0;
-                cart.forEach((item, index) => {
-                    let subTotal = item.price * item.qty;
-                    total += subTotal;
-                    list.innerHTML += `
-                        <div class="cart-item">
-                            <div>
-                                <strong>${item.name}</strong>
-                                <div class="qty-controls">
-                                    <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
-                                    <span>${item.qty}</span>
-                                    <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
-                                </div>
-                            </div>
-                            <div style="text-align:left;">
-                                <div style="font-weight:800; color:var(--ali-red);">${subTotal.toLocaleString()} ل.س</div>
-                                <button onclick="removeCartItem(${index})" style="background:none; border:none; color:#e53e3e; font-size:11px; cursor:pointer; padding:0;">حذف</button>
+                container.innerHTML = `
+                    <div style="text-align:center; padding:30px 10px; color:#888;">
+                        <p style="font-size:16px; margin-bottom:10px;">🛒 سلة التسوق فارغة حالياً</p>
+                        <button class="btn-add-cart" onclick="showShopPage()" style="width:auto; padding:8px 20px;">تصفح المنتجات الآن</button>
+                    </div>
+                `;
+                document.getElementById("summary-items-count").innerText = "0";
+                document.getElementById("summary-total-price").innerText = "0 ل.س";
+                return;
+            }
+
+            let total = 0;
+            let totalQty = 0;
+
+            cart.forEach((item, index) => {
+                let subTotal = item.price * item.qty;
+                total += subTotal;
+                totalQty += item.qty;
+
+                container.innerHTML += `
+                    <div class="checkout-item">
+                        <img src="${item.img}" class="checkout-item-img" alt="${item.name}">
+                        <div class="checkout-item-details">
+                            <div class="checkout-item-title">${item.name}</div>
+                            <div class="checkout-item-price">${item.price.toLocaleString()} ل.س</div>
+                            <div class="qty-controls">
+                                <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                                <span style="font-weight:700; font-size:13px;">${item.qty}</span>
+                                <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
                             </div>
                         </div>
-                    `;
-                });
-                document.getElementById("cart-total").innerText = "المجموع الكلي: " + total.toLocaleString() + " ل.س";
-            }
-            togglePaymentInfo();
-            document.getElementById("cart-modal").style.display = "flex";
+                        <div style="text-align:left;">
+                            <div style="font-weight:800; color:var(--ali-red); font-size:14px; margin-bottom:6px;">${subTotal.toLocaleString()} ل.س</div>
+                            <button onclick="removeCartItem(${index})" style="background:none; border:none; color:#e53e3e; font-size:12px; cursor:pointer; font-weight:700;">حذف 🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById("summary-items-count").innerText = totalQty;
+            document.getElementById("summary-total-price").innerText = total.toLocaleString() + " ل.س";
         }
 
         function changeQty(index, delta) {
             cart[index].qty += delta;
             if(cart[index].qty <= 0) cart.splice(index, 1);
             saveCart();
-            openCart();
+            renderCheckoutCart();
         }
 
         function removeCartItem(index) {
             cart.splice(index, 1);
             saveCart();
-            openCart();
-        }
-
-        function closeCart() {
-            document.getElementById("cart-modal").style.display = "none";
+            renderCheckoutCart();
         }
 
         function sendWhatsAppOrder() {
-            if(cart.length === 0) { alert("السلة فارغة!"); return; }
+            if(cart.length === 0) { 
+                alert("سلة التسوق فارغة! أضف بعض المنتجات أولاً."); 
+                return; 
+            }
 
-            let selectedMethod = document.querySelector('input[name="pay_method"]:checked').value;
-            let methodText = (selectedMethod === "sham_cash") 
+            let custName = document.getElementById("cust-name").value.trim();
+            let custPhone = document.getElementById("cust-phone").value.trim();
+            let custAddress = document.getElementById("cust-address").value.trim();
+
+            if(!custName) {
+                alert("يرجى إدخال الاسم الكامل لتأكيد الطلب.");
+                document.getElementById("cust-name").focus();
+                return;
+            }
+
+            let isSham = document.getElementById("pay_sham").checked;
+            let methodText = isSham 
                 ? "📲 عبر شام كاش (رمز التحويل: 298943552427ab9ae58697c9b040eab2)" 
                 : "💵 نقداً عند الاستلام";
 
-            let msg = "مرحباً متجر المجد إكسبرس (Al-Majd Express)، أرغب بطلب المنتجات التالية:\n\n";
+            let msg = `🛒 *طلب جديد من متجر المجد إكسبرس (Al-Majd Express)*\n\n`;
+            msg += `👤 *الزبون:* ${custName}\n`;
+            if(custPhone) msg += `📞 *الهاتف:* ${custPhone}\n`;
+            if(custAddress) msg += `📍 *العنوان:* ${custAddress}\n`;
+            msg += `\n📦 *المنتجات المطلوبة:*\n`;
+
             let total = 0;
             cart.forEach(item => {
                 let sum = item.price * item.qty;
                 msg += `- ${item.name} × ${item.qty} = ${sum.toLocaleString()} ل.س\n`;
                 total += sum;
             });
-            
-            msg += `\n💰 المجموع الكلي: ${total.toLocaleString()} ل.س`;
-            msg += `\n💳 طريقة الدفع المختارة: ${methodText}`;
-            
+
+            msg += `\n💰 *المجموع الكلي:* ${total.toLocaleString()} ل.س\n`;
+            msg += `💳 *طريقة الدفع:* ${methodText}\n`;
+
+            if(isSham) {
+                msg += `\n⚠️ *ملاحظة:* تم اختيار الدفع عبر شام كاش، سأقوم بإرفاق إشعار التحويل الآن.`;
+            }
+
             window.open("https://wa.me/963992480155?text=" + encodeURIComponent(msg), "_blank");
         }
 
