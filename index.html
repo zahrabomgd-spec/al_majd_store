@@ -97,7 +97,7 @@
         .btn-edit-admin { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
         .btn-del-admin { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
 
-        /* نافذة السلة */
+        /* نافذة السلة والدفع */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; }
         .modal-card { background: white; width: 92%; max-width: 440px; border-radius: 12px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 12px; }
@@ -106,6 +106,11 @@
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; font-size: 13px; }
         .qty-controls { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
         .qty-btn { background: #eee; border: none; width: 22px; height: 22px; border-radius: 4px; font-weight: 700; cursor: pointer; }
+        
+        .payment-section { margin-top: 15px; border-top: 1px solid #eee; padding-top: 12px; }
+        .payment-option { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .payment-info-box { display: none; background: #e8f4fd; border: 1px solid #b6e0fe; padding: 10px; border-radius: 8px; font-size: 12px; color: #0c5460; margin-top: 8px; line-height: 1.5; }
+
         .checkout-btn { background: #25d366; color: white; border: none; width: 100%; padding: 11px; border-radius: 20px; font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 14px; }
 
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: white; padding: 9px 20px; border-radius: 25px; font-size: 12px; display: none; z-index: 3000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
@@ -182,7 +187,6 @@
 
             <!-- خيار 2: تعديل المنتجات -->
             <div id="admin-edit-section" style="display:none;">
-                <!-- استمارة التعديل المباشر -->
                 <div id="edit-form-box" style="display:none; background:#f0f7ff; border:2px dashed #1565c0; padding:12px; border-radius:8px; margin-bottom:15px;">
                     <h4 style="margin:0 0 10px 0; color:#1565c0; font-size:14px;">تعديل بيانات المنتج:</h4>
                     <input type="hidden" id="edit-p-id">
@@ -227,15 +231,40 @@
         <div id="products-list" class="products-grid"></div>
     </div>
 
-    <!-- نافذة السلة -->
+    <!-- نافذة السلة وإتمام الشراء -->
     <div id="cart-modal" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
                 <h3>🛍️ سلة التسوق (Al-Majd Express)</h3>
                 <button class="close-btn" onclick="closeCart()">✕</button>
             </div>
+            
             <div id="cart-items-list"></div>
+            
             <div id="cart-total" style="font-weight:800; font-size:16px; margin-top:14px; text-align:left; color:var(--ali-red);">المجموع: 0 ل.س</div>
+
+            <!-- خيارات طريقة الدفع -->
+            <div class="payment-section">
+                <span class="form-label" style="font-size:13px; font-weight:800; margin-bottom:8px;">اختر طريقة الدفع:</span>
+                
+                <label class="payment-option">
+                    <input type="radio" name="pay_method" value="cod" checked onchange="togglePaymentInfo()">
+                    💵 ادفع نقداً عند الاستلام
+                </label>
+
+                <label class="payment-option">
+                    <input type="radio" name="pay_method" value="sham_cash" onchange="togglePaymentInfo()">
+                    📲 الدفع عبر شام كاش
+                </label>
+
+                <div id="sham-cash-info" class="payment-info-box">
+                    <strong>📌 معلومات تحويل شام كاش:</strong><br>
+                    يرجى تحويل قيمة الطلب إلى الحساب التالي عبر تطبيق شام كاش:<br>
+                    <span dir="ltr" style="font-weight:800; font-size:14px; color:#1565c0; display:block; margin:4px 0;">+963992480155</span>
+                    ثم إرسال صورة إشعار التحويل عبر الواتساب لتأكيد الطلب.
+                </div>
+            </div>
+
             <button class="checkout-btn" onclick="sendWhatsAppOrder()">إتمام الطلب عبر واتساب 📱</button>
         </div>
     </div>
@@ -249,32 +278,11 @@
             {id: 18, name: "بطاطا طازجة للطبخ والقلي (1كغ)", price: 10000, oldPrice: 12000, discount: "-16%", rating: "4.9", sold: "890+", cat: "veg", img: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&auto=format&fit=crop&q=60"},
             {id: 19, name: "بصل أحمر بلدي طازج (1كغ)", price: 9000, oldPrice: 11000, discount: "-18%", rating: "4.7", sold: "630+", cat: "veg", img: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=300&auto=format&fit=crop&q=60"},
             {id: 20, name: "تفاح أحمر بلدي مقرمش (1كغ)", price: 25000, oldPrice: 30000, discount: "-16%", rating: "5.0", sold: "310+", cat: "veg", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300&auto=format&fit=crop&q=60"},
-            {id: 21, name: "موز طازج حلو المذاق (1كغ)", price: 35000, oldPrice: 40000, discount: "-12%", rating: "4.9", sold: "450+", cat: "veg", img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=300&auto=format&fit=crop&q=60"},
-            {id: 22, name: "برتقال أبو صرة للعصير والطعام (1كغ)", price: 18000, oldPrice: 22000, discount: "-18%", rating: "4.8", sold: "270+", cat: "veg", img: "https://images.unsplash.com/photo-1547514701-42782101795e?w=300&auto=format&fit=crop&q=60"},
-            {id: 23, name: "ليمون حامض بلدي طازج (1كغ)", price: 20000, oldPrice: 25000, discount: "-20%", rating: "4.9", sold: "380+", cat: "veg", img: "https://images.unsplash.com/photo-1534531173927-aeb928d54385?w=300&auto=format&fit=crop&q=60"},
-            {id: 24, name: "باقة خضار ورقية طازجة (نعناع، بقدونس)", price: 5000, oldPrice: 6500, discount: "-23%", rating: "5.0", sold: "720+", cat: "veg", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&auto=format&fit=crop&q=60"},
-            {id: 25, name: "باذنجان أسود بلدي طازج (1كغ)", price: 12000, oldPrice: 15000, discount: "-20%", rating: "4.7", sold: "190+", cat: "veg", img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&auto=format&fit=crop&q=60"},
-            {id: 26, name: "كوسا طازجة للمحشي (1كغ)", price: 15000, oldPrice: 18000, discount: "-16%", rating: "4.8", sold: "220+", cat: "veg", img: "https://images.unsplash.com/photo-1598170845058-12ef4a457511?w=300&auto=format&fit=crop&q=60"},
-            {id: 27, name: "ثوم بلدي فاخر جاف (1كغ)", price: 45000, oldPrice: 52000, discount: "-13%", rating: "4.9", sold: "160+", cat: "veg", img: "https://images.unsplash.com/photo-1587049352847-81a56d773cae?w=300&auto=format&fit=crop&q=60"},
-            {id: 28, name: "عنب بلدي أبيض حلو (1كغ)", price: 30000, oldPrice: 36000, discount: "-16%", rating: "5.0", sold: "280+", cat: "veg", img: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=300&auto=format&fit=crop&q=60"},
-            {id: 29, name: "بطيخ أحمر حلو على السكين (حبه ~5كغ)", price: 40000, oldPrice: 48000, discount: "-16%", rating: "4.9", sold: "140+", cat: "veg", img: "https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=300&auto=format&fit=crop&q=60"},
-            {id: 30, name: "جزر بلدي طازج (1كغ)", price: 11000, oldPrice: 13500, discount: "-18%", rating: "4.8", sold: "330+", cat: "veg", img: "https://images.unsplash.com/photo-1447175008436-08417192a626?w=300&auto=format&fit=crop&q=60"},
-
             {id: 1, name: "سكر أبيض ممتاز عالي الجودة (1كغ)", price: 45000, oldPrice: 52000, discount: "-13%", rating: "4.9", sold: "240+", cat: "food", img: "https://images.unsplash.com/photo-1581441363689-1f3c3c34254c?w=300&auto=format&fit=crop&q=60"},
             {id: 2, name: "سمنة بلدي صافية فاخرة (1كغ)", price: 120000, oldPrice: 135000, discount: "-11%", rating: "5.0", sold: "180+", cat: "oils", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&auto=format&fit=crop&q=60"},
             {id: 3, name: "زيت زيتون بكر ممتاز عصرة أولى (1L)", price: 85000, oldPrice: 98000, discount: "-15%", rating: "4.8", sold: "310+", cat: "oils", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&auto=format&fit=crop&q=60"},
-            {id: 4, name: "عدس حب طازج منتقى بعناية (1كغ)", price: 50000, oldPrice: 58000, discount: "-14%", rating: "4.7", sold: "150+", cat: "food", img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
             {id: 5, name: "أرز إسباني فاخر طويل الحبة (1كغ)", price: 65000, oldPrice: 75000, discount: "-13%", rating: "4.9", sold: "420+", cat: "food", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&auto=format&fit=crop&q=60"},
-            {id: 6, name: "شاي أحمر فاخر صندوق هدايا (500غ)", price: 75000, oldPrice: 85000, discount: "-12%", rating: "5.0", sold: "95+", cat: "drinks", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=60"},
-            {id: 7, name: "بن عربي مع هيل مطحون طازج (250غ)", price: 60000, oldPrice: 70000, discount: "-14%", rating: "4.9", sold: "210+", cat: "drinks", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&auto=format&fit=crop&q=60"},
-            {id: 8, name: "معجون طماطم مركز مضاعف (800غ)", price: 35000, oldPrice: 42000, discount: "-16%", rating: "4.6", sold: "530+", cat: "drinks", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&auto=format&fit=crop&q=60"},
-            {id: 9, name: "زيت عباد الشمس نقي للقلي (1 ليتر)", price: 55000, oldPrice: 62000, discount: "-11%", rating: "4.8", sold: "600+", cat: "oils", img: "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=300&auto=format&fit=crop&q=60"},
-            {id: 10, name: "برغل ناعم أشقر طازج (1كغ)", price: 40000, oldPrice: 46000, discount: "-13%", rating: "4.7", sold: "110+", cat: "food", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&auto=format&fit=crop&q=60"},
-            {id: 11, name: "معكرونة مضلعة ممتازة (500غ)", price: 25000, oldPrice: 30000, discount: "-16%", rating: "4.8", sold: "340+", cat: "food", img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?w=300&auto=format&fit=crop&q=60"},
-            {id: 12, name: "طحين أبيض متعدد الاستعمالات (1كغ)", price: 30000, oldPrice: 35000, discount: "-14%", rating: "4.9", sold: "280+", cat: "food", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=60"},
-            {id: 13, name: "حليب مجفف كامل الدسم غني (900غ)", price: 140000, oldPrice: 160000, discount: "-12%", rating: "5.0", sold: "170+", cat: "drinks", img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&auto=format&fit=crop&q=60"},
-            {id: 14, name: "حمص حب ممتاز للطبخ (1كغ)", price: 55000, oldPrice: 65000, discount: "-15%", rating: "4.8", sold: "190+", cat: "food", img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
-            {id: 15, name: "ملح طعام نقي مكرر (1كغ)", price: 10000, oldPrice: 12000, discount: "-16%", rating: "4.9", sold: "800+", cat: "food", img: "https://images.unsplash.com/photo-1518110168401-f28423130775?w=300&auto=format&fit=crop&q=60"}
+            {id: 6, name: "شاي أحمر فاخر صندوق هدايا (500غ)", price: 75000, oldPrice: 85000, discount: "-12%", rating: "5.0", sold: "95+", cat: "drinks", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=60"}
         ];
 
         if (!localStorage.getItem("al_majd_ali_v7")) {
@@ -489,6 +497,12 @@
             document.getElementById("cart-count").innerText = totalQty;
         }
 
+        function togglePaymentInfo() {
+            let selectedMethod = document.querySelector('input[name="pay_method"]:checked').value;
+            let infoBox = document.getElementById("sham-cash-info");
+            infoBox.style.display = (selectedMethod === "sham_cash") ? "block" : "none";
+        }
+
         function openCart() {
             let list = document.getElementById("cart-items-list");
             list.innerHTML = "";
@@ -520,6 +534,7 @@
                 });
                 document.getElementById("cart-total").innerText = "المجموع الكلي: " + total.toLocaleString() + " ل.س";
             }
+            togglePaymentInfo();
             document.getElementById("cart-modal").style.display = "flex";
         }
 
@@ -542,6 +557,12 @@
 
         function sendWhatsAppOrder() {
             if(cart.length === 0) { alert("السلة فارغة!"); return; }
+
+            let selectedMethod = document.querySelector('input[name="pay_method"]:checked').value;
+            let methodText = (selectedMethod === "sham_cash") 
+                ? "📲 عبر شام كاش (تم تحويل/جاري تحويل المبلغ إلى +963992480155)" 
+                : "💵 نقداً عند الاستلام";
+
             let msg = "مرحباً متجر المجد إكسبرس (Al-Majd Express)، أرغب بطلب المنتجات التالية:\n\n";
             let total = 0;
             cart.forEach(item => {
@@ -549,8 +570,11 @@
                 msg += `- ${item.name} × ${item.qty} = ${sum.toLocaleString()} ل.س\n`;
                 total += sum;
             });
-            msg += `\nالمجموع الكلي للطلب: ${total.toLocaleString()} ل.س`;
-            window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+            
+            msg += `\n💰 المجموع الكلي: ${total.toLocaleString()} ل.س`;
+            msg += `\n💳 طريقة الدفع المختارة: ${methodText}`;
+            
+            window.open("https://wa.me/963992480155?text=" + encodeURIComponent(msg), "_blank");
         }
 
         function filterProducts() {
