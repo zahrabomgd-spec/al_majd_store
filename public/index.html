@@ -5,48 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بقالة المجد</title>
     <style>
-        body { font-family: sans-serif; background: #f8f9fa; margin: 0; padding: 15px; text-align: center; }
+        body { font-family: sans-serif; background: #f4f6f9; margin: 0; padding: 10px; text-align: center; }
         h1 { color: #2c3e50; margin-bottom: 5px; }
-        .container { max-width: 900px; margin: auto; }
+        .container { max-width: 1000px; margin: auto; }
         
-        /* أزرار التصنيفات */
-        .categories-bar { display: flex; justify-content: center; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
-        .cat-btn { background: #e2e8f0; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold; color: #4a5568; transition: 0.2s; }
-        .cat-btn.active, .cat-btn:hover { background: #3182ce; color: white; }
+        /* شريط التصنيفات */
+        .categories-bar { display: flex; justify-content: center; gap: 6px; margin: 15px 0; flex-wrap: wrap; }
+        .cat-btn { background: #e2e8f0; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; color: #4a5568; font-size: 0.9rem; transition: 0.2s; }
+        .cat-btn.active, .cat-btn:hover { background: #2b6cb0; color: white; }
 
-        /* الشبكة المرتبة */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; justify-content: center; margin-top: 15px; }
-        .card { background: white; border-radius: 10px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: right; display: flex; flex-direction: column; justify-content: space-between; }
-        .card img { width: 100%; height: 140px; object-fit: cover; border-radius: 6px; }
-        .card h3 { font-size: 1rem; margin: 8px 0 4px 0; color: #2d3748; }
-        .category-tag { font-size: 0.75rem; background: #edf2f7; color: #4a5568; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; width: fit-content; }
-        .price { color: #2f855a; font-weight: bold; font-size: 1.05rem; margin-bottom: 8px; }
+        /* الشبكة المنتظمة للمنتجات */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; justify-content: center; margin-top: 15px; }
+        .card { background: white; border-radius: 8px; padding: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); text-align: right; display: flex; flex-direction: column; justify-content: space-between; }
+        .card img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; }
+        .card h3 { font-size: 0.95rem; margin: 6px 0 2px 0; color: #2d3748; }
+        .category-tag { font-size: 0.7rem; background: #edf2f7; color: #4a5568; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 4px; }
+        .price { color: #27ae60; font-weight: bold; font-size: 1rem; margin-bottom: 6px; }
         
-        .btn-wa { display: block; background: #25D366; color: white; text-decoration: none; text-align: center; padding: 7px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
-        .action-row { display: flex; gap: 5px; margin-top: 5px; }
-        .btn-edit { background: #d69e2e; color: white; border: none; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; flex: 1; }
-        .btn-del { background: #e53e3e; color: white; border: none; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; flex: 1; }
+        .btn-wa { display: block; background: #25D366; color: white; text-decoration: none; text-align: center; padding: 6px; border-radius: 5px; font-weight: bold; font-size: 0.85rem; margin-bottom: 4px; }
+        .action-row { display: flex; gap: 4px; margin-top: 4px; }
+        .btn-edit { background: #d69e2e; color: white; border: none; padding: 4px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1; }
+        .btn-del { background: #e53e3e; color: white; border: none; padding: 4px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1; }
 
-        /* نموذج التعديل المخفي داخل البطاقة */
-        .edit-form { display: none; background: #fffaf0; padding: 10px; margin-top: 10px; border-radius: 6px; border: 1px solid #feebc8; font-size: 0.85rem; }
-        .edit-form input, .edit-form select { width: 100%; padding: 5px; margin-bottom: 5px; border-radius: 4px; border: 1px solid #cbd5e0; box-sizing: border-box; }
-        .btn-save { background: #38a169; color: white; border: none; width: 100%; padding: 6px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        /* نموذج التعديل المخفي */
+        .edit-form { display: none; background: #fffaf0; padding: 8px; margin-top: 8px; border-radius: 5px; border: 1px solid #feebc8; font-size: 0.8rem; text-align: right; }
+        .edit-form input, .edit-form select { width: 100%; padding: 4px; margin-bottom: 4px; border-radius: 4px; border: 1px solid #cbd5e0; box-sizing: border-box; }
+        .btn-save { background: #38a169; color: white; border: none; width: 100%; padding: 5px; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
-        /* لوحة التحكم */
-        .admin-section { background: white; padding: 15px; border-radius: 10px; margin-top: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: right; }
-        .admin-section h3 { margin-top: 0; color: #2c3e50; text-align: center; }
-        .form-group { margin-bottom: 10px; }
-        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 3px; color: #4a5568; }
-        input, select, button { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e0; box-sizing: border-box; }
-        .btn-submit { background: #3182ce; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        /* لوحة التحكم لإضافة منتج */
+        .admin-section { background: white; padding: 15px; border-radius: 8px; margin-top: 30px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); text-align: right; }
+        .admin-section h3 { margin-top: 0; color: #2c3e50; text-align: center; font-size: 1.1rem; }
+        .form-group { margin-bottom: 8px; }
+        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 2px; color: #4a5568; }
+        input, select, button { width: 100%; padding: 7px; border-radius: 5px; border: 1px solid #cbd5e0; box-sizing: border-box; font-size: 0.9rem; }
+        .btn-submit { background: #2b6cb0; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 8px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🛒 بقالة المجد</h1>
-        <p style="color: #718096; font-size: 0.9rem; margin-top:0;">تسوق أطيب المنتجات بكل سهولة</p>
+        <p style="color: #718096; font-size: 0.85rem; margin-top:0;">تسوق أفضل المنتجات بكل سهولة</p>
 
-        <!-- شريط التصنيفات -->
+        <!-- شريط الأصناف والتصنيفات -->
         <div class="categories-bar" id="categories-bar">
             <button class="cat-btn active" onclick="filterCategory('الكل', this)">الكل</button>
         </div>
@@ -54,7 +54,7 @@
         <!-- شبكة المنتجات -->
         <div class="grid" id="products-list"></div>
 
-        <!-- لوحة التحكم لإضافة منتج جديد -->
+        <!-- لوحة تحكم إضافة منتج -->
         <div class="admin-section">
             <h3>إضافة منتج جديد</h3>
             <form action="/add" method="POST" enctype="multipart/form-data">
@@ -133,7 +133,6 @@
                                 </form>
                             </div>
 
-                            <!-- فورم التعديل يفتح عند الضغط على زر تعديل -->
                             <div id="edit-form-${p.id}" class="edit-form">
                                 <form action="/update/${p.id}" method="POST" enctype="multipart/form-data">
                                     <input type="text" name="name" value="${p.name}" required placeholder="الاسم">
@@ -146,7 +145,7 @@
                                     </select>
                                     <input type="text" name="price" value="${p.price}" required placeholder="السعر">
                                     <input type="file" name="image" accept="image/*">
-                                    <button type="submit" class="btn-save">حفظ التعديل</button>
+                                    <button type="submit" class="btn-save">حفظ</button>
                                 </form>
                             </div>
                         </div>
