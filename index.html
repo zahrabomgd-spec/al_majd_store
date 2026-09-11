@@ -3,148 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بقالة المجد - Al-Majd Grocery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>بقالة المجد | Al-Majd Express</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0b4f34; --accent: #ff4747; --bg: #f4f6f8; --border: #e2e8f0; }
+        :root { 
+            --ali-red: #ff4747; 
+            --ali-dark-red: #e62e04;
+            --ali-orange: #ff6e00; 
+            --ali-bg: #f4f4f4; 
+            --ali-card-bg: #ffffff;
+            --ali-text: #222222;
+        }
         * { box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background-color: var(--bg); color: #2d3748; margin: 0; padding: 0; }
-        
+        body { background-color: var(--ali-bg); color: var(--ali-text); margin: 0; padding: 0; }
+
+        /* شريط العروض الأعلى */
+        .top-banner { background: linear-gradient(90deg, #ff4747, #ff6e00); color: white; text-align: center; font-size: 11px; font-weight: 700; padding: 5px 10px; }
+
         /* الهيدر الرئيسي */
-        header { background: #ffffff; border-bottom: 2px solid var(--primary); padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .store-brand { display: flex; flex-direction: column; }
-        .store-title { font-size: 19px; color: var(--primary); margin: 0; font-weight: 700; }
-        .store-subtitle { font-size: 11px; color: #718096; margin: 0; font-weight: 600; }
+        header { background: #ffffff; border-bottom: 1px solid #eee; padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-badge { background: var(--ali-red); color: white; font-size: 11px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .store-name { font-size: 20px; font-weight: 800; color: var(--ali-red); margin: 0; line-height: 1; }
+
         .header-actions { display: flex; align-items: center; gap: 10px; }
-        .cart-btn-head { background: var(--primary); color: white; border: none; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .dots-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: #4a5568; padding: 2px 6px; border-radius: 50%; }
-        
-        .container { max-width: 1200px; margin: 15px auto; padding: 0 12px; }
-        
-        /* شريط البحث */
-        .search-box { margin-bottom: 15px; }
-        .search-input { width: 100%; padding: 10px 15px; border: 1px solid var(--border); border-radius: 25px; font-size: 14px; outline: none; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .search-input:focus { border-color: var(--primary); }
+        .cart-btn { background: var(--ali-red); color: white; border: none; padding: 7px 15px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .cart-btn:hover { background: var(--ali-dark-red); }
+        .dots-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #555; padding: 2px 6px; border-radius: 50%; }
 
-        /* لوحة التحكم الإدارية */
-        .admin-panel { background: white; padding: 18px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: none; border-right: 5px solid var(--primary); }
-        .admin-panel h3 { margin-top: 0; color: var(--primary); font-size: 16px; }
-        .form-input { width: 100%; padding: 9px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
-        .btn-submit { background: var(--primary); color: white; border: none; width: 100%; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; }
-        .admin-item-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; font-size: 13px; border: 1px solid #edf2f7; }
-        .btn-del-admin { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .container { max-width: 1200px; margin: 15px auto; padding: 0 10px; }
 
-        /* شبكة المنتجات الـ 15 */
-        .section-title { font-size: 16px; font-weight: 700; margin: 10px 0 15px 0; color: #1a202c; border-right: 4px solid var(--primary); padding-right: 8px; }
+        /* شريط البحث النمط العصري */
+        .search-box { display: flex; margin-bottom: 15px; background: white; border: 2px solid var(--ali-red); border-radius: 25px; overflow: hidden; }
+        .search-input { flex: 1; border: none; padding: 10px 15px; font-size: 13px; outline: none; }
+        .search-btn { background: var(--ali-red); color: white; border: none; padding: 0 20px; font-weight: 700; cursor: pointer; font-size: 13px; }
+
+        /* تصنيفات سريعة */
+        .category-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
+        .chip { background: white; border: 1px solid #e5e5e5; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; white-space: nowrap; color: #555; }
+        .chip.active { background: #fff0f0; color: var(--ali-red); border-color: var(--ali-red); }
+
+        /* شبكة منتجات علي إكسبرس */
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .section-title { font-size: 17px; font-weight: 800; color: #111; display: flex; align-items: center; gap: 6px; }
+        .section-title::before { content: ''; width: 4px; height: 18px; background: var(--ali-red); border-radius: 2px; }
+
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        @media (min-width: 600px) { .products-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
-        @media (min-width: 900px) { .products-grid { grid-template-columns: repeat(5, 1fr); gap: 14px; } }
-        
-        .product-card { background: white; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
-        .product-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
-        .product-img-box { width: 100%; height: 135px; background: #fff; overflow: hidden; border-bottom: 1px solid var(--border); }
-        .product-img-box img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .product-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-title { font-size: 13px; color: #2d3748; margin: 0 0 6px 0; line-height: 1.4; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 36px; }
-        
-        .price-row { display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px; }
-        .currency { font-size: 10px; color: var(--primary); font-weight: 700; }
-        .price-amount { font-size: 15px; color: var(--primary); font-weight: 700; }
-        
-        .btn-buy { background: var(--primary); color: white; border: none; width: 100%; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; }
-        .btn-buy:active { opacity: 0.8; }
+        @media (min-width: 600px) { .products-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
+        @media (min-width: 900px) { .products-grid { grid-template-columns: repeat(5, 1fr); gap: 12px; } }
 
-        /* نافذة السلة (Modal) عند اضغط على أيقونة السلة */
+        .ali-card { background: var(--ali-card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #eaeaea; display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
+        .ali-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
+        
+        .discount-badge { position: absolute; top: 8px; right: 8px; background: var(--ali-red); color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; z-index: 2; }
+        
+        .product-img-box { width: 100%; height: 140px; background: #fff; overflow: hidden; position: relative; }
+        .product-img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .product-details { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-title { font-size: 12px; color: #333; margin: 0 0 6px 0; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 34px; }
+
+        .social-proof { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #777; margin-bottom: 6px; }
+        .stars { color: #ffb400; font-weight: 700; }
+
+        .tag-express { display: inline-block; background: #fff4e5; color: var(--ali-orange); font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; margin-bottom: 6px; width: fit-content; }
+
+        .price-container { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+        .main-price { color: var(--ali-red); font-size: 16px; font-weight: 800; }
+        .currency { font-size: 10px; color: var(--ali-red); font-weight: 700; }
+        .old-price { color: #999; font-size: 11px; text-decoration: line-through; }
+
+        .btn-add-cart { background: #fff0f0; color: var(--ali-red); border: 1px solid #ffcccc; width: 100%; padding: 7px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; transition: 0.2s; }
+        .btn-add-cart:hover { background: var(--ali-red); color: white; }
+
+        /* لوحة التحكم السرية */
+        .admin-panel { background: white; padding: 18px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: none; border-right: 5px solid var(--ali-red); }
+        .admin-panel h3 { margin-top: 0; color: var(--ali-red); font-size: 15px; }
+        .form-input { width: 100%; padding: 9px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+        .btn-submit { background: var(--ali-red); color: white; border: none; width: 100%; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+        .admin-item-row { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 8px 12px; margin-bottom: 6px; border-radius: 6px; font-size: 12px; border: 1px solid #eee; }
+        .btn-del-admin { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+
+        /* نافذة السلة */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; }
         .modal-card { background: white; width: 92%; max-width: 440px; border-radius: 12px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; padding-bottom: 10px; margin-bottom: 12px; }
-        .modal-header h3 { margin: 0; font-size: 16px; color: #1a202c; }
-        .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #a0aec0; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f7fafc; font-size: 13px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 12px; }
+        .modal-header h3 { margin: 0; font-size: 16px; color: #222; }
+        .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; font-size: 13px; }
         .qty-controls { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-        .qty-btn { background: #edf2f7; border: none; width: 22px; height: 22px; border-radius: 4px; font-weight: 700; cursor: pointer; }
-        .checkout-btn { background: #25d366; color: white; border: none; width: 100%; padding: 10px; border-radius: 8px; font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 14px; }
+        .qty-btn { background: #eee; border: none; width: 22px; height: 22px; border-radius: 4px; font-weight: 700; cursor: pointer; }
+        .checkout-btn { background: #25d366; color: white; border: none; width: 100%; padding: 11px; border-radius: 20px; font-weight: 700; margin-top: 15px; cursor: pointer; font-size: 14px; }
 
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #2d3748; color: white; padding: 9px 18px; border-radius: 25px; font-size: 12px; display: none; z-index: 3000; }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; color: white; padding: 9px 20px; border-radius: 25px; font-size: 12px; display: none; z-index: 3000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
+    <div class="top-banner">🔥 عروض علي إكسبرس الفائقة - شحن وسرعة في التوصيل ⚡</div>
+
     <header>
-        <div class="store-brand">
-            <h1 class="store-title">بقالة المجد</h1>
-            <p class="store-subtitle">Al-Majd Store</p>
-        </div>
-        <div class="header-actions">
-            <button class="cart-btn-head" onclick="openCart()">🛒 <span id="cart-count">0</span></button>
-            <button class="dots-btn" onclick="openAdmin()" title="الإدارة">⋮</button>
+        <div class="header-container">
+            <div class="logo-area">
+                <span class="logo-badge">EXPRESS</span>
+                <h1 class="store-name">بقالة المجد</h1>
+            </div>
+            <div class="header-actions">
+                <button class="cart-btn" onclick="openCart()">🛒 السلة (<span id="cart-count">0</span>)</button>
+                <button class="dots-btn" onclick="openAdmin()" title="الإدارة">⋮</button>
+            </div>
         </div>
     </header>
 
     <div class="container">
-        <!-- شريط البحث السريع -->
+        <!-- شريط البحث -->
         <div class="search-box">
-            <input type="text" id="search-input" class="search-input" placeholder="🔍 ابحث عن أي منتج (سكر، سمنة، زيت...)" oninput="filterProducts()">
+            <input type="text" id="search-input" class="search-input" placeholder="ابحث في بقالة المجد (أرز، زيت، سكر...)" oninput="filterProducts()">
+            <button class="search-btn" onclick="filterProducts()">بحث</button>
+        </div>
+
+        <!-- أوسمة التصنيفات -->
+        <div class="category-chips">
+            <div class="chip active">🔥 العروض الكبرى</div>
+            <div class="chip">المواد الغذائية</div>
+            <div class="chip">الزيوت والسمنة</div>
+            <div class="chip">الحبوب والبقوليات</div>
+            <div class="chip">المشروبات والمعلبات</div>
         </div>
 
         <!-- لوحة الإدارة المخفية -->
         <div id="admin-panel" class="admin-panel">
-            <h3>لوحة إدارة المتجر</h3>
+            <h3>⚙️ لوحة إدارة المتجر والتعديل</h3>
             <input type="text" id="p-name" class="form-input" placeholder="اسم المنتج...">
-            <input type="number" id="p-price" class="form-input" placeholder="السعر (ل.س)...">
+            <input type="number" id="p-price" class="form-input" placeholder="السعر الخالي (ل.س)...">
             <input type="text" id="p-img" class="form-input" placeholder="رابط الصورة (اختياري)...">
-            <button class="btn-submit" onclick="addProduct()">إضافة للمتجر</button>
+            <button class="btn-submit" onclick="addProduct()">نشر المنتج في المتجر</button>
             
-            <h4 style="margin: 15px 0 8px 0; font-size: 13px; color: #4a5568;">قائمة المنتجات (حذف):</h4>
+            <h4 style="margin: 15px 0 8px 0; font-size: 13px; color: #555;">حذف المنتجات الحالية:</h4>
             <div id="admin-products-list"></div>
         </div>
 
-        <div class="section-title">جميع المنتجات المتوفرة</div>
+        <div class="section-header">
+            <div class="section-title">التخفيضات الممتازة الأسبوعية</div>
+        </div>
         <div id="products-list" class="products-grid"></div>
     </div>
 
-    <!-- نافذة عرض سلة المشتريات -->
+    <!-- نافذة السلة الاحترافية -->
     <div id="cart-modal" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>🛍️ المنتجات في السلة</h3>
+                <h3>🛍️ سلة التسوق (Al-Majd Express)</h3>
                 <button class="close-btn" onclick="closeCart()">✕</button>
             </div>
             <div id="cart-items-list"></div>
-            <div id="cart-total" style="font-weight:700; font-size:15px; margin-top:12px; text-align:left; color:var(--primary);">المجموع: 0 ل.س</div>
-            <button class="checkout-btn" onclick="sendWhatsAppOrder()">إرسال الطلب عبر واتساب 📱</button>
+            <div id="cart-total" style="font-weight:800; font-size:16px; margin-top:14px; text-align:left; color:var(--ali-red);">المجموع: 0 ل.س</div>
+            <button class="checkout-btn" onclick="sendWhatsAppOrder()">إتمام الطلب عبر واتساب 📱</button>
         </div>
     </div>
 
-    <div id="toast">تمت الإضافة إلى السلة بنجاح</div>
+    <div id="toast">تمت إضافة المنتج إلى السلة 🛒</div>
 
     <script>
-        // قائمة الـ 15 منتجاً الأساسية
-        const initial15Products = [
-            {id: 1, name: "سكر أبيض ممتاز (1كغ)", price: 45000, img: "https://images.unsplash.com/photo-1581441363689-1f3c3c34254c?w=300&auto=format&fit=crop&q=60"},
-            {id: 2, name: "سمنة بلدي فاخرة (1كغ)", price: 120000, img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&auto=format&fit=crop&q=60"},
-            {id: 3, name: "زيت زيتون بكر ممتاز (1 ليتر)", price: 85000, img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&auto=format&fit=crop&q=60"},
-            {id: 4, name: "عدس حب طازج (1كغ)", price: 50000, img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
-            {id: 5, name: "أرز إسباني فاخر (1كغ)", price: 65000, img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&auto=format&fit=crop&q=60"},
-            {id: 6, name: "شاي أحمر فاخر (500غ)", price: 75000, img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=60"},
-            {id: 7, name: "بن عربي مع هيل (250غ)", price: 60000, img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&auto=format&fit=crop&q=60"},
-            {id: 8, name: "معجون طماطم مركز (800غ)", price: 35000, img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&auto=format&fit=crop&q=60"},
-            {id: 9, name: "زيت عباد الشمس نقي (1 ليتر)", price: 55000, img: "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=300&auto=format&fit=crop&q=60"},
-            {id: 10, name: "برغل ناعم طازج (1كغ)", price: 40000, img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&auto=format&fit=crop&q=60"},
-            {id: 11, name: "معكرونة أشكال متنوعة (500غ)", price: 25000, img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?w=300&auto=format&fit=crop&q=60"},
-            {id: 12, name: "طحين أبيض فاخر (1كغ)", price: 30000, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=60"},
-            {id: 13, name: "حليب مجفف كامل الدسم (900غ)", price: 140000, img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&auto=format&fit=crop&q=60"},
-            {id: 14, name: "حمص حب ممتاز (1كغ)", price: 55000, img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
-            {id: 15, name: "ملح طعام نقي (1كغ)", price: 10000, img: "https://images.unsplash.com/photo-1518110168401-f28423130775?w=300&auto=format&fit=crop&q=60"}
+        const initialProducts = [
+            {id: 1, name: "سكر أبيض ممتاز عالي الجودة (1كغ)", price: 45000, oldPrice: 52000, discount: "-13%", rating: "4.9", sold: "240+", img: "https://images.unsplash.com/photo-1581441363689-1f3c3c34254c?w=300&auto=format&fit=crop&q=60"},
+            {id: 2, name: "سمنة بلدي صافية فاخرة (1كغ)", price: 120000, oldPrice: 135000, discount: "-11%", rating: "5.0", sold: "180+", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&auto=format&fit=crop&q=60"},
+            {id: 3, name: "زيت زيتون بكر ممتاز عصرة أولى (1L)", price: 85000, oldPrice: 98000, discount: "-15%", rating: "4.8", sold: "310+", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&auto=format&fit=crop&q=60"},
+            {id: 4, name: "عدس حب طازج منتقى بعناية (1كغ)", price: 50000, oldPrice: 58000, discount: "-14%", rating: "4.7", sold: "150+", img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
+            {id: 5, name: "أرز إسباني فاخر طويل الحبة (1كغ)", price: 65000, oldPrice: 75000, discount: "-13%", rating: "4.9", sold: "420+", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&auto=format&fit=crop&q=60"},
+            {id: 6, name: "شاي أحمر فاخر صندوق هدايا (500غ)", price: 75000, oldPrice: 85000, discount: "-12%", rating: "5.0", sold: "95+", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=60"},
+            {id: 7, name: "بن عربي مع هيل مطحون طازج (250غ)", price: 60000, oldPrice: 70000, discount: "-14%", rating: "4.9", sold: "210+", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300&auto=format&fit=crop&q=60"},
+            {id: 8, name: "معجون طماطم مركز مضاعف (800غ)", price: 35000, oldPrice: 42000, discount: "-16%", rating: "4.6", sold: "530+", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=300&auto=format&fit=crop&q=60"},
+            {id: 9, name: "زيت عباد الشمس نقي للقلي (1 ليتر)", price: 55000, oldPrice: 62000, discount: "-11%", rating: "4.8", sold: "600+", img: "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=300&auto=format&fit=crop&q=60"},
+            {id: 10, name: "برغل ناعم أشقر طازج (1كغ)", price: 40000, oldPrice: 46000, discount: "-13%", rating: "4.7", sold: "110+", img: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&auto=format&fit=crop&q=60"},
+            {id: 11, name: "معكرونة مضلعة ممتازة (500غ)", price: 25000, oldPrice: 30000, discount: "-16%", rating: "4.8", sold: "340+", img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?w=300&auto=format&fit=crop&q=60"},
+            {id: 12, name: "طحين أبيض متعدد الاستعمالات (1كغ)", price: 30000, oldPrice: 35000, discount: "-14%", rating: "4.9", sold: "280+", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=60"},
+            {id: 13, name: "حليب مجفف كامل الدسم غني (900غ)", price: 140000, oldPrice: 160000, discount: "-12%", rating: "5.0", sold: "170+", img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&auto=format&fit=crop&q=60"},
+            {id: 14, name: "حمص حب ممتاز للطبخ (1كغ)", price: 55000, oldPrice: 65000, discount: "-15%", rating: "4.8", sold: "190+", img: "https://images.unsplash.com/photo-1515543956279-b1c2d966ac4d?w=300&auto=format&fit=crop&q=60"},
+            {id: 15, name: "ملح طعام نقي مكرر (1كغ)", price: 10000, oldPrice: 12000, discount: "-16%", rating: "4.9", sold: "800+", img: "https://images.unsplash.com/photo-1518110168401-f28423130775?w=300&auto=format&fit=crop&q=60"}
         ];
 
-        if (!localStorage.getItem("al_majd_v5_items")) {
-            localStorage.setItem("al_majd_v5_items", JSON.stringify(initial15Products));
+        if (!localStorage.getItem("al_majd_ali_v6")) {
+            localStorage.setItem("al_majd_ali_v6", JSON.stringify(initialProducts));
         }
 
-        let cart = JSON.parse(localStorage.getItem("al_majd_cart_data")) || [];
+        let cart = JSON.parse(localStorage.getItem("al_majd_ali_cart")) || [];
         updateCartBadge();
 
         function openAdmin() {
@@ -164,35 +209,39 @@
             let img = document.getElementById("p-img").value.trim();
             if(!name || !price) { alert("يرجى إدخال اسم المنتج والسعر"); return; }
 
-            let products = JSON.parse(localStorage.getItem("al_majd_v5_items")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
             products.unshift({
                 id: Date.now(),
                 name: name,
                 price: Number(price),
+                oldPrice: Math.round(Number(price) * 1.15),
+                discount: "-15%",
+                rating: "5.0",
+                sold: "1+",
                 img: img || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&auto=format&fit=crop&q=60"
             });
-            localStorage.setItem("al_majd_v5_items", JSON.stringify(products));
+            localStorage.setItem("al_majd_ali_v6", JSON.stringify(products));
             
             document.getElementById("p-name").value = "";
             document.getElementById("p-price").value = "";
             document.getElementById("p-img").value = "";
             renderProducts();
             renderAdminList();
-            alert("تمت الإضافة بنجاح!");
+            alert("تم إدراج المنتج بنجاح!");
         }
 
         function deleteProduct(id) {
             if(confirm("هل تريد حذف هذا المنتج؟")) {
-                let products = JSON.parse(localStorage.getItem("al_majd_v5_items")) || [];
+                let products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
                 products = products.filter(p => p.id !== id);
-                localStorage.setItem("al_majd_v5_items", JSON.stringify(products));
+                localStorage.setItem("al_majd_ali_v6", JSON.stringify(products));
                 renderProducts();
                 renderAdminList();
             }
         }
 
         function addToCart(id) {
-            let products = JSON.parse(localStorage.getItem("al_majd_v5_items")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
             let item = products.find(p => p.id === id);
             if(!item) return;
 
@@ -210,7 +259,7 @@
         }
 
         function saveCart() {
-            localStorage.setItem("al_majd_cart_data", JSON.stringify(cart));
+            localStorage.setItem("al_majd_ali_cart", JSON.stringify(cart));
             updateCartBadge();
         }
 
@@ -224,7 +273,7 @@
             list.innerHTML = "";
 
             if(cart.length === 0) {
-                list.innerHTML = "<p style='text-align:center; color:#718096; padding:20px;'>سلة المشتريات فارغة حالياً</p>";
+                list.innerHTML = "<p style='text-align:center; color:#888; padding:20px;'>سلة التسوق فارغة حالياً</p>";
                 document.getElementById("cart-total").innerText = "المجموع: 0 ل.س";
             } else {
                 let total = 0;
@@ -242,7 +291,7 @@
                                 </div>
                             </div>
                             <div style="text-align:left;">
-                                <div style="font-weight:700; color:var(--primary);">${subTotal.toLocaleString()} ل.س</div>
+                                <div style="font-weight:800; color:var(--ali-red);">${subTotal.toLocaleString()} ل.س</div>
                                 <button onclick="removeCartItem(${index})" style="background:none; border:none; color:#e53e3e; font-size:11px; cursor:pointer; padding:0;">حذف</button>
                             </div>
                         </div>
@@ -255,9 +304,7 @@
 
         function changeQty(index, delta) {
             cart[index].qty += delta;
-            if(cart[index].qty <= 0) {
-                cart.splice(index, 1);
-            }
+            if(cart[index].qty <= 0) cart.splice(index, 1);
             saveCart();
             openCart();
         }
@@ -274,51 +321,58 @@
 
         function sendWhatsAppOrder() {
             if(cart.length === 0) { alert("السلة فارغة!"); return; }
-            let msg = "مرحباً بقالة المجد، أرغب بطلب المنتجات التالية:\n\n";
+            let msg = "مرحباً بقالة المجد (Al-Majd Express)، أرغب بطلب المنتجات التالية:\n\n";
             let total = 0;
             cart.forEach(item => {
                 let sum = item.price * item.qty;
                 msg += `- ${item.name} × ${item.qty} = ${sum.toLocaleString()} ل.س\n`;
                 total += sum;
             });
-            msg += `\nالمجموع الكلي: ${total.toLocaleString()} ل.س`;
+            msg += `\nالمجموع الكلي للطلب: ${total.toLocaleString()} ل.س`;
             window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
         }
 
         function filterProducts() {
             let query = document.getElementById("search-input").value.toLowerCase();
-            let products = JSON.parse(localStorage.getItem("al_majd_v5_items")) || [];
+            let products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
             let filtered = products.filter(p => p.name.toLowerCase().includes(query));
             renderProducts(filtered);
         }
 
         function renderProducts(itemsToRender = null) {
-            const products = itemsToRender || JSON.parse(localStorage.getItem("al_majd_v5_items")) || [];
+            const products = itemsToRender || JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
             const container = document.getElementById("products-list");
             container.innerHTML = "";
 
             if(products.length === 0) {
-                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #718096; padding: 20px;'>لا توجد منتجات مطابقة للبحث.</p>";
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888; padding: 20px;'>لا توجد منتجات مطابقة للبحث.</p>";
                 return;
             }
 
             products.forEach(p => {
                 container.innerHTML += `
-                    <div class="product-card">
+                    <div class="ali-card">
+                        <span class="discount-badge">${p.discount || '-10%'}</span>
                         <div>
                             <div class="product-img-box">
                                 <img src="${p.img}" alt="${p.name}">
                             </div>
-                            <div class="product-info">
+                            <div class="product-details">
                                 <div class="product-title">${p.name}</div>
-                                <div class="price-row">
-                                    <span class="price-amount">${p.price.toLocaleString()}</span>
+                                <div class="social-proof">
+                                    <span class="stars">★ ${p.rating || '4.9'}</span>
+                                    <span>| تم بيع ${p.sold || '100+'}</span>
+                                </div>
+                                <span class="tag-express">توصيل سريع ⚡</span>
+                                <div class="price-container">
+                                    <span class="main-price">${p.price.toLocaleString()}</span>
                                     <span class="currency">ل.س</span>
+                                    ${p.oldPrice ? `<span class="old-price">${p.oldPrice.toLocaleString()}</span>` : ''}
                                 </div>
                             </div>
                         </div>
                         <div style="padding: 0 10px 10px 10px;">
-                            <button class="btn-buy" onclick="addToCart(${p.id})">إضافة للسلة</button>
+                            <button class="btn-add-cart" onclick="addToCart(${p.id})">إضافة للسلة 🛒</button>
                         </div>
                     </div>
                 `;
@@ -326,7 +380,7 @@
         }
 
         function renderAdminList() {
-            const products = JSON.parse(localStorage.getItem("al_majd_v5_items")) || [];
+            const products = JSON.parse(localStorage.getItem("al_majd_ali_v6")) || [];
             const container = document.getElementById("admin-products-list");
             container.innerHTML = "";
             products.forEach(p => {
