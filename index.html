@@ -304,5 +304,19 @@
 
         loadData();
     </script>
+
+<script>
+// المنتجات الأساسية لبارز بقالة المجد
+if (!localStorage.getItem("products")) {
+    const initialProducts = [
+        {id: 1, name: "سكر أبيض ممتاز (1كغ)", price: 45000, category: "مواد جافة", image: "https://via.placeholder.com/300?text=Sugar"},
+        {id: 2, name: "سمنة بلدي فاخرة", price: 120000, category: "زيوت وألبان", image: "https://via.placeholder.com/300?text=Ghee"},
+        {id: 3, name: "زيت زیتون بكر ممتاز", price: 85000, category: "زيوت وألبان", image: "https://via.placeholder.com/300?text=Olive+Oil"},
+        {id: 4, name: "عدس حب طازج (1كغ)", price: 50000, category: "حبوب وبقوليات", image: "https://via.placeholder.com/300?text=Lentils"}
+    ];
+    localStorage.setItem("products", JSON.stringify(initialProducts));
+}
+</script>
+
 </body>
 </html>
