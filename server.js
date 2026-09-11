@@ -25,7 +25,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// جلب المنتجات
 app.get('/products', (req, res) => {
     fs.readFile('products.json', 'utf8', (err, data) => {
         if (err) return res.json([]);
@@ -33,7 +32,6 @@ app.get('/products', (req, res) => {
     });
 });
 
-// إضافة منتج جديد
 app.post('/add', upload.single('image'), (req, res) => {
     const { name, price } = req.body;
     const newProduct = {
@@ -52,7 +50,6 @@ app.post('/add', upload.single('image'), (req, res) => {
     });
 });
 
-// تعديل منتج
 app.post('/update/:id', upload.single('image'), (req, res) => {
     const productId = req.params.id;
     const { name, price } = req.body;
@@ -77,7 +74,6 @@ app.post('/update/:id', upload.single('image'), (req, res) => {
     });
 });
 
-// حذف منتج
 app.post('/delete/:id', (req, res) => {
     const productId = req.params.id;
     fs.readFile('products.json', 'utf8', (err, data) => {
