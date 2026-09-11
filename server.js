@@ -33,11 +33,12 @@ app.get('/products', (req, res) => {
 });
 
 app.post('/add', upload.single('image'), (req, res) => {
-    const { name, price } = req.body;
+    const { name, price, category } = req.body;
     const newProduct = {
         id: Date.now().toString(),
         name,
         price,
+        category: category || 'عام',
         image: req.file ? '/uploads/' + req.file.filename : ''
     };
 
@@ -52,7 +53,7 @@ app.post('/add', upload.single('image'), (req, res) => {
 
 app.post('/update/:id', upload.single('image'), (req, res) => {
     const productId = req.params.id;
-    const { name, price } = req.body;
+    const { name, price, category } = req.body;
 
     fs.readFile('products.json', 'utf8', (err, data) => {
         if (err) return res.status(500).send('Error');
@@ -62,6 +63,7 @@ app.post('/update/:id', upload.single('image'), (req, res) => {
         if (index !== -1) {
             products[index].name = name || products[index].name;
             products[index].price = price || products[index].price;
+            products[index].category = category || products[index].category;
             if (req.file) {
                 products[index].image = '/uploads/' + req.file.filename;
             }
