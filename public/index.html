@@ -1,601 +1,160 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بقالة المجد | Al-Majd Grocery</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <style>
-    :root {
-      --primary: #10b981;
-      --primary-hover: #059669;
-      --accent: #2563eb;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --danger: #ef4444;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 110px; }
-
-    header {
-      background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
-      color: white;
-      padding: 16px 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand i { font-size: 1.8rem; color: #34d399; }
-    .brand h1 { font-size: 1.5rem; font-weight: 800; }
-
-    .admin-btn {
-      background: rgba(255, 255, 255, 0.12);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      backdrop-filter: blur(5px);
-      transition: all 0.3s;
-      font-weight: 600;
-    }
-    .admin-btn:hover { background: rgba(255, 255, 255, 0.25); }
-
-    .main-container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-
-    .filter-section {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      padding: 12px 15px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-    .filter-chip {
-      padding: 8px 18px;
-      border-radius: 20px;
-      background: #f1f5f9;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .filter-chip.active, .filter-chip:hover {
-      background: var(--primary);
-      color: white;
-    }
-
-    /* شبكة المنتجات بكامل العرض */
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
-    }
-    @media (max-width: 576px) {
-      .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-    }
-
-    .product-card {
-      background: var(--card-bg);
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      transition: all 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.06);
-    }
-    .product-img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      background: #f1f5f9;
-    }
-    @media (max-width: 576px) {
-      .product-img { height: 130px; }
-    }
-    .badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(2, 44, 34, 0.8);
-      color: white;
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 0.7rem;
-      backdrop-filter: blur(4px);
-    }
-    .product-details { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; }
-    .product-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
-    .product-price { font-size: 1.1rem; color: var(--primary); font-weight: 800; margin-top: auto; padding-top: 8px; }
-    
-    .card-actions { display: flex; gap: 6px; margin-top: 10px; }
-    
-    /* أزرار التحكم بالكمية داخل بطاقة المنتج */
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      background: #f1f5f9;
-      border-radius: 8px;
-      padding: 4px;
-    }
-    .btn-qty {
-      background: var(--primary);
-      color: white;
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .btn-qty.minus { background: #cbd5e1; color: var(--text); }
-    .btn-qty.minus:hover { background: #94a3b8; }
-    .btn-qty:hover { background: var(--primary-hover); }
-    .qty-num { font-weight: 800; font-size: 1rem; color: var(--text); }
-
-    .btn-cart {
-      flex: 1;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 9px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 0.85rem;
-    }
-    .btn-cart:hover { background: var(--primary-hover); }
-    .btn-delete-prod {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(254, 226, 226, 0.9);
-      color: var(--danger);
-      border: none;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* الشريط العائم لسلة المشتريات بالأسفل */
-    .floating-cart-bar {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 600px;
-      background: #022c22;
-      color: white;
-      padding: 14px 20px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      display: none; /* مخفية افتراضياً */
-      justify-content: space-between;
-      align-items: center;
-      z-index: 150;
-      animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp {
-      from { transform: translate(-50%, 100%); opacity: 0; }
-      to { transform: translate(-50%, 0); opacity: 1; }
-    }
-    .cart-summary { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-    .cart-badge-icon {
-      position: relative;
-      background: var(--primary);
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
-    .cart-count-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: var(--danger);
-      color: white;
-      font-size: 0.75rem;
-      font-weight: bold;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .view-cart-btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .view-cart-btn:hover { background: var(--primary-hover); }
-
-    /* النافذة المنبثقة للسلة (Modal) */
-    .cart-modal-content {
-      background: white;
-      padding: 25px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 500px;
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .cart-items-list {
-      overflow-y: auto;
-      max-height: 50vh;
-      margin: 15px 0;
-    }
-    .cart-modal-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 25px;
-      border-radius: 18px;
-      width: 90%;
-      max-width: 450px;
-    }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.85rem; }
-    .form-group input {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      outline: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بقالة المجد</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 15px; text-align: center; color: #333; }
+        h1 { color: #2c3e50; margin-bottom: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        
+        .grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-bottom: 30px; }
+        .card { background: white; border-radius: 10px; padding: 15px; width: 220px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
+        .card img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; }
+        .price { color: #27ae60; font-weight: bold; font-size: 1.1em; margin: 8px 0; }
+        
+        .btn-add-cart { background: #e67e22; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        .btn-add-cart:hover { background: #d35400; }
+        
+        .cart-section { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 30px; text-align: right; border: 2px solid #27ae60; }
+        .cart-title { font-size: 1.3em; font-weight: bold; color: #27ae60; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #eee; }
+        .btn-remove { background: #e74c3c; color: white; border: none; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        .btn-send-wa { display: block; width: 100%; background: #25D366; color: white; text-align: center; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1.1em; margin-top: 15px; border: none; cursor: pointer; }
+        
+        .admin-section { background: #eef2f5; padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #dcdfe6; }
+        input, button { margin: 5px; padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
+        .btn-edit { background: #f39c12; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        .btn-delete { background: #c0392b; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        .edit-form { display: none; background: #fff8e7; padding: 10px; margin-top: 10px; border-radius: 6px; text-align: right; }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>🛒 بقالة المجد</h1>
 
-  <header>
-    <div class="brand">
-      <i class="fa-solid fa-basket-shopping"></i>
-      <h1>بقالة المجد</h1>
-    </div>
-    <button class="admin-btn" onclick="openAdminModal()">
-      <i class="fa-solid fa-lock"></i> لوحة التحكم
-    </button>
-  </header>
-
-  <div class="main-container">
-    <div class="filter-section" id="categoriesContainer">
-      <span class="filter-chip active" onclick="filterCategory('ALL', this)">الكل</span>
-    </div>
-
-    <!-- شبكة المنتجات -->
-    <div class="products-grid" id="productList"></div>
-  </div>
-
-  <!-- الشريط السفلي العائم للسلة (يظهر فقط عند إضافة منتجات) -->
-  <div class="floating-cart-bar" id="floatingCartBar">
-    <div class="cart-summary" onclick="openCartModal()">
-      <div class="cart-badge-icon">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <span class="cart-count-badge" id="floatingCartCount">0</span>
-      </div>
-      <div>
-        <div style="font-size:0.8rem; color:#a7f3d0;">الإجمالي</div>
-        <div style="font-weight:800; font-size:1.1rem;" id="floatingCartTotal">0 ل.س</div>
-      </div>
-    </div>
-    <button class="view-cart-btn" onclick="openCartModal()">
-      عرض السلة والإرسال <i class="fa-solid fa-arrow-left"></i>
-    </button>
-  </div>
-
-  <!-- نافذة تفاصيل السلة عند الضغط عليها -->
-  <div class="modal" id="cartModal">
-    <div class="cart-modal-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--bg); padding-bottom:12px;">
-        <h3><i class="fa-solid fa-cart-shopping" style="color:var(--primary);"></i> سلة المشتريات</h3>
-        <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.2rem;" onclick="closeCartModal()"></i>
-      </div>
-      
-      <div class="cart-items-list" id="cartModalItems"></div>
-
-      <div style="border-top:2px solid var(--bg); padding-top:12px; margin-top:auto;">
-        <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:800; margin-bottom:15px;">
-          <span>المجموع الكلي:</span>
-          <span id="modalCartTotal" style="color:var(--primary);">0 ل.س</span>
-        </div>
-        <button class="view-cart-btn" style="width:100%; justify-content:center; background:#25D366; padding:12px;" onclick="sendWhatsAppOrder()">
-          <i class="fa-brands fa-whatsapp fa-lg"></i> إرسال الطلب عبر الواتساب
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- لوحة التحكم للإضافة -->
-  <div class="modal" id="adminModal">
-    <div class="modal-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h3>إضافة منتج جديد</h3>
-        <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeAdminModal()"></i>
-      </div>
-      <form id="addForm">
-        <div class="form-group">
-          <label>كلمة سر المسؤول:</label>
-          <input type="password" id="adminPass" placeholder="أدخل كلمة السر" required>
-        </div>
-        <div class="form-group">
-          <label>اسم المنتج:</label>
-          <input type="text" id="pName" placeholder="مثال: زيت زيتون" required>
-        </div>
-        <div class="form-group">
-          <label>الصنف:</label>
-          <input type="text" id="pCategory" placeholder="مثال: معلبات، مشروبات..." required>
-        </div>
-        <div class="form-group">
-          <label>السعر (بالليرة السورية):</label>
-          <input type="number" id="pPrice" placeholder="مثال: 45000" required>
-        </div>
-        <div class="form-group">
-          <label>صورة المنتج:</label>
-          <input type="file" id="pImage" accept="image/*" required>
-        </div>
-        <button type="submit" class="btn-cart" style="width:100%; margin-top:10px;">
-          <i class="fa-solid fa-plus"></i> نشر المنتج
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    let allProducts = [];
-    let cart = {}; // تخزين بأسلوب { productId: quantity }
-    let currentCategory = 'ALL';
-    const ADMIN_PASSWORD = "123";
-    const MY_WHATSAPP_NUMBER = "963900000000";
-
-    async function fetchProducts() {
-      const res = await fetch('/api/products');
-      allProducts = await res.json();
-      renderCategories();
-      renderProducts();
-    }
-
-    function renderCategories() {
-      const categories = ['ALL', ...new Set(allProducts.map(p => p.category))];
-      const container = document.getElementById('categoriesContainer');
-      container.innerHTML = categories.map(cat => `
-        <span class="filter-chip ${cat === currentCategory ? 'active' : ''}" onclick="filterCategory('${cat}', this)">
-          ${cat === 'ALL' ? 'الكل' : cat}
-        </span>
-      `).join('');
-    }
-
-    function filterCategory(cat, el) {
-      currentCategory = cat;
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-      renderProducts();
-    }
-
-    function renderProducts() {
-      const list = document.getElementById('productList');
-      const filtered = currentCategory === 'ALL' ? allProducts : allProducts.filter(p => p.category === currentCategory);
-      if(filtered.length === 0) {
-        list.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:30px;">لا توجد منتجات في هذا الصنف حالياً.</p>`;
-        return;
-      }
-
-      list.innerHTML = filtered.map(p => {
-        const qty = cart[p.id] || 0;
-        return `
-          <div class="product-card">
-            <span class="badge">${p.category}</span>
-            <button class="btn-delete-prod" onclick="deleteProduct(${p.id})" title="حذف المنتج">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-            <img class="product-img" src="${p.image}" alt="${p.name}">
-            <div class="product-details">
-              <div class="product-title">${p.name}</div>
-              <div class="product-price">${p.price.toLocaleString()} ل.س</div>
-              <div class="card-actions">
-                ${qty === 0 ? `
-                  <button class="btn-cart" onclick="updateQty(${p.id}, 1)">
-                    <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
-                  </button>
-                ` : `
-                  <div class="qty-controls">
-                    <button class="btn-qty minus" onclick="updateQty(${p.id}, -1)">-</button>
-                    <span class="qty-num">${qty}</span>
-                    <button class="btn-qty" onclick="updateQty(${p.id}, 1)">+</button>
-                  </div>
-                `}
-              </div>
+        <!-- قسم سلة التسوق -->
+        <div class="cart-section">
+            <div class="cart-title">🛒 سلة المشتريات (<span id="cart-count">0</span>)</div>
+            <div id="cart-items">
+                <p style="text-align: center; color: #888;">السلة فارغة حالياً، اضغط "إضافة للسلة" لتجميع أغراضك.</p>
             </div>
-          </div>
-        `;
-      }).join('');
-    }
+            <button onclick="sendOrderToWhatsApp()" class="btn-send-wa">📲 إرسال الطلب الكلي عبر الواتساب</button>
+        </div>
 
-    function updateQty(id, change) {
-      if (!cart[id]) cart[id] = 0;
-      cart[id] += change;
-      if (cart[id] <= 0) {
-        delete cart[id];
-      }
-      renderProducts();
-      updateCartUI();
-    }
+        <!-- عرض المنتجات -->
+        <h2 style="text-align: right; color: #34495e;">المنتجات المتاحة:</h2>
+        <div class="grid" id="products-list"></div>
 
-    function updateCartUI() {
-      let totalCount = 0;
-      let totalPrice = 0;
+        <!-- لوحة التحكم الإدارية -->
+        <div class="admin-section">
+            <h3 style="margin-top: 0;">🔧 لوحة التحكم (إضافة منتج جديد)</h3>
+            <form action="/add" method="POST" enctype="multipart/form-data">
+                <input type="text" name="name" placeholder="اسم المنتج" required>
+                <input type="text" name="price" placeholder="السعر" required>
+                <input type="file" name="image" accept="image/*" required>
+                <button type="submit" style="background:#2980b9; color:white; font-weight:bold;">إضافة للمتجر</button>
+            </form>
+        </div>
+    </div>
 
-      for (const [id, qty] of Object.entries(cart)) {
-        const prod = allProducts.find(p => p.id == id);
-        if (prod) {
-          totalCount += qty;
-          totalPrice += prod.price * qty;
+    <script>
+        const phone = "963992480155";
+        let cart = [];
+
+        async function loadProducts() {
+            const res = await fetch('/products');
+            const products = await res.json();
+            const list = document.getElementById('products-list');
+            list.innerHTML = '';
+
+            products.forEach(p => {
+                list.innerHTML += `
+                    <div class="card">
+                        <div>
+                            <img src="${p.image || 'https://via.placeholder.com/150'}" alt="${p.name}">
+                            <h3 style="margin: 10px 0 5px 0;">${p.name}</h3>
+                            <div class="price">${p.price}</div>
+                        </div>
+                        
+                        <div>
+                            <button class="btn-add-cart" onclick="addToCart('${p.name}', '${p.price}')">🛒 إضافة للسلة</button>
+                            
+                            <div style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px;">
+                                <button class="btn-edit" onclick="toggleEdit('${p.id}')">تعديل</button>
+                                <form action="/delete/${p.id}" method="POST" style="display:inline;">
+                                    <button class="btn-delete" onclick="return confirm('هل أنت تأكد من الحذف؟')">حذف</button>
+                                </form>
+                            </div>
+
+                            <div id="edit-${p.id}" class="edit-form">
+                                <form action="/update/${p.id}" method="POST" enctype="multipart/form-data">
+                                    <input type="text" name="name" value="${p.name}" placeholder="الاسم الجديد" style="width: 90%;">
+                                    <input type="text" name="price" value="${p.price}" placeholder="السعر الجديد" style="width: 90%;">
+                                    <input type="file" name="image" accept="image/*" style="width: 90%;">
+                                    <button type="submit" style="background:#27ae60; color:white; width: 95%;">حفظ التعديل</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
         }
-      }
 
-      const bar = document.getElementById('floatingCartBar');
-      if (totalCount > 0) {
-        bar.style.display = 'flex';
-        document.getElementById('floatingCartCount').innerText = totalCount;
-        document.getElementById('floatingCartTotal').innerText = `${totalPrice.toLocaleString()} ل.س`;
-      } else {
-        bar.style.display = 'none';
-        closeCartModal();
-      }
-    }
-
-    function openCartModal() {
-      const modalList = document.getElementById('cartModalItems');
-      let totalPrice = 0;
-      let itemsHTML = '';
-
-      for (const [id, qty] of Object.entries(cart)) {
-        const prod = allProducts.find(p => p.id == id);
-        if (prod) {
-          const itemTotal = prod.price * qty;
-          totalPrice += itemTotal;
-          itemsHTML += `
-            <div class="cart-modal-item">
-              <div>
-                <strong style="font-size:0.95rem;">${prod.name}</strong><br>
-                <small style="color:var(--text-muted);">${prod.price.toLocaleString()} × ${qty} = </small>
-                <small style="color:var(--primary); font-weight:bold;">${itemTotal.toLocaleString()} ل.س</small>
-              </div>
-              <div class="qty-controls" style="width:100px;">
-                <button class="btn-qty minus" onclick="updateQty(${prod.id}, -1)">-</button>
-                <span class="qty-num">${qty}</span>
-                <button class="btn-qty" onclick="updateQty(${prod.id}, 1)">+</button>
-              </div>
-            </div>
-          `;
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCartUI();
         }
-      }
 
-      modalList.innerHTML = itemsHTML;
-      document.getElementById('modalCartTotal').innerText = `${totalPrice.toLocaleString()} ل.س`;
-      document.getElementById('cartModal').style.display = 'flex';
-    }
-
-    function closeCartModal() { document.getElementById('cartModal').style.display = 'none'; }
-
-    function sendWhatsAppOrder() {
-      if (Object.keys(cart).length === 0) return;
-
-      let message = "*طلب جديد من بقالة المجد*%0A%0A";
-      let total = 0;
-      let count = 1;
-
-      for (const [id, qty] of Object.entries(cart)) {
-        const prod = allProducts.find(p => p.id == id);
-        if (prod) {
-          const subtotal = prod.price * qty;
-          message += `${count}. ${prod.name} (الكمية: ${qty}) - ${subtotal.toLocaleString()} ل.س%0A`;
-          total += subtotal;
-          count++;
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
         }
-      }
 
-      message += `%0A*المجموع الكلي:* ${total.toLocaleString()} ل.س`;
-      window.open(`https://wa.me/${MY_WHATSAPP_NUMBER}?text=${message}`, '_blank');
-    }
+        function updateCartUI() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            cartCount.innerText = cart.length;
 
-    function openAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
-    function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<p style="text-align: center; color: #888;">السلة فارغة حالياً، اضغط "إضافة للسلة" لتجميع أغراضك.</p>';
+                return;
+            }
 
-    document.getElementById('addForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const pass = document.getElementById('adminPass').value;
-      if(pass !== ADMIN_PASSWORD) { alert('كلمة السر غير صحيحة!'); return; }
-      const formData = new FormData();
-      formData.append('name', document.getElementById('pName').value);
-      formData.append('category', document.getElementById('pCategory').value);
-      formData.append('price', document.getElementById('pPrice').value);
-      formData.append('image', document.getElementById('pImage').files[0]);
+            cartItemsDiv.innerHTML = '';
+            cart.forEach((item, index) => {
+                cartItemsDiv.innerHTML += `
+                    <div class="cart-item">
+                        <span><strong>${item.name}</strong> - ${item.price}</span>
+                        <button class="btn-remove" onclick="removeFromCart(${index})">إزالة</button>
+                    </div>
+                `;
+            });
+        }
 
-      await fetch('/api/products', { method: 'POST', body: formData });
-      document.getElementById('addForm').reset();
-      closeAdminModal();
-      fetchProducts();
-    });
+        function sendOrderToWhatsApp() {
+            if (cart.length === 0) {
+                alert('السلة فارغة! يرجى إضافة منتجات أولاً قبل الإرسال.');
+                return;
+            }
 
-    async function deleteProduct(id) {
-      const pass = prompt('أدخل كلمة سر المسؤول للحذف:');
-      if(pass === ADMIN_PASSWORD) {
-        await fetch(`/api/products/${id}`, { method: 'DELETE' });
-        delete cart[id];
-        fetchProducts();
-        updateCartUI();
-      } else if (pass) {
-        alert('كلمة السر خاطئة!');
-      }
-    }
+            let text = "مرحباً بقالة المجد، أرغب في طلب الأغراض التالية:\n\n";
+            cart.forEach((item, index) => {
+                text += `${index + 1}. ${item.name} (${item.price})\n`;
+            });
+            text += "\nيرجى تأكيد الطلب وتجهيز الأغراض. وشكراً!";
 
-    fetchProducts();
-  </script>
+            const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+            window.open(waLink, '_blank');
+        }
+
+        function toggleEdit(id) {
+            const form = document.getElementById(`edit-${id}`);
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
+
+        loadProducts();
+    </script>
 </body>
 </html>
