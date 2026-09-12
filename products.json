@@ -44,17 +44,6 @@
         "img": "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=300&auto=format&fit=crop&q=60"
     },
     {
-        "id": 1,
-        "name": "سكر أبيض ممتاز عالي الجودة (1كغ)",
-        "price": 45000,
-        "oldPrice": 52000,
-        "discount": "-13%",
-        "rating": "4.9",
-        "sold": "240+",
-        "cat": "food",
-        "img": "https://images.unsplash.com/photo-1581441363689-1f3c3c34254c?w=300&auto=format&fit=crop&q=60"
-    },
-    {
         "id": 2,
         "name": "سمنة بلدي صافية فاخرة (1كغ)",
         "price": 120000,
