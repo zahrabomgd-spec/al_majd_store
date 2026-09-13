@@ -1065,28 +1065,38 @@ window.addEventListener('DOMContentLoaded', function() {
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
     const CHAT_ID = "8651078564";
 
-    // إعداد واجهة رفع صورة إشعار شام كاش
     function setupShamCashUI() {
         if (document.getElementById('shamCashUploadBox')) return;
 
         let container = document.createElement('div');
         container.id = 'shamCashUploadBox';
-        container.style.cssText = 'display:none; margin:15px 0; padding:15px; background:#f0f9ff; border:2px dashed #0284c7; border-radius:12px; text-align:center; direction:rtl;';
+        container.style.cssText = 'display:none; width:100%; max-width:100%; box-sizing:border-box; margin:12px 0; padding:14px; background:#f0f9ff; border:2px dashed #0284c7; border-radius:14px; text-align:center; direction:rtl; clear:both;';
         container.innerHTML = `
             <p style="margin:0 0 10px 0; font-size:14px; color:#0369a1; font-weight:bold;">📸 يرجى إرفاق صورة إشعار التحويل عبر شام كاش:</p>
             <input type="file" id="shamCashFileInput" accept="image/*" style="display:none;">
-            <label for="shamCashFileInput" style="display:inline-block; background:#0284c7; color:#ffffff; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px; box-shadow:0 2px 8px rgba(2,132,199,0.3);">
+            <label for="shamCashFileInput" style="display:inline-block; background:#0284c7; color:#ffffff; padding:10px 18px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px; box-shadow:0 2px 8px rgba(2,132,199,0.3);">
                 📁 اختيار صورة الإشعار
             </label>
             <div id="shamCashFileName" style="margin-top:8px; font-size:13px; color:#1e293b; font-weight:600;"></div>
         `;
 
-        let form = document.querySelector('form') || document.body;
-        let submitBtn = form.querySelector('button[type="submit"], input[type="submit"]') || form.querySelector('button');
-        if (submitBtn && submitBtn.parentNode) {
-            submitBtn.parentNode.insertBefore(container, submitBtn);
+        // البحث عن خيار شام كاش بدقة لإدراج المربع أسفله مباشرة
+        let shamTarget = null;
+        let inputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"], label');
+        inputs.forEach(function(el) {
+            let txt = (el.textContent || el.value || "").toLowerCase();
+            if (txt.includes("شام") || txt.includes("sham")) {
+                shamTarget = el.closest('label') || el.parentNode;
+            }
+        });
+
+        if (shamTarget && shamTarget.parentNode) {
+            shamTarget.parentNode.insertBefore(container, shamTarget.nextSibling);
         } else {
-            form.appendChild(container);
+            let submitBtn = document.querySelector('button[type="submit"]') || Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('إرسال') || b.textContent.includes('تأكيد'));
+            if (submitBtn && submitBtn.parentNode) {
+                submitBtn.parentNode.insertBefore(container, submitBtn);
+            }
         }
 
         let fileInput = document.getElementById('shamCashFileInput');
@@ -1107,7 +1117,7 @@ window.addEventListener('DOMContentLoaded', function() {
         let inputs = document.querySelectorAll('input, select');
         inputs.forEach(function(i) {
             if ((i.type === 'radio' || i.type === 'checkbox') && i.checked) {
-                let lbl = (i.nextElementSibling ? i.nextElementSibling.textContent : "") + " " + i.value;
+                let lbl = (i.nextElementSibling ? i.nextElementSibling.textContent : "") + " " + i.value + " " + (i.parentNode ? i.parentNode.textContent : "");
                 if (lbl.includes("شام") || lbl.toLowerCase().includes("sham")) isSham = true;
             } else if (i.tagName === 'SELECT' && i.value) {
                 if (i.value.includes("شام") || i.value.toLowerCase().includes("sham")) isSham = true;
@@ -1123,7 +1133,7 @@ window.addEventListener('DOMContentLoaded', function() {
     setupShamCashUI();
     document.addEventListener('change', checkPaymentSelection);
     document.addEventListener('click', checkPaymentSelection);
-    checkPaymentSelection();
+    setTimeout(checkPaymentSelection, 300);
 
     async function sendOrderToTelegram(e) {
         if (e) {
