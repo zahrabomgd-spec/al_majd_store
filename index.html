@@ -1060,7 +1060,7 @@ ${itemsText}
     </div>
 </div>
 
-<!-- لوحة التحكم الرئيسية (تعمل بشكل كامل ومباشر) -->
+<!-- لوحة التحكم الرئيسية -->
 <div id="adminMasterModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:18px;">
@@ -1076,8 +1076,8 @@ ${itemsText}
                 <span style="font-size:18px;">➕</span> إضافة منتج جديد
             </button>
 
-            <button onclick="openEditProductDirect()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
-                <span style="font-size:18px;">✏️</span> إدارة وتعديل المنتجات
+            <button onclick="enableInlineEditingMode()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
+                <span style="font-size:18px;">✏️</span> تعديل المنتجات من الواجهة
             </button>
 
             <button onclick="openVisitorsDirect()" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
@@ -1087,7 +1087,7 @@ ${itemsText}
     </div>
 </div>
 
-<!-- نافذة إضافة منتج سريعة وفعالة -->
+<!-- نافذة إضافة منتج -->
 <div id="quickAddProductModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:99999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
         <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">➕ إضافة منتج جديد لمتجرك</h3>
@@ -1152,7 +1152,6 @@ function closeMyOrdersModal() {
     document.getElementById('myOrdersModal').style.display = 'none';
 }
 
-// جلب الزوار
 function trackVisitorAndFetch() {
     let siteKey = window.location.hostname || "al-majd-express-store";
     fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/up')
@@ -1197,7 +1196,6 @@ function closeAdminMasterModal() {
     document.getElementById('adminMasterModal').style.display = 'none';
 }
 
-// تفاعل الأزرار المباشر والمضمون
 function openAddProductDirect() {
     closeAdminMasterModal();
     document.getElementById('quickAddProductModal').style.display = 'flex';
@@ -1213,7 +1211,6 @@ function saveQuickProduct() {
         return;
     }
 
-    // حفظ المنتج في الذاكرة المحلية ليعرضه المتجر
     let newProd = { id: Date.now(), title: name, price: price, image: img || 'https://via.placeholder.com/150' };
     let customProds = [];
     try {
@@ -1227,9 +1224,12 @@ function saveQuickProduct() {
     location.reload();
 }
 
-function openEditProductDirect() {
+// تفعيل وضع التعديل المباشر على الواجهة الرئيسية
+function enableInlineEditingMode() {
     closeAdminMasterModal();
-    alert("🛠️ يمكنك تعديل أو حذف المنتجات المضافة يدوياً أو من خلال واجهة المتجر الحالية مباشرة.");
+    localStorage.setItem('admin_edit_mode', 'true');
+    alert("✅ تم تفعيل وضع التعديل! يمكنك الآن تعديل أي منتج أو حذفه مباشرة من الواجهة الرئيسية.");
+    location.reload();
 }
 
 function openVisitorsDirect() {
@@ -1238,9 +1238,56 @@ function openVisitorsDirect() {
     alert("📊 عدد الزوار الإجمالي للمتجر: " + val + " زائر");
 }
 
-// تفعيل زر الثلاث نقاط
 window.addEventListener('DOMContentLoaded', function() {
     trackVisitorAndFetch();
+
+    // عرض المنتجات المضافة حديثاً مع إمكانية التعديل
+    try {
+        let customProds = JSON.parse(localStorage.getItem('custom_store_products') || '[]');
+        if (customProds.length > 0) {
+            let grid = document.querySelector('.products-grid, #products, .row, main');
+            if (grid) {
+                customProds.forEach(p => {
+                    let card = document.createElement('div');
+                    card.className = 'custom-product-card';
+                    card.dataset.id = p.id;
+                    card.style.cssText = 'background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:12px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin-bottom:10px; position:relative;';
+                    card.innerHTML = `
+                        <img src="${p.image}" style="width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:8px;">
+                        <h4 class="prod-title" style="margin:0 0 6px 0; font-size:15px; color:#0f172a;">${p.title}</h4>
+                        <div class="prod-price" style="color:#166534; font-weight:bold; font-size:14px; margin-bottom:8px;">${p.price} ل.س</div>
+                    `;
+                    grid.insertBefore(card, grid.firstChild);
+                });
+            }
+        }
+    } catch(e) {}
+
+    // إذا كان وضع التعديل مفعل، أضف أزرار التعديل والحذف تحت كل منتج في الصفحة
+    if (localStorage.getItem('admin_edit_mode') === 'true') {
+        let exitBar = document.createElement('div');
+        exitBar.style.cssText = 'position:fixed; top:0; left:0; width:100%; background:#dc2626; color:#fff; text-align:center; padding:8px; z-index:9999999; font-weight:bold; font-size:14px; display:flex; justify-content:center; align-items:center; gap:15px;';
+        exitBar.innerHTML = `
+            <span>⚠️ وضع التعديل الإداري مفعل</span>
+            <button onclick="localStorage.removeItem('admin_edit_mode'); location.reload();" style="background:#fff; color:#dc2626; border:none; padding:4px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">إيقاف وضع التعديل</button>
+        `;
+        document.body.prepend(exitBar);
+
+        setTimeout(() => {
+            let productCards = document.querySelectorAll('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
+            productCards.forEach((card, idx) => {
+                if (card.querySelector('.admin-edit-toolbar')) return;
+                let toolbar = document.createElement('div');
+                toolbar.className = 'admin-edit-toolbar';
+                toolbar.style.cssText = 'margin-top:10px; padding-top:8px; border-top:1px dashed #cbd5e1; display:flex; gap:6px; justify-content:center;';
+                toolbar.innerHTML = `
+                    <button onclick="editCardItem(this)" style="background:#3b82f6; color:#fff; border:none; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer;">✏️ تعديل</button>
+                    <button onclick="deleteCardItem(this)" style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer;">🗑️ حذف</button>
+                `;
+                card.appendChild(toolbar);
+            });
+        }, 600);
+    }
 
     document.addEventListener('click', function(e) {
         let btn = e.target.closest('button, a, div');
@@ -1256,6 +1303,36 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     }, true);
 });
+
+// دوال التعديل والحذف المباشر من الواجهة
+function editCardItem(btn) {
+    let card = btn.closest('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
+    if (!card) return;
+    let titleEl = card.querySelector('h1, h2, h3, h4, .title, [class*="title"]');
+    let priceEl = card.querySelector('.price, [class*="price"], span');
+
+    let currentTitle = titleEl ? titleEl.textContent.trim() : "منتج";
+    let newTitle = prompt("تعديل اسم المنتج:", currentTitle);
+    if (newTitle === null) return;
+
+    let newPrice = prompt("تعديل السعر:", "10000");
+    if (newPrice === null) return;
+
+    if (titleEl) titleEl.textContent = newTitle;
+    if (priceEl && newPrice) priceEl.textContent = newPrice + " ل.س";
+
+    alert("✅ تم تحديث المنتج بنجاح!");
+}
+
+function deleteCardItem(btn) {
+    if (!confirm("هل أنت متأكد من حذف هذا المنتج من الواجهة؟")) return;
+    let card = btn.closest('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
+    if (card) {
+        card.style.transition = 'all 0.3s';
+        card.style.opacity = '0';
+        setTimeout(() => card.remove(), 300);
+    }
+}
 
 window.addEventListener('DOMContentLoaded', function() {
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
