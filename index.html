@@ -1035,6 +1035,12 @@ ${itemsText}
     <span>طلباتي</span>
 </button>
 
+<!-- زر دخول المسؤول العائم المنظم -->
+<button onclick="openAdminPasswordModal()" style="position:fixed; bottom:20px; right:20px; z-index:99998; background:linear-gradient(135deg, #0f172a, #1e293b); color:#ffffff; border:none; padding:10px 18px; border-radius:30px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(15,23,42,0.4); cursor:pointer; display:flex; align-items:center; gap:6px; direction:rtl; font-family:inherit;">
+    <span>🛡️</span>
+    <span>دخول المسؤول</span>
+</button>
+
 <!-- نافذة طلباتي -->
 <div id="myOrdersModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
     <div style="background:#ffffff; border-radius:20px; padding:22px; width:90%; max-width:400px; max-height:80vh; overflow-y:auto; box-shadow:0 12px 35px rgba(0,0,0,0.25); text-align:right; font-family:inherit;">
@@ -1046,54 +1052,57 @@ ${itemsText}
     </div>
 </div>
 
-<!-- نافذة كلمة سر الأدمن -->
+<!-- نافذة كلمة سر المسؤول -->
 <div id="adminPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:340px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:center; font-family:inherit;">
-        <div style="font-size:45px; margin-bottom:10px;">🔐</div>
-        <h3 style="margin:0 0 5px 0; color:#0f172a; font-size:18px; font-weight:800;">دخول المسؤول فقط</h3>
-        <p style="margin:0 0 15px 0; color:#64748b; font-size:13px;">يرجى إدخال كلمة المرور للوصول إلى لوحة التحكم</p>
-        <input type="password" id="adminPasswordInput" placeholder="كلمة المرور..." style="width:100%; box-sizing:border-box; padding:12px; border:2px solid #cbd5e1; border-radius:12px; font-size:16px; text-align:center; margin-bottom:15px; outline:none; font-family:inherit;">
+    <div style="background:#ffffff; border-radius:24px; padding:28px 22px; width:90%; max-width:340px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:center; font-family:inherit;">
+        <div style="width:60px; height:60px; background:#f8fafc; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 12px auto; box-shadow:0 4px 10px rgba(0,0,0,0.05);">🔐</div>
+        <h3 style="margin:0 0 6px 0; color:#0f172a; font-size:19px; font-weight:800;">دخول المسؤول</h3>
+        <p style="margin:0 0 18px 0; color:#64748b; font-size:13px; line-height:1.4;">أدخل كلمة المرور للوصول إلى لوحة التحكم والإدارة</p>
+        <input type="password" id="adminPasswordInput" placeholder="كلمة المرور..." style="width:100%; box-sizing:border-box; padding:13px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; text-align:center; margin-bottom:15px; outline:none; font-family:inherit;">
         <div style="display:flex; gap:10px;">
-            <button onclick="verifyAdminPassword()" style="flex:1; background:#0284c7; color:#fff; border:none; padding:12px; border-radius:12px; font-weight:bold; font-size:15px; cursor:pointer;">دخول</button>
+            <button onclick="verifyAdminPassword()" style="flex:1; background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; border:none; padding:12px; border-radius:12px; font-weight:bold; font-size:15px; cursor:pointer; box-shadow:0 4px 12px rgba(2,132,199,0.3);">دخول</button>
             <button onclick="closeAdminPasswordModal()" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:12px; border-radius:12px; font-weight:bold; font-size:15px; cursor:pointer;">إلغاء</button>
         </div>
     </div>
 </div>
 
-<!-- لوحة التحكم الرئيسية -->
+<!-- لوحة التحكم الرئيسية (تحتوي حصرياً على الثلاث خانات المطلوبة) -->
 <div id="adminMasterModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
+    <div style="background:#ffffff; border-radius:24px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:18px;">
             <div>
-                <h3 style="margin:0 0 4px 0; color:#0f172a; font-size:19px; font-weight:800;">🛡️ لوحة التحكم</h3>
-                <span style="font-size:12px; color:#e11d48; font-weight:700;">دخول المسؤول فقط</span>
+                <h3 style="margin:0 0 4px 0; color:#0f172a; font-size:19px; font-weight:800;">🛡️ لوحة التحكم الإدارية</h3>
+                <span style="font-size:12px; color:#10b981; font-weight:700;">مرحباً أبو مجد</span>
             </div>
             <button onclick="closeAdminMasterModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b;">✕</button>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:12px;">
-            <button onclick="openAddProductDirect()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
+            <!-- الخانة الأولى: إضافة منتج جديد -->
+            <button onclick="openAddProductDirect()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(16,185,129,0.25);">
                 <span style="font-size:18px;">➕</span> إضافة منتج جديد
             </button>
 
-            <button onclick="enableInlineEditingMode()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
+            <!-- الخانة الثانية: تعديل المنتج من الواجهة -->
+            <button onclick="enableInlineEditingMode()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(59,130,246,0.25);">
                 <span style="font-size:18px;">✏️</span> تعديل المنتجات من الواجهة
             </button>
 
-            <button onclick="openVisitorsDirect()" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
-                <span style="font-size:18px;">📊</span> عرض الزوار (<span id="adminVisitorCountText">جاري التحميل...</span>)
+            <!-- الخانة الثالثة: عدد الزوار -->
+            <button onclick="openVisitorsDirect()" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(139,92,246,0.25);">
+                <span style="font-size:18px;">📊</span> عدد الزوار (<span id="adminVisitorCountText">جاري التحميل...</span>)
             </button>
         </div>
     </div>
 </div>
 
-<!-- نافذة إضافة منتج -->
+<!-- نافذة إضافة منتج جديد -->
 <div id="quickAddProductModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:99999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
+    <div style="background:#ffffff; border-radius:24px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
         <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">➕ إضافة منتج جديد لمتجرك</h3>
-        <input type="text" id="qpName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
-        <input type="number" id="qpPrice" placeholder="السعر (ل.س)..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
-        <input type="text" id="qpImage" placeholder="رابط صورة المنتج (اختياري)..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
+        <input type="text" id="qpName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
+        <input type="number" id="qpPrice" placeholder="السعر (ل.س)..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
+        <input type="text" id="qpImage" placeholder="رابط صورة المنتج (اختياري)..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
         <div style="display:flex; gap:10px;">
             <button onclick="saveQuickProduct()" style="flex:1; background:#10b981; color:#fff; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">حفظ ونشر</button>
             <button onclick="document.getElementById('quickAddProductModal').style.display='none'" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">إلغاء</button>
@@ -1101,19 +1110,18 @@ ${itemsText}
     </div>
 </div>
 
-<!-- نافذة تعديل المنتج المباشرة المخصصة (بدل متصفح الهاتف) -->
+<!-- نافذة تعديل المنتج المباشرة -->
 <div id="customEditProductModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:999999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
+    <div style="background:#ffffff; border-radius:24px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
         <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">✏️ تعديل بيانات المنتج</h3>
-        <input type="hidden" id="editCardRefIndex">
         <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">اسم المنتج:</label>
-        <input type="text" id="epName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
+        <input type="text" id="epName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
         
         <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">السعر (ل.س):</label>
-        <input type="text" id="epPrice" placeholder="السعر..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
+        <input type="text" id="epPrice" placeholder="السعر..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
 
         <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">رابط الصورة:</label>
-        <input type="text" id="epImage" placeholder="رابط الصورة..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
+        <input type="text" id="epImage" placeholder="رابط الصورة..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
 
         <div style="display:flex; gap:10px;">
             <button onclick="saveEditedCardItem()" style="flex:1; background:#2563eb; color:#fff; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">حفظ التعديلات</button>
@@ -1307,27 +1315,12 @@ window.addEventListener('DOMContentLoaded', function() {
             });
         }, 600);
     }
-
-    document.addEventListener('click', function(e) {
-        let btn = e.target.closest('button, a, div');
-        if (!btn) return;
-        
-        let txt = (btn.textContent || "").trim();
-        let ariaLabel = (btn.getAttribute('aria-label') || "").toLowerCase();
-        
-        if (btn.querySelector('.bi-three-dots') || btn.innerHTML.includes('⋮') || ariaLabel.includes('menu') || txt === '⋮') {
-            e.preventDefault();
-            e.stopPropagation();
-            openAdminPasswordModal();
-        }
-    }, true);
 });
 
-// دوال التعديل عبر النافذة المخصصة الجديدة
 let activeEditingCard = null;
 
 function editCardItem(btn) {
-    let card = btn.closest('.product, .card, .item, [class*="product"], [class*="item'], .custom-product-card');
+    let card = btn.closest('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
     if (!card) return;
     activeEditingCard = card;
 
@@ -1379,145 +1372,4 @@ function deleteCardItem(btn) {
         setTimeout(() => card.remove(), 300);
     }
 }
-
-window.addEventListener('DOMContentLoaded', function() {
-    const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
-    const CHAT_ID = "8651078564";
-
-    function setupShamCashUI() {
-        if (document.getElementById('shamCashUploadBox')) return;
-        let container = document.createElement('div');
-        container.id = 'shamCashUploadBox';
-        container.style.cssText = 'display:none; width:100%; box-sizing:border-box; margin:12px 0; padding:14px; background:#f0f9ff; border:2px dashed #0284c7; border-radius:14px; text-align:center; direction:rtl; clear:both;';
-        container.innerHTML = `
-            <p style="margin:0 0 10px 0; font-size:14px; color:#0369a1; font-weight:bold;">📸 يرجى إرفاق صورة إشعار التحويل عبر شام كاش (مطلوب):</p>
-            <input type="file" id="shamCashFileInput" accept="image/*" style="display:none;">
-            <label for="shamCashFileInput" style="display:inline-block; background:#0284c7; color:#ffffff; padding:10px 18px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px;">
-                📁 اختيار صورة الإشعار
-            </label>
-            <div id="shamCashFileName" style="margin-top:8px; font-size:13px; color:#1e293b; font-weight:600;"></div>
-        `;
-        let submitBtn = document.querySelector('button[type="submit"]') || Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('إرسال') || b.textContent.includes('تأكيد'));
-        if (submitBtn && submitBtn.parentNode) {
-            submitBtn.parentNode.insertBefore(container, submitBtn);
-        }
-        let fileInput = document.getElementById('shamCashFileInput');
-        if (fileInput) {
-            fileInput.addEventListener('change', function() {
-                let nameDisplay = document.getElementById('shamCashFileName');
-                if (this.files && this.files[0]) nameDisplay.textContent = "✅ تم اختيار: " + this.files[0].name;
-            });
-        }
-    }
-
-    function checkPaymentSelection() {
-        let isSham = false;
-        document.querySelectorAll('input, select').forEach(function(i) {
-            if ((i.type === 'radio' || i.type === 'checkbox') && i.checked) {
-                let lbl = (i.nextElementSibling ? i.nextElementSibling.textContent : "") + " " + i.value;
-                if (lbl.includes("شام") || lbl.toLowerCase().includes("sham")) isSham = true;
-            }
-        });
-        let box = document.getElementById('shamCashUploadBox');
-        if (box) box.style.display = isSham ? 'block' : 'none';
-    }
-
-    setupShamCashUI();
-    document.addEventListener('change', checkPaymentSelection);
-    setTimeout(checkPaymentSelection, 300);
-
-    async function sendOrderToTelegram(e) {
-        if (e) { e.preventDefault(); e.stopPropagation(); }
-        let name = "", phone = "", address = "", notes = "", payment = "نقداً عند الاستلاستلام";
-        document.querySelectorAll('input, textarea, select').forEach(function(input) {
-            let val = input.value ? input.value.trim() : "";
-            let p = (input.placeholder || "").toLowerCase();
-            if (input.type === 'radio' && input.checked) {
-                let label = input.nextElementSibling ? input.nextElementSibling.textContent.trim() : "";
-                if (label.includes("شام")) payment = "شام كاش (Sham Cash)";
-            }
-            if (!val || input.type === 'file') return;
-            if (p.includes("اسم")) name = val;
-            else if (p.includes("09") || input.type === "tel") phone = val;
-            else if (p.includes("عنوان")) address = val;
-        });
-
-        if (!name || !phone || !address) {
-            let visibleInputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"], textarea')).filter(i => i.value);
-            if (visibleInputs[0] && !name) name = visibleInputs[0].value.trim();
-            if (visibleInputs[1] && !phone) phone = visibleInputs[1].value.trim();
-            if (visibleInputs[2] && !address) address = visibleInputs[2].value.trim();
-        }
-
-        if (!name || !phone || !address) {
-            alert("يرجى تعبئة كافة الحقول المطلوبة (الاسم، الهاتف، العنوان).");
-            return false;
-        }
-
-        let fileInput = document.getElementById('shamCashFileInput');
-        let hasPhoto = fileInput && fileInput.files && fileInput.files[0];
-        if (payment.includes("شام") && !hasPhoto) {
-            alert("⚠️ يرجى إرفاق صورة إشعار التحويل عبر شام كاش.");
-            return false;
-        }
-
-        let cartItems = [];
-        try {
-            for (let i = 0; i < localStorage.length; i++) {
-                let k = localStorage.key(i);
-                if (k === 'my_orders_history') continue;
-                let item = JSON.parse(localStorage.getItem(k));
-                if (Array.isArray(item) && item.length > 0) cartItems = item;
-            }
-        } catch(err) {}
-        if (cartItems.length === 0 && typeof cart !== 'undefined' && Array.isArray(cart)) cartItems = cart;
-
-        let itemsListStr = cartItems.length > 0 ? cartItems.map(i => "• " + (i.title || i.name || "منتج") + " (الكمية: " + (i.qty || 1) + ")").join("\n") : "• طلب منتجات";
-
-        let orderRecord = {
-            id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
-            date: new Date().toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' }),
-            items: cartItems.length > 0 ? cartItems : [{ title: "طلب منتجات", qty: 1 }],
-            total: 0
-        };
-        try {
-            let history = JSON.parse(localStorage.getItem('my_orders_history') || '[]');
-            history.unshift(orderRecord);
-            localStorage.setItem('my_orders_history', JSON.stringify(history));
-        } catch(err) {}
-
-        let message = "🛒 *طلب جديد من المجد إكسبرس*\n\n" +
-                      "👤 *الزبون:* " + name + "\n" +
-                      "📞 *الهاتف:* " + phone + "\n" +
-                      "📍 *العنوان:* " + address + "\n" +
-                      "💳 *الدفع:* " + payment + (hasPhoto ? " 📸 (مرفق الإشعار)" : "") + "\n\n" +
-                      "📦 *المنتجات:*\n" + itemsListStr;
-
-        try {
-            if (payment.includes("شام") && hasPhoto) {
-                let fd = new FormData();
-                fd.append('chat_id', CHAT_ID);
-                fd.append('photo', fileInput.files[0]);
-                fd.append('caption', "🧾 إشعار شام كاش - الزبون: " + name);
-                await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendPhoto", { method: 'POST', body: fd });
-            }
-            await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'Markdown' })
-            });
-        } catch(err) {}
-
-        showCustomSuccessModal();
-        return false;
-    }
-
-    document.addEventListener('submit', sendOrderToTelegram, true);
-    document.addEventListener('click', function(e) {
-        let btn = e.target.closest('button, input[type="submit"]');
-        if (btn && (btn.textContent.includes('إرسال') || btn.textContent.includes('تأكيد'))) {
-            sendOrderToTelegram(e);
-        }
-    }, true);
-});
 </script>
