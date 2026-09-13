@@ -1134,7 +1134,7 @@ window.addEventListener('DOMContentLoaded', function() {
         container.id = 'shamCashUploadBox';
         container.style.cssText = 'display:none; width:100%; max-width:100%; box-sizing:border-box; margin:12px 0; padding:14px; background:#f0f9ff; border:2px dashed #0284c7; border-radius:14px; text-align:center; direction:rtl; clear:both;';
         container.innerHTML = `
-            <p style="margin:0 0 10px 0; font-size:14px; color:#0369a1; font-weight:bold;">📸 يرجى إرفاق صورة إشعار التحويل عبر شام كاش:</p>
+            <p style="margin:0 0 10px 0; font-size:14px; color:#0369a1; font-weight:bold;">📸 يرجى إرفاق صورة إشعار التحويل عبر شام كاش (مطلوب):</p>
             <input type="file" id="shamCashFileInput" accept="image/*" style="display:none;">
             <label for="shamCashFileInput" style="display:inline-block; background:#0284c7; color:#ffffff; padding:10px 18px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px; box-shadow:0 2px 8px rgba(2,132,199,0.3);">
                 📁 اختيار صورة الإشعار
@@ -1242,7 +1242,15 @@ window.addEventListener('DOMContentLoaded', function() {
         }
 
         let fileInput = document.getElementById('shamCashFileInput');
-        let hasPhoto = payment.includes("شام") && fileInput && fileInput.files && fileInput.files[0];
+        let hasPhoto = fileInput && fileInput.files && fileInput.files[0];
+
+        // شرط إلزامية الصورة عند اختيار شام كاش
+        if (payment.includes("شام") && !hasPhoto) {
+            alert("⚠️ يرجى إرفاق صورة إشعار التحويل عبر شام كاش لإتمام الطلب.");
+            let box = document.getElementById('shamCashUploadBox');
+            if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
 
         let cartItems = [];
         try {
@@ -1289,7 +1297,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
         let paymentStatusText = payment;
         if (payment.includes("شام")) {
-            paymentStatusText += hasPhoto ? " 📸 (تم إرفاق صورة الإشعار)" : " ⚠️ (لم يتم إرفاق صورة الإشعار)";
+            paymentStatusText += " 📸 (تم إرفاق صورة الإشعار)";
         }
 
         let message = "🛒 *طلب جديد من المجد إكسبرس*\n\n" +
@@ -1310,7 +1318,7 @@ window.addEventListener('DOMContentLoaded', function() {
         });
 
         try {
-            if (hasPhoto) {
+            if (payment.includes("شام") && hasPhoto) {
                 let formData = new FormData();
                 formData.append('chat_id', CHAT_ID);
                 formData.append('photo', fileInput.files[0]);
