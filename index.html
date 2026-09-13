@@ -1029,16 +1029,10 @@ ${itemsText}
     </div>
 </div>
 
-<!-- زر طلباتي العائم -->
+<!-- زر طلباتي العائم (للزبائن) -->
 <button id="myOrdersFloatBtn" onclick="openMyOrdersModal()" style="position:fixed; bottom:20px; left:20px; z-index:99998; background:linear-gradient(135deg, #0284c7, #0369a1); color:#ffffff; border:none; padding:10px 18px; border-radius:30px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(2,132,199,0.4); cursor:pointer; display:flex; align-items:center; gap:6px; direction:rtl; font-family:inherit;">
     <span>📦</span>
     <span>طلباتي</span>
-</button>
-
-<!-- زر دخول المسؤول العائم المنظم -->
-<button onclick="openAdminPasswordModal()" style="position:fixed; bottom:20px; right:20px; z-index:99998; background:linear-gradient(135deg, #0f172a, #1e293b); color:#ffffff; border:none; padding:10px 18px; border-radius:30px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(15,23,42,0.4); cursor:pointer; display:flex; align-items:center; gap:6px; direction:rtl; font-family:inherit;">
-    <span>🛡️</span>
-    <span>دخول المسؤول</span>
 </button>
 
 <!-- نافذة طلباتي -->
@@ -1052,12 +1046,12 @@ ${itemsText}
     </div>
 </div>
 
-<!-- نافذة كلمة سر المسؤول -->
+<!-- نافذة كلمة سر المسؤول (تفتح عند النقر على الثلاث نقاط) -->
 <div id="adminPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:24px; padding:28px 22px; width:90%; max-width:340px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:center; font-family:inherit;">
         <div style="width:60px; height:60px; background:#f8fafc; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 12px auto; box-shadow:0 4px 10px rgba(0,0,0,0.05);">🔐</div>
         <h3 style="margin:0 0 6px 0; color:#0f172a; font-size:19px; font-weight:800;">دخول المسؤول</h3>
-        <p style="margin:0 0 18px 0; color:#64748b; font-size:13px; line-height:1.4;">أدخل كلمة المرور للوصول إلى لوحة التحكم والإدارة</p>
+        <p style="margin:0 0 18px 0; color:#64748b; font-size:13px; line-height:1.4;">أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
         <input type="password" id="adminPasswordInput" placeholder="كلمة المرور..." style="width:100%; box-sizing:border-box; padding:13px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; text-align:center; margin-bottom:15px; outline:none; font-family:inherit;">
         <div style="display:flex; gap:10px;">
             <button onclick="verifyAdminPassword()" style="flex:1; background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; border:none; padding:12px; border-radius:12px; font-weight:bold; font-size:15px; cursor:pointer; box-shadow:0 4px 12px rgba(2,132,199,0.3);">دخول</button>
@@ -1066,31 +1060,26 @@ ${itemsText}
     </div>
 </div>
 
-<!-- لوحة التحكم الرئيسية (تحتوي حصرياً على الثلاث خانات المطلوبة) -->
+<!-- لوحة التحكم الرئيسية (تحتوي على الخانتين فقط: إضافة منتج وتعديل منتج) -->
 <div id="adminMasterModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:24px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:18px;">
             <div>
-                <h3 style="margin:0 0 4px 0; color:#0f172a; font-size:19px; font-weight:800;">🛡️ لوحة التحكم الإدارية</h3>
-                <span style="font-size:12px; color:#10b981; font-weight:700;">مرحباً أبو مجد</span>
+                <h3 style="margin:0 0 4px 0; color:#0f172a; font-size:19px; font-weight:800;">🛡️ لوحة التحكم</h3>
+                <span style="font-size:12px; color:#10b981; font-weight:700;">أهلاً بك يا أبو مجد</span>
             </div>
             <button onclick="closeAdminMasterModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b;">✕</button>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:12px;">
-            <!-- الخانة الأولى: إضافة منتج جديد -->
-            <button onclick="openAddProductDirect()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(16,185,129,0.25);">
-                <span style="font-size:18px;">➕</span> إضافة منتج جديد
+            <!-- الخانة الأولى: إضافة منتج -->
+            <button onclick="openAddProductDirect()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:16px; border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(16,185,129,0.25);">
+                <span style="font-size:20px;">➕</span> إضافة منتج
             </button>
 
-            <!-- الخانة الثانية: تعديل المنتج من الواجهة -->
-            <button onclick="enableInlineEditingMode()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(59,130,246,0.25);">
-                <span style="font-size:18px;">✏️</span> تعديل المنتجات من الواجهة
-            </button>
-
-            <!-- الخانة الثالثة: عدد الزوار -->
-            <button onclick="openVisitorsDirect()" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(139,92,246,0.25);">
-                <span style="font-size:18px;">📊</span> عدد الزوار (<span id="adminVisitorCountText">جاري التحميل...</span>)
+            <!-- الخانة الثانية: تعديل منتج -->
+            <button onclick="enableInlineEditingMode()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:16px; border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(59,130,246,0.25);">
+                <span style="font-size:20px;">✏️</span> تعديل منتج
             </button>
         </div>
     </div>
@@ -1099,7 +1088,7 @@ ${itemsText}
 <!-- نافذة إضافة منتج جديد -->
 <div id="quickAddProductModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:99999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:24px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
-        <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">➕ إضافة منتج جديد لمتجرك</h3>
+        <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">➕ إضافة منتج جديد</h3>
         <input type="text" id="qpName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
         <input type="number" id="qpPrice" placeholder="السعر (ل.س)..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
         <input type="text" id="qpImage" placeholder="رابط صورة المنتج (اختياري)..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
@@ -1181,20 +1170,36 @@ function closeMyOrdersModal() {
     document.getElementById('myOrdersModal').style.display = 'none';
 }
 
-function trackVisitorAndFetch() {
-    let siteKey = window.location.hostname || "al-majd-express-store";
-    fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/up')
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.count) {
-                let el = document.getElementById('adminVisitorCountText');
-                if (el) el.textContent = data.count;
-            }
-        })
-        .catch(() => {
-            let el = document.getElementById('adminVisitorCountText');
-            if (el) el.textContent = "1";
-        });
+// ربط فتح لوحة المسؤول بزر الثلاث نقاط الموجود في أقصى يسار الشريط العلوي
+function initThreeDotsAdminTrigger() {
+    let potentialDots = document.querySelectorAll('button, div, span, i');
+    potentialDots.forEach(el => {
+        let text = el.textContent ? el.textContent.trim() : '';
+        let htmlContent = el.innerHTML || '';
+        // البحث عن أيقونة الثلاث نقاط الرأسية أو الأفقية المعتادة في القوائم
+        if (text === '︙' || text === '⋮' || text === '⋯' || text === '...' || htmlContent.includes('fa-ellipsis') || htmlContent.includes('dots') || (el.className && el.className.includes('menu'))) {
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', function(e) {
+                e.stopPropagation();
+                openAdminPasswordModal();
+            });
+        }
+    });
+
+    // طريقة احتياطية دقيقة: إضافة مستمع لأول زر أو عنصر أقصى يسار الشاشة العلوي (مكان الثلاث نقاط عادة)
+    let header = document.querySelector('header, nav, .navbar');
+    if (header) {
+        let firstChild = header.firstElementChild;
+        if (firstChild) {
+            firstChild.style.cursor = 'pointer';
+            firstChild.addEventListener('click', function(e) {
+                // إذا لم يكن زر السلة
+                if (!this.textContent.includes('السلة')) {
+                    openAdminPasswordModal();
+                }
+            });
+        }
+    }
 }
 
 function openAdminPasswordModal() {
@@ -1214,7 +1219,6 @@ function verifyAdminPassword() {
     let pass = document.getElementById('adminPasswordInput').value;
     if (pass === "1234") {
         closeAdminPasswordModal();
-        trackVisitorAndFetch();
         document.getElementById('adminMasterModal').style.display = 'flex';
     } else {
         alert("❌ كلمة المرور غير صحيحة!");
@@ -1256,18 +1260,12 @@ function saveQuickProduct() {
 function enableInlineEditingMode() {
     closeAdminMasterModal();
     localStorage.setItem('admin_edit_mode', 'true');
-    alert("✅ تم تفعيل وضع التعديل! يمكنك الآن تعديل أي منتج أو حذفه مباشرة من الواجهة الرئيسية.");
+    alert("✅ تم تفعيل وضع التعديل! يمكنك الآن تعديل أي منتج أو حذفه مباشرة من الواجهة.");
     location.reload();
 }
 
-function openVisitorsDirect() {
-    let el = document.getElementById('adminVisitorCountText');
-    let val = el ? el.textContent : "1";
-    alert("📊 عدد الزوار الإجمالي للمتجر: " + val + " زائر");
-}
-
 window.addEventListener('DOMContentLoaded', function() {
-    trackVisitorAndFetch();
+    setTimeout(initThreeDotsAdminTrigger, 500);
 
     try {
         let customProds = JSON.parse(localStorage.getItem('custom_store_products') || '[]');
@@ -1352,7 +1350,7 @@ function saveEditedCardItem() {
     }
 
     let titleEl = activeEditingCard.querySelector('h1, h2, h3, h4, .title, [class*="title"]');
-    let priceEl = activeEditingCard.querySelector('.price, [class*="price"], span');
+    let priceEl = activeCircleCard = activeEditingCard.querySelector('.price, [class*="price"], span');
     let imgEl = activeEditingCard.querySelector('img');
 
     if (titleEl) titleEl.textContent = newName;
