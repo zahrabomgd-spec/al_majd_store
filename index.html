@@ -1065,7 +1065,67 @@ window.addEventListener('DOMContentLoaded', function() {
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
     const CHAT_ID = "8651078564";
 
-    function sendOrderToTelegram(e) {
+    // إعداد واجهة رفع صورة إشعار شام كاش
+    function setupShamCashUI() {
+        if (document.getElementById('shamCashUploadBox')) return;
+
+        let container = document.createElement('div');
+        container.id = 'shamCashUploadBox';
+        container.style.cssText = 'display:none; margin:15px 0; padding:15px; background:#f0f9ff; border:2px dashed #0284c7; border-radius:12px; text-align:center; direction:rtl;';
+        container.innerHTML = `
+            <p style="margin:0 0 10px 0; font-size:14px; color:#0369a1; font-weight:bold;">📸 يرجى إرفاق صورة إشعار التحويل عبر شام كاش:</p>
+            <input type="file" id="shamCashFileInput" accept="image/*" style="display:none;">
+            <label for="shamCashFileInput" style="display:inline-block; background:#0284c7; color:#ffffff; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px; box-shadow:0 2px 8px rgba(2,132,199,0.3);">
+                📁 اختيار صورة الإشعار
+            </label>
+            <div id="shamCashFileName" style="margin-top:8px; font-size:13px; color:#1e293b; font-weight:600;"></div>
+        `;
+
+        let form = document.querySelector('form') || document.body;
+        let submitBtn = form.querySelector('button[type="submit"], input[type="submit"]') || form.querySelector('button');
+        if (submitBtn && submitBtn.parentNode) {
+            submitBtn.parentNode.insertBefore(container, submitBtn);
+        } else {
+            form.appendChild(container);
+        }
+
+        let fileInput = document.getElementById('shamCashFileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                let nameDisplay = document.getElementById('shamCashFileName');
+                if (this.files && this.files[0]) {
+                    nameDisplay.textContent = "✅ تم اختيار: " + this.files[0].name;
+                } else {
+                    nameDisplay.textContent = "";
+                }
+            });
+        }
+    }
+
+    function checkPaymentSelection() {
+        let isSham = false;
+        let inputs = document.querySelectorAll('input, select');
+        inputs.forEach(function(i) {
+            if ((i.type === 'radio' || i.type === 'checkbox') && i.checked) {
+                let lbl = (i.nextElementSibling ? i.nextElementSibling.textContent : "") + " " + i.value;
+                if (lbl.includes("شام") || lbl.toLowerCase().includes("sham")) isSham = true;
+            } else if (i.tagName === 'SELECT' && i.value) {
+                if (i.value.includes("شام") || i.value.toLowerCase().includes("sham")) isSham = true;
+            }
+        });
+
+        let box = document.getElementById('shamCashUploadBox');
+        if (box) {
+            box.style.display = isSham ? 'block' : 'none';
+        }
+    }
+
+    setupShamCashUI();
+    document.addEventListener('change', checkPaymentSelection);
+    document.addEventListener('click', checkPaymentSelection);
+    checkPaymentSelection();
+
+    async function sendOrderToTelegram(e) {
         if (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1089,7 +1149,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            if (!val) return;
+            if (!val || input.type === 'file') return;
 
             if (p.includes("اسم") || n.includes("name") || id.includes("name")) name = val;
             else if (p.includes("09") || p.includes("رقم") || input.type === "tel" || n.includes("phone") || id.includes("phone")) phone = val;
@@ -1109,6 +1169,9 @@ window.addEventListener('DOMContentLoaded', function() {
             alert("يرجى تعبئة كافة الحقول المطلوبة (الاسم، رقم التواصل، والعنوان).");
             return false;
         }
+
+        let fileInput = document.getElementById('shamCashFileInput');
+        let hasPhoto = payment.includes("شام") && fileInput && fileInput.files && fileInput.files[0];
 
         let cartItems = [];
         try {
@@ -1138,11 +1201,16 @@ window.addEventListener('DOMContentLoaded', function() {
 
         if (!itemsListStr) itemsListStr = "• طلب منتجات من المتجر";
 
+        let paymentStatusText = payment;
+        if (payment.includes("شام")) {
+            paymentStatusText += hasPhoto ? " 📸 (تم إرفاق صورة الإشعار)" : " ⚠️ (لم يتم إرفاق صورة الإشعار)";
+        }
+
         let message = "🛒 *طلب جديد من المجد إكسبرس*\n\n" +
                       "👤 *الزبون:* " + name + "\n" +
                       "📞 *الهاتف:* " + phone + "\n" +
                       "📍 *العنوان:* " + address + "\n" +
-                      "💳 *طريقة الدفع:* " + payment + "\n" +
+                      "💳 *طريقة الدفع:* " + paymentStatusText + "\n" +
                       (notes ? "📝 *ملاحظات:* " + notes + "\n" : "") +
                       "\n📦 *تفاصيل الطلبات:*\n" + itemsListStr + "\n" +
                       (totalVal > 0 ? "\n💰 *الإجمالي:* " + totalVal + " ل.س" : "");
@@ -1155,21 +1223,33 @@ window.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            })
-        }).then(function() {
-            showCustomSuccessModal();
-        }).catch(function(err) {
-            console.error("TG Send Error:", err);
-            showCustomSuccessModal();
-        });
+        try {
+            if (hasPhoto) {
+                let formData = new FormData();
+                formData.append('chat_id', CHAT_ID);
+                formData.append('photo', fileInput.files[0]);
+                formData.append('caption', "🧾 صورة إشعار تحويل شام كاش\n👤 الزبون: " + name + "\n📞 الهاتف: " + phone);
 
+                await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendPhoto", {
+                    method: 'POST',
+                    body: formData
+                });
+            }
+
+            await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+        } catch(err) {
+            console.error("TG Send Error:", err);
+        }
+
+        showCustomSuccessModal();
         return false;
     }
 
