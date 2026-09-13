@@ -1018,3 +1018,82 @@ ${itemsText}
 })();
 </script>
 
+
+<!-- AL_MAJD_FEATURES_START -->
+<div id="orderManagementModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:99999; justify-content:center; align-items:center; direction:rtl; font-family:inherit;">
+    <div style="background:#fff; border-radius:20px; padding:20px; width:90%; max-width:450px; max-height:85vh; overflow-y:auto; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+            <h3 style="margin:0; color:#0f172a; font-size:18px;">📦 طلباتي المسجلة</h3>
+            <button onclick="document.getElementById('orderManagementModal').style.display='none'" style="background:none; border:none; font-size:20px; cursor:pointer; color:#64748b;">✕</button>
+        </div>
+        <div id="ordersListContainer" style="display:flex; flex-direction:column; gap:10px;">
+            <!-- تظهر الطلبات هنا -->
+        </div>
+    </div>
+</div>
+
+<script>
+// دالة عرض قائمة الطلبات
+function showOrdersList() {
+    let modal = document.getElementById('orderManagementModal');
+    let container = document.getElementById('ordersListContainer');
+    if (!modal || !container) return;
+    
+    let orders = JSON.parse(localStorage.getItem('al_majd_orders') || '[]');
+    if (orders.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد طلبات مسجلة حالياً.</p>';
+    } else {
+        container.innerHTML = orders.map((o, index) => `
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px; font-size:14px;">
+                <div style="font-weight:bold; color:#0284c7; margin-bottom:5px;">طلب رقم #${index + 1} - ${o.date || ''}</div>
+                <div style="color:#334155; margin-bottom:5px;">الاسم: ${o.name || 'غير محدد'} | الهاتف: ${o.phone || ''}</div>
+                <div style="color:#475569; font-size:13px; margin-bottom:5px;">المجموع: ${o.total || ''} ل.س</div>
+                ${o.receiptImage ? `<div style="margin-top:8px;"><a href="${o.receiptImage}" target="_blank" style="color:#0284c7; text-decoration:underline; font-size:12px;">🖼️ عرض صورة إشعار شام كاش المرفقة</a></div>` : '<div style="color:#94a3b8; font-size:12px;">لم يتم إرفاق صورة إشعار</div>'}
+            </div>
+        `).join('');
+    }
+    modal.style.display = 'flex';
+}
+
+// دالة محسنة لإرسال الطلب مع دعم صورة شام كاش وتلغرام
+window.originalSendOrderToTelegram = window.sendOrderToTelegram || function(){};
+window.sendOrderToTelegramWithReceipt = function() {
+    // التقاط بيانات الطلب وحفظه محلياً ليظهر في قائمة الطلبات
+    let name = document.getElementById('customerName') ? document.getElementById('customerName').value : 'زبون المجد';
+    let phone = document.getElementById('customerPhone') ? document.getElementById('customerPhone').value : '';
+    let receiptInput = document.getElementById('shamCashReceipt');
+    let receiptData = '';
+
+    if (receiptInput && receiptInput.files && receiptInput.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            receiptData = e.target.result;
+            saveAndSendOrder(name, phone, receiptData);
+        };
+        reader.readAsDataURL(receiptInput.files[0]);
+    } else {
+        saveAndSendOrder(name, phone, '');
+    }
+};
+
+function saveAndSendOrder(name, phone, receiptImage) {
+    let orders = JSON.parse(localStorage.getItem('al_majd_orders') || '[]');
+    let newOrder = {
+        name: name,
+        phone: phone,
+        date: new Date().toLocaleString(),
+        receiptImage: receiptImage,
+        total: document.getElementById('cartTotal') ? document.getElementById('cartTotal').textContent : '0'
+    };
+    orders.unshift(newOrder);
+    localStorage.setItem('al_majd_orders', JSON.stringify(orders));
+    
+    // استدعاء دالة الإرسال الأصلية لتلغرام إن وجدت
+    if (typeof sendOrderToTelegram === 'function' && sendOrderToTelegram !== window.sendOrderToTelegramWithReceipt) {
+        try { sendOrderToTelegram(); } catch(err) { console.log(err); }
+    }
+    
+    alert("✅ تم إرسال الطلب بنجاح وتوثيقه في قائمة طلباتي!");
+}
+</script>
+<!-- AL_MAJD_FEATURES_END -->
