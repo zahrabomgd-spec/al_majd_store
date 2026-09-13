@@ -1097,3 +1097,48 @@ function saveAndSendOrder(name, phone, receiptImage) {
 }
 </script>
 <!-- AL_MAJD_FEATURES_END -->
+
+<!-- EXACT_FIX_START -->
+<script>
+document.addEventListener('click', function(e) {
+    let target = e.target;
+    // التحقق إذا كان الزر المضغط هو "تأكيد الطلب" أو يحتوي على النص أو الكلاس المناسب
+    let text = target.textContent ? target.textContent.trim() : '';
+    if (text.includes('تأكيد الطلب') || text.includes('إرسال الطلب') || target.id === 'confirmOrderBtn' || target.classList.contains('confirm-order')) {
+        // نترك الكود الأصلي يعمل أولاً، ثم نضمن تنفيذ حفظ الطلب ورفع صورة شام كاش وتلغرام
+        console.log("تم النقر على زر تأكيد الطلب");
+        
+        let nameField = document.querySelector('input[name*="name"], #customerName, #name');
+        let phoneField = document.querySelector('input[name*="phone"], #customerPhone, #phone');
+        let name = nameField ? nameField.value : 'زبون المجد';
+        let phone = phoneField ? phoneField.value : '';
+        
+        let receiptInput = document.querySelector('input[type="file"], #shamCashReceipt');
+        if (receiptInput && receiptInput.files && receiptInput.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function(evt) {
+                saveOrderLocally(name, phone, evt.target.result);
+            };
+            reader.readAsDataURL(receiptInput.files[0]);
+        } else {
+            saveOrderLocally(name, phone, '');
+        }
+    }
+});
+
+function saveOrderLocally(name, phone, receiptImage) {
+    let orders = JSON.parse(localStorage.getItem('al_majd_orders') || '[]');
+    let totalEl = document.querySelector('#cartTotal, .cart-total, [id*="total"]');
+    let newOrder = {
+        name: name,
+        phone: phone,
+        date: new Date().toLocaleString(),
+        receiptImage: receiptImage,
+        total: totalEl ? totalEl.textContent : 'غير محدد'
+    };
+    orders.unshift(newOrder);
+    localStorage.setItem('al_majd_orders', JSON.stringify(orders));
+    console.log("تم حفظ الطلب محلياً بنجاح", newOrder);
+}
+</script>
+<!-- EXACT_FIX_END -->
