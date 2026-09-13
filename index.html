@@ -1142,3 +1142,261 @@ function saveOrderLocally(name, phone, receiptImage) {
 }
 </script>
 <!-- EXACT_FIX_END -->
+<!-- TG_DIRECT_BOT_START -->
+<!-- تصميم النافذة المنبثقة الاحترافية -->
+<div id="customSuccessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
+    <div style="background:#ffffff; border-radius:20px; padding:28px 22px; width:88%; max-width:360px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.25); font-family: inherit; transform: scale(0.9); animation: popInModal 0.25s forwards ease-out;">
+        <div style="font-size:55px; margin-bottom:8px; line-height:1;">🎉</div>
+        <h3 style="margin:0 0 10px 0; color:#2e7d32; font-size:21px; font-weight:800;">تم تأكيد طلبك بنجاح!</h3>
+        <p style="margin:0 0 14px 0; color:#555; font-size:15px; line-height:1.5;">شكراً لتسوقك من المجد إكسبرس</p>
+        
+        <div style="background:#e8f5e9; border:1px solid #c8e6c9; color:#1b5e20; padding:12px 10px; border-radius:12px; font-size:14px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <span>🚚</span>
+            <span>سوف يتم التوصيل خلال 30 دقيقة إلى 60 دقيقة</span>
+        </div>
+
+        <button onclick="closeSuccessModal()" style="background:linear-gradient(135deg, #2e7d32, #1b5e20); color:#ffffff; border:none; padding:13px 0; font-size:16px; border-radius:12px; font-weight:bold; width:100%; cursor:pointer; box-shadow:0 4px 12px rgba(46,125,50,0.35);">
+            حسناً
+        </button>
+    </div>
+</div>
+
+<style>
+@keyframes popInModal {
+    to {
+        transform: scale(1);
+    }
+}
+</style>
+
+<script>
+function showCustomSuccessModal() {
+    var modal = document.getElementById('customSuccessModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeSuccessModal() {
+    try {
+        localStorage.clear();
+        if (typeof cart !== 'undefined') cart = [];
+    } catch(err) {}
+    location.reload();
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+    const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
+    const CHAT_ID = "8651078564";
+
+    function setupShamCashUI() {
+        if (document.getElementById('shamCashUploadBox')) return;
+
+        let container = document.createElement('div');
+        container.id = 'shamCashUploadBox';
+        container.style.cssText = 'display:none; width:100%; max-width:100%; box-sizing:border-box; margin:12px 0; padding:14px; background:#f0f9ff; border:2px dashed #0284c7; border-radius:14px; text-align:center; direction:rtl; clear:both;';
+        container.innerHTML = `
+            <p style="margin:0 0 10px 0; font-size:14px; color:#0369a1; font-weight:bold;">📸 يرجى إرفاق صورة إشعار التحويل عبر شام كاش:</p>
+            <input type="file" id="shamCashFileInput" accept="image/*" style="display:none;">
+            <label for="shamCashFileInput" style="display:inline-block; background:#0284c7; color:#ffffff; padding:10px 18px; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px; box-shadow:0 2px 8px rgba(2,132,199,0.3);">
+                📁 اختيار صورة الإشعار
+            </label>
+            <div id="shamCashFileName" style="margin-top:8px; font-size:13px; color:#1e293b; font-weight:600;"></div>
+        `;
+
+        // البحث عن خيار شام كاش بدقة لإدراج المربع أسفله مباشرة
+        let shamTarget = null;
+        let inputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"], label');
+        inputs.forEach(function(el) {
+            let txt = (el.textContent || el.value || "").toLowerCase();
+            if (txt.includes("شام") || txt.includes("sham")) {
+                shamTarget = el.closest('label') || el.parentNode;
+            }
+        });
+
+        if (shamTarget && shamTarget.parentNode) {
+            shamTarget.parentNode.insertBefore(container, shamTarget.nextSibling);
+        } else {
+            let submitBtn = document.querySelector('button[type="submit"]') || Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('إرسال') || b.textContent.includes('تأكيد'));
+            if (submitBtn && submitBtn.parentNode) {
+                submitBtn.parentNode.insertBefore(container, submitBtn);
+            }
+        }
+
+        let fileInput = document.getElementById('shamCashFileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                let nameDisplay = document.getElementById('shamCashFileName');
+                if (this.files && this.files[0]) {
+                    nameDisplay.textContent = "✅ تم اختيار: " + this.files[0].name;
+                } else {
+                    nameDisplay.textContent = "";
+                }
+            });
+        }
+    }
+
+    function checkPaymentSelection() {
+        let isSham = false;
+        let inputs = document.querySelectorAll('input, select');
+        inputs.forEach(function(i) {
+            if ((i.type === 'radio' || i.type === 'checkbox') && i.checked) {
+                let lbl = (i.nextElementSibling ? i.nextElementSibling.textContent : "") + " " + i.value + " " + (i.parentNode ? i.parentNode.textContent : "");
+                if (lbl.includes("شام") || lbl.toLowerCase().includes("sham")) isSham = true;
+            } else if (i.tagName === 'SELECT' && i.value) {
+                if (i.value.includes("شام") || i.value.toLowerCase().includes("sham")) isSham = true;
+            }
+        });
+
+        let box = document.getElementById('shamCashUploadBox');
+        if (box) {
+            box.style.display = isSham ? 'block' : 'none';
+        }
+    }
+
+    setupShamCashUI();
+    document.addEventListener('change', checkPaymentSelection);
+    document.addEventListener('click', checkPaymentSelection);
+    setTimeout(checkPaymentSelection, 300);
+
+    async function sendOrderToTelegram(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        let name = "", phone = "", address = "", notes = "", payment = "نقداً عند الاستلام";
+
+        let inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(function(input) {
+            let val = input.value ? input.value.trim() : "";
+            let p = (input.placeholder || "").toLowerCase();
+            let n = (input.name || "").toLowerCase();
+            let id = (input.id || "").toLowerCase();
+
+            if (input.type === 'radio' || input.type === 'checkbox') {
+                if (input.checked) {
+                    let label = input.nextElementSibling ? input.nextElementSibling.textContent.trim() : input.value;
+                    if (label.includes("شام") || val.includes("sham")) payment = "شام كاش (Sham Cash)";
+                    else payment = "الدفع نقداً عند الاستلام";
+                }
+                return;
+            }
+
+            if (!val || input.type === 'file') return;
+
+            if (p.includes("اسم") || n.includes("name") || id.includes("name")) name = val;
+            else if (p.includes("09") || p.includes("رقم") || input.type === "tel" || n.includes("phone") || id.includes("phone")) phone = val;
+            else if (p.includes("عنوان") || p.includes("منطقة") || p.includes("شارع") || n.includes("address") || id.includes("address")) address = val;
+            else if (p.includes("ملاحظ") || n.includes("note") || id.includes("note")) notes = val;
+        });
+
+        if (!name || !phone || !address) {
+            let visibleInputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"], textarea'))
+                .filter(function(i) { return i.value && i.value.trim() !== ""; });
+            if (visibleInputs[0] && !name) name = visibleInputs[0].value.trim();
+            if (visibleInputs[1] && !phone) phone = visibleInputs[1].value.trim();
+            if (visibleInputs[2] && !address) address = visibleInputs[2].value.trim();
+        }
+
+        if (!name || !phone || !address) {
+            alert("يرجى تعبئة كافة الحقول المطلوبة (الاسم، رقم التواصل، والعنوان).");
+            return false;
+        }
+
+        let fileInput = document.getElementById('shamCashFileInput');
+        let hasPhoto = payment.includes("شام") && fileInput && fileInput.files && fileInput.files[0];
+
+        let cartItems = [];
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                let k = localStorage.key(i);
+                let item = JSON.parse(localStorage.getItem(k));
+                if (Array.isArray(item) && item.length > 0) cartItems = item;
+            }
+        } catch(err) {}
+
+        if (cartItems.length === 0 && typeof cart !== 'undefined' && Array.isArray(cart)) {
+            cartItems = cart;
+        }
+
+        let itemsListStr = "";
+        let totalVal = 0;
+
+        if (cartItems.length > 0) {
+            itemsListStr = cartItems.map(function(i) {
+                let title = i.title || i.name || i.productName || "منتج";
+                let qty = i.qty || i.quantity || i.count || 1;
+                let price = i.price || 0;
+                if (price) totalVal += (price * qty);
+                return "• " + title + " (الكمية: " + qty + ")";
+            }).join("\n");
+        }
+
+        if (!itemsListStr) itemsListStr = "• طلب منتجات من المتجر";
+
+        let paymentStatusText = payment;
+        if (payment.includes("شام")) {
+            paymentStatusText += hasPhoto ? " 📸 (تم إرفاق صورة الإشعار)" : " ⚠️ (لم يتم إرفاق صورة الإشعار)";
+        }
+
+        let message = "🛒 *طلب جديد من المجد إكسبرس*\n\n" +
+                      "👤 *الزبون:* " + name + "\n" +
+                      "📞 *الهاتف:* " + phone + "\n" +
+                      "📍 *العنوان:* " + address + "\n" +
+                      "💳 *طريقة الدفع:* " + paymentStatusText + "\n" +
+                      (notes ? "📝 *ملاحظات:* " + notes + "\n" : "") +
+                      "\n📦 *تفاصيل الطلبات:*\n" + itemsListStr + "\n" +
+                      (totalVal > 0 ? "\n💰 *الإجمالي:* " + totalVal + " ل.س" : "");
+
+        document.querySelectorAll('button, a, input[type="submit"]').forEach(function(b) {
+            let t = (b.textContent || b.value || "").trim();
+            if (t.includes("واتساب") || t.includes("إرسال") || t.includes("تأكيد") || t.includes("طلب")) {
+                b.disabled = true;
+                b.textContent = "جاري الإرسال...";
+            }
+        });
+
+        try {
+            if (hasPhoto) {
+                let formData = new FormData();
+                formData.append('chat_id', CHAT_ID);
+                formData.append('photo', fileInput.files[0]);
+                formData.append('caption', "🧾 صورة إشعار تحويل شام كاش\n👤 الزبون: " + name + "\n📞 الهاتف: " + phone);
+
+                await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendPhoto", {
+                    method: 'POST',
+                    body: formData
+                });
+            }
+
+            await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+        } catch(err) {
+            console.error("TG Send Error:", err);
+        }
+
+        showCustomSuccessModal();
+        return false;
+    }
+
+    document.addEventListener('submit', sendOrderToTelegram, true);
+
+    document.addEventListener('click', function(e) {
+        let btn = e.target.closest('button, a, input[type="submit"]');
+        if (!btn) return;
+
+        let txt = (btn.textContent || btn.value || "").trim();
+        if (txt.includes('واتساب') || txt.includes('إرسال') || txt.includes('تأكيد')) {
+            sendOrderToTelegram(e);
+        }
+    }, true);
+});
+</script>
