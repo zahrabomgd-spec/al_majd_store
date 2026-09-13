@@ -771,3 +771,36 @@ async function sendOrderToTelegram(name, phone, address, notes, items, total) {
 
 </body>
 </html>
+
+<!-- كود إرسال تيليجرام المضاف بأمان -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
+    const CHAT_ID = "8651078564";
+
+    // الاستماع لكل الضغطات في الموقع
+    document.addEventListener('click', function(e) {
+        let btn = e.target.closest('button, a, input[type="submit"]');
+        if (!btn) return;
+
+        let txt = (btn.textContent || btn.value || "").toLowerCase();
+        if (txt.includes('واتساب') || txt.includes('تأكيد') || txt.includes('إرسال') || txt.includes('طلب')) {
+            // تجميع بيانات المدخلات
+            let info = [];
+            document.querySelectorAll('input, textarea').forEach(i => {
+                if (i.value && i.type !== 'hidden' && i.type !== 'submit') {
+                    info.push((i.placeholder || i.name || 'حقل') + ": " + i.value);
+                }
+            });
+
+            let msg = "🛒 *طلب جديد من المتجر*\n\n" + (info.length ? info.join("\n") : "تم الضغط على زر الطلب");
+
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' })
+            }).catch(err => console.error(err));
+        }
+    }, true);
+});
+</script>
