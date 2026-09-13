@@ -1018,6 +1018,148 @@ ${itemsText}
 })();
 </script>
 
+<!-- TG_DIRECT_BOT_START -->
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
+    const CHAT_ID = "8651078564";
+
+    async function sendOrderToTelegram(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // 1. قراءة بيانات حقول الإدخال
+        let name = "", phone = "", address = "", notes = "", payment = "نقداً عند الاستلام";
+
+        let inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            let val = input.value ? input.value.trim() : "";
+            let p = (input.placeholder || "").toLowerCase();
+            let n = (input.name || "").toLowerCase();
+            let id = (input.id || "").toLowerCase();
+
+            if (input.type === 'radio' || input.type === 'checkbox') {
+                if (input.checked) {
+                    let label = input.nextElementSibling ? input.nextElementSibling.textContent.trim() : input.value;
+                    if (label.includes("شام") || val.includes("sham")) payment = "شام كاش (Sham Cash)";
+                    else payment = "الدفع نقداً عند الاستلام";
+                }
+                return;
+            }
+
+            if (!val) return;
+
+            if (p.includes("اسم") || n.includes("name") || id.includes("name")) name = val;
+            else if (p.includes("09") || p.includes("رقم") || input.type === "tel" || n.includes("phone") || id.includes("phone")) phone = val;
+            else if (p.includes("عنوان") || p.includes("منطقة") || p.includes("شارع") || n.includes("address") || id.includes("address")) address = val;
+            else if (p.includes("ملاحظ") || n.includes("note") || id.includes("note")) notes = val;
+        });
+
+        // الاستعانة بالترتيب في حال لم تتطابق أسماء الحقول
+        if (!name || !phone || !address) {
+            let visibleInputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"], textarea'))
+                .filter(i => i.value && i.value.trim() !== "");
+            if (visibleInputs[0] && !name) name = visibleInputs[0].value.trim();
+            if (visibleInputs[1] && !phone) phone = visibleInputs[1].value.trim();
+            if (visibleInputs[2] && !address) address = visibleInputs[2].value.trim();
+        }
+
+        if (!name || !phone || !address) {
+            alert("يرجى تعبئة كافة الحقول المطلوب (الاسم الكامل، رقم التواصل، وعنوان التوصيل).");
+            return false;
+        }
+
+        // 2. قراءة منتجات السلة
+        let cartItems = [];
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                let k = localStorage.key(i);
+                let item = JSON.parse(localStorage.getItem(k));
+                if (Array.isArray(item) && item.length > 0) cartItems = item;
+            }
+        } catch(err) {}
+
+        if (cartItems.length === 0 && typeof cart !== 'undefined' && Array.isArray(cart)) {
+            cartItems = cart;
+        }
+
+        let itemsListStr = "";
+        let totalVal = 0;
+
+        if (cartItems.length > 0) {
+            itemsListStr = cartItems.map(i => {
+                let title = i.title || i.name || i.productName || "منتج";
+                let qty = i.qty || i.quantity || i.count || 1;
+                let price = i.price || 0;
+                if (price) totalVal += (price * qty);
+                return `• ${title} (الكمية: ${qty})`;
+            }).join('\n');
+        }
+
+        if (!itemsListStr) itemsListStr = "• طلب منتجات من المتجر";
+
+        // بناء نص الرسالة الموجهة لتيليجرام
+        let message = `🛒 *طلب جديد من المجد إكسبرس*\n\n` +
+                      `👤 *الزبون:* ${name}\n` +
+                      `📞 *الهاتف:* ${phone}\n` +
+                      `📍 *العنوان:* ${address}\n` +
+                      `💳 *طريقة الدفع:* ${payment}\n` +
+                      (notes ? `📝 *ملاحظات:* ${notes}\n` : '') +
+                      `\n📦 *تفاصيل الطلبات:*\n${itemsListStr}\n` +
+                      (totalVal > 0 ? `\n💰 *الإجمالي:* ${totalVal} ل.س` : '');
+
+        // تغيير حالة الزر لتأكيد العملية للزبون
+        document.querySelectorAll('button, a, input[type="submit"]').forEach(b => {
+            let t = (b.textContent || b.value || "").trim();
+            if (t.includes("واتساب") || t.includes("إرسال") || t.includes("تأكيد") || t.includes("طلب")) {
+                b.disabled = true;
+                b.textContent = "جاري الإرسال...";
+            }
+        });
+
+        try {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+        } catch(err) {
+            console.error("TG Send Error:", err);
+        }
+
+        alert("🎉 تم تأكيد طلبك بنجاح!\nشكراً لتسوقك من المجد إكسبرس، سنتواصل معك قريباً لتسليم الطلب.");
+
+        try {
+            localStorage.clear();
+            if (typeof cart !== 'undefined') cart = [];
+        } catch(err) {}
+
+        location.reload();
+        return false;
+    }
+
+    // اعتراض إرسال النموذج
+    document.addEventListener('submit', sendOrderToTelegram, true);
+
+    // اعتراض الضغط على الأزرار
+    document.addEventListener('click', function(e) {
+        let btn = e.target.closest('button, a, input[type="submit"]');
+        if (!btn) return;
+
+        let txt = (btn.textContent || btn.value || "").trim();
+        if (txt.includes('واتساب') || txt.includes('إرسال') || txt.includes('تأكيد')) {
+            sendOrderToTelegram(e);
+        }
+    }, true);
+});
+</script>
+
 </body>
 </html>
 
