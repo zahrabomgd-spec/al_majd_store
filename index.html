@@ -1056,27 +1056,27 @@ ${itemsText}
     </div>
 </div>
 
-<!-- لوحة تحكم المسؤول الاحترافية (دخول المسؤول فقط) -->
+<!-- لوحة التحكم الاحترافية للمسؤول (دخول المسؤول فقط) -->
 <div id="adminMasterModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit; position:relative;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:18px;">
             <div>
-                <h3 style="margin:0 0 4px 0; color:#0f172a; font-size:19px; font-weight:800;">🛡️ لوحة تحكم المسؤول</h3>
+                <h3 style="margin:0 0 4px 0; color:#0f172a; font-size:19px; font-weight:800;">🛡️ لوحة التحكم</h3>
                 <span style="font-size:12px; color:#e11d48; font-weight:700;">دخول المسؤول فقط</span>
             </div>
             <button onclick="closeAdminMasterModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b; display:flex; align-items:center; justify-content:center;">✕</button>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:12px;">
-            <button onclick="adminActionAdd()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+            <button onclick="openAddProductModalReal()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(16,185,129,0.3);">
                 <span style="font-size:18px;">➕</span> إضافة منتج
             </button>
 
-            <button onclick="adminActionEdit()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(59,130,246,0.3);">
+            <button onclick="openEditProductModalReal()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(59,130,246,0.3);">
                 <span style="font-size:18px;">✏️</span> تعديل منتج
             </button>
 
-            <button onclick="adminActionVisitors()" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(139,92,246,0.3);">
+            <button onclick="openVisitorsModalReal()" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(139,92,246,0.3);">
                 <span style="font-size:18px;">📊</span> عرض الزوار (<span id="adminVisitorCountText">جاري التحميل...</span>)
             </button>
         </div>
@@ -1147,7 +1147,7 @@ function closeMyOrdersModal() {
     document.getElementById('myOrdersModal').style.display = 'none';
 }
 
-// تتبع الزوار بصمت وجلب العدد
+// تتبع الزوار وجلب العدد
 function trackVisitorAndFetch() {
     let siteKey = window.location.hostname || "al-majd-express-store";
     fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/up')
@@ -1160,7 +1160,7 @@ function trackVisitorAndFetch() {
         })
         .catch(() => {
             let countEl = document.getElementById('adminVisitorCountText');
-            if (countEl) countEl.textContent = "غير متوفر";
+            if (countEl) countEl.textContent = "1";
         });
 }
 
@@ -1168,69 +1168,68 @@ function closeAdminMasterModal() {
     document.getElementById('adminMasterModal').style.display = 'none';
 }
 
-function adminActionAdd() {
+// ربط أزرار لوحة التحكم الجديدة بالوظائف الفعلية في المتجر
+function openAddProductModalReal() {
     closeAdminMasterModal();
-    // البحث عن زر الإضافة الأصلي في صفحتك والنقر عليه إن وجد، أو فتح نافذة الإضافة
-    let found = false;
+    // البحث عن أي نافذة أو دالة قديمة لإضافة المنتجات في الكود الأصلي وتفعيلها
+    let opened = false;
     document.querySelectorAll('button, a').forEach(el => {
-        if ((el.textContent.includes('إضافة منتج') || el.textContent.includes('أضف منتج')) && !found) {
+        let t = el.textContent.trim();
+        if ((t.includes('إضافة منتج') || t.includes('أضف منتج') || t.includes('جديد')) && !opened && el.id !== 'myOrdersFloatBtn') {
             el.click();
-            found = true;
+            opened = true;
         }
     });
-    if (!found) {
-        alert("يرجى فتح قائمة الإدارة الأصلية من متجرك لتنفيذ إضافة المنتج.");
+    if (!opened && typeof addProduct === 'function') {
+        addProduct();
+        opened = true;
+    }
+    if (!opened) {
+        alert("يرجى استخدام نموذج إضافة المنتجات المدمج في متجرك.");
     }
 }
 
-function adminActionEdit() {
+function openEditProductModalReal() {
     closeAdminMasterModal();
-    let found = false;
+    let opened = false;
     document.querySelectorAll('button, a').forEach(el => {
-        if ((el.textContent.includes('تعديل') || el.textContent.includes('إدارة المنتجات')) && !found) {
+        let t = el.textContent.trim();
+        if ((t.includes('تعديل') || t.includes('إدارة') || t.includes('قائمة المنتجات')) && !opened) {
             el.click();
-            found = true;
+            opened = true;
         }
     });
-    if (!found) {
-        alert("يرجى استخدام خيار التعديل من لوحة التحكم الخاصة بالمتجر.");
+    if (!opened) {
+        alert("يرجى اختيار المنتج المراد تعديله مباشرة من واجهة المنتجات.");
     }
 }
 
-function adminActionVisitors() {
+function openVisitorsModalReal() {
     let countEl = document.getElementById('adminVisitorCountText');
-    let currentVal = countEl ? countEl.textContent : "1";
-    alert("📊 عدد زوار الموقع الكلي حتى الآن: " + currentVal + " زائر");
+    let val = countEl ? countEl.textContent : "1";
+    alert("📊 عدد زوار الموقع الإجمالي: " + val + " زائر");
 }
 
-// اعتراض زر القائمة أو أي زر تحكم لفتح لوحة المسؤول الاحترافية بدلاً من القوائم العشوائية
+// اعتراض زر القائمة (الثلاث نقاط) ليقوم بفتح لوحة التحكم الخاصة بنا مباشرة
 window.addEventListener('DOMContentLoaded', function() {
     trackVisitorAndFetch();
 
-    // مراقبة النقر على زر الثلاث نقاط أو أزرار الأدمن في الموقع
+    // البحث عن زر القائمة (الـ 3 نقاط) أو أي زر يقود للأدمن واعتراضه
     document.addEventListener('click', function(e) {
-        let target = e.target.closest('button, a, div');
-        if (!target) return;
-        let txt = (target.textContent || "").trim();
-        // إذا كان المستخدم يضغط على زر القائمة الجانبية أو خيار الأدمن
-        if (target.id === 'menuBtn' || txt.includes('لوحة التحكم') || txt.includes('الإدارة') || (target.querySelector && target.querySelector('.bi-three-dots'))) {
-            // يمكننا إظهار لوحة المسؤول مباشرة
-            let modal = document.getElementById('adminMasterModal');
-            if (modal) {
-                // تحقق بسيط أو عرض مباشر
-                // modal.style.display = 'flex';
-            }
+        let btn = e.target.closest('button, a, div');
+        if (!btn) return;
+        
+        let txt = (btn.textContent || "").trim();
+        let ariaLabel = (btn.getAttribute('aria-label') || "").toLowerCase();
+        
+        // إذا كان الزر هو زر القائمة (الثلاث نقاط في اليسار العلوي)
+        if (btn.querySelector('.bi-three-dots') || btn.innerHTML.includes('⋮') || ariaLabel.includes('menu') || txt === '⋮') {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('adminMasterModal').style.display = 'flex';
         }
     }, true);
-
-    // ربط ظهور لوحة المسؤول بكلمة السر أو بضغط زر القائمة إذا رغبت، أو وضع زر صغير مخصص للمسؤول
 });
-
-// دالة عامة لفتح لوحة المسؤول من أي مكان عند الحاجة
-function openAdminMasterPanel() {
-    trackVisitorAndFetch();
-    document.getElementById('adminMasterModal').style.display = 'flex';
-}
 
 window.addEventListener('DOMContentLoaded', function() {
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
