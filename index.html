@@ -1019,187 +1019,52 @@ ${itemsText}
 </script>
 
 <!-- TG_DIRECT_BOT_START -->
-<!-- نافذة تأكيد الطلب بنجاح -->
-<div id="customSuccessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:20px; padding:28px 22px; width:88%; max-width:360px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.25); font-family: inherit;">
-        <div style="font-size:55px; margin-bottom:8px; line-height:1;">🎉</div>
-        <h3 style="margin:0 0 10px 0; color:#2e7d32; font-size:21px; font-weight:800;">تم تأكيد طلبك بنجاح!</h3>
-        <p style="margin:0 0 14px 0; color:#555; font-size:15px; line-height:1.5;">شكراً لتسوقك من المجد إكسبرس</p>
-        <button onclick="closeSuccessModal()" style="background:linear-gradient(135deg, #2e7d32, #1b5e20); color:#ffffff; border:none; padding:13px 0; font-size:16px; border-radius:12px; font-weight:bold; width:100%; cursor:pointer;">حسناً</button>
-    </div>
-</div>
-
-<!-- زر طلباتي العائم (للزبائن) -->
-<button id="myOrdersFloatBtn" onclick="openMyOrdersModal()" style="position:fixed; bottom:20px; left:20px; z-index:99998; background:linear-gradient(135deg, #0284c7, #0369a1); color:#ffffff; border:none; padding:10px 18px; border-radius:30px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(2,132,199,0.4); cursor:pointer; display:flex; align-items:center; gap:6px; direction:rtl; font-family:inherit;">
-    <span>📦</span>
-    <span>طلباتي</span>
-</button>
-
-<!-- نافذة طلباتي -->
-<div id="myOrdersModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:20px; padding:22px; width:90%; max-width:400px; max-height:80vh; overflow-y:auto; box-shadow:0 12px 35px rgba(0,0,0,0.25); text-align:right; font-family:inherit;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:15px;">
-            <h3 style="margin:0; color:#0f172a; font-size:18px; font-weight:800;">📦 طلباتي السابقة</h3>
-            <button onclick="closeMyOrdersModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:32px; height:32px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b;">✕</button>
-        </div>
-        <div id="myOrdersList"></div>
-    </div>
-</div>
-
-<!-- نافذة كلمة سر المسؤول (تفتح عند النقر على الثلاث نقاط) -->
+<!-- نافذة كلمة المرور البسيطة للوصول للتوكن -->
 <div id="adminPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:24px; padding:28px 22px; width:90%; max-width:340px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:center; font-family:inherit;">
         <div style="width:60px; height:60px; background:#f8fafc; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 12px auto; box-shadow:0 4px 10px rgba(0,0,0,0.05);">🔐</div>
-        <h3 style="margin:0 0 6px 0; color:#0f172a; font-size:19px; font-weight:800;">دخول المسؤول</h3>
-        <p style="margin:0 0 18px 0; color:#64748b; font-size:13px; line-height:1.4;">أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
+        <h3 style="margin:0 0 6px 0; color:#0f172a; font-size:19px; font-weight:800;">إعدادات التوكن</h3>
+        <p style="margin:0 0 18px 0; color:#64748b; font-size:13px; line-height:1.4;">أدخل كلمة المرور (1234) للوصول لإعدادات التوكن</p>
         <input type="password" id="adminPasswordInput" placeholder="كلمة المرور..." style="width:100%; box-sizing:border-box; padding:13px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; text-align:center; margin-bottom:15px; outline:none; font-family:inherit;">
         <div style="display:flex; gap:10px;">
             <button onclick="verifyAdminPassword()" style="flex:1; background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; border:none; padding:12px; border-radius:12px; font-weight:bold; font-size:15px; cursor:pointer; box-shadow:0 4px 12px rgba(2,132,199,0.3);">دخول</button>
-            <button onclick="closeAdminPasswordModal()" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:12px; border-radius:12px; font-weight:bold; font-size:15px; cursor:pointer;">إلغاء</button>
+            <button onclick="closeAdminPasswordModal()" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:12px; border-radius:12px; font-weight:bold; cursor:pointer;">إلغاء</button>
         </div>
     </div>
 </div>
 
-<!-- لوحة التحكم الرئيسية (تحتوي على الخانتين فقط: إضافة منتج وتعديل منتج) -->
-<div id="adminMasterModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
+<!-- نافذة إعدادات التوكن الدائم -->
+<div id="tokenSettingsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:99999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:24px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:18px;">
-            <div>
-                <h3 style="margin:0 0 4px 0; color:#0f172a; font-size:19px; font-weight:800;">🛡️ لوحة التحكم</h3>
-                <span style="font-size:12px; color:#10b981; font-weight:700;">أهلاً بك يا أبو مجد</span>
-            </div>
-            <button onclick="closeAdminMasterModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b;">✕</button>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:12px;">
-            <!-- الخانة الأولى: إضافة منتج -->
-            <button onclick="openAddProductDirect()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:16px; border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(16,185,129,0.25);">
-                <span style="font-size:20px;">➕</span> إضافة منتج
-            </button>
-
-            <!-- الخانة الثانية: تعديل منتج -->
-            <button onclick="enableInlineEditingMode()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:16px; border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(59,130,246,0.25);">
-                <span style="font-size:20px;">✏️</span> تعديل منتج
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- نافذة إضافة منتج جديد -->
-<div id="quickAddProductModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:99999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:24px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
-        <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">➕ إضافة منتج جديد</h3>
-        <input type="text" id="qpName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
-        <input type="number" id="qpPrice" placeholder="السعر (ل.س)..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
-        <input type="text" id="qpImage" placeholder="رابط صورة المنتج (اختياري)..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
+        <h3 style="margin:0 0 6px 0; color:#0f172a; font-size:18px; font-weight:800;">🔑 توكن غيت هاب الدائم</h3>
+        <p style="margin:0 0 14px 0; color:#64748b; font-size:13px; line-height:1.4;">الصق رمز التوكن هنا لمرة واحدة فقط، وسيتم حفظه تلقائياً ولن يطلب منك مجدداً.</p>
+        <input type="password" id="savedGithubTokenInput" placeholder="ghp_..." style="width:100%; box-sizing:border-box; padding:12px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px; text-align:left;">
         <div style="display:flex; gap:10px;">
-            <button onclick="saveQuickProduct()" style="flex:1; background:#10b981; color:#fff; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">حفظ ونشر</button>
-            <button onclick="document.getElementById('quickAddProductModal').style.display='none'" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">إلغاء</button>
-        </div>
-    </div>
-</div>
-
-<!-- نافذة تعديل المنتج المباشرة -->
-<div id="customEditProductModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:999999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:24px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
-        <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">✏️ تعديل بيانات المنتج</h3>
-        <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">اسم المنتج:</label>
-        <input type="text" id="epName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
-        
-        <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">السعر (ل.س):</label>
-        <input type="text" id="epPrice" placeholder="السعر..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
-
-        <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">رابط الصورة:</label>
-        <input type="text" id="epImage" placeholder="رابط الصورة..." style="width:100%; box-sizing:border-box; padding:11px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
-
-        <div style="display:flex; gap:10px;">
-            <button onclick="saveEditedCardItem()" style="flex:1; background:#2563eb; color:#fff; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">حفظ التعديلات</button>
-            <button onclick="document.getElementById('customEditProductModal').style.display='none'" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">إلغاء</button>
+            <button onclick="saveGithubTokenPermanent()" style="flex:1; background:#0284c7; color:#fff; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">حفظ للأبد</button>
+            <button onclick="document.getElementById('tokenSettingsModal').style.display='none'" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">إلغاء</button>
         </div>
     </div>
 </div>
 
 <script>
-function showCustomSuccessModal() {
-    var modal = document.getElementById('customSuccessModal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closeSuccessModal() {
-    try {
-        let history = localStorage.getItem('my_orders_history');
-        localStorage.clear();
-        if (history) localStorage.setItem('my_orders_history', history);
-        if (typeof cart !== 'undefined') cart = [];
-    } catch(err) {}
-    location.reload();
-}
-
-function openMyOrdersModal() {
-    let history = [];
-    try {
-        history = JSON.parse(localStorage.getItem('my_orders_history') || '[]');
-    } catch(e) {}
-
-    let container = document.getElementById('myOrdersList');
-    if (!container) return;
-
-    if (!history || history.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:#64748b; padding:30px; font-size:14px; font-weight:600;">لا توجد طلبات سابقة حتى الآن.</div>';
-    } else {
-        let html = '';
-        history.forEach(function(ord) {
-            html += '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:10px;">';
-            html += '<div style="display:flex; justify-content:space-between; font-size:12px; color:#64748b; margin-bottom:6px;">';
-            html += '<span style="font-weight:bold; color:#0284c7;">' + ord.id + '</span>';
-            html += '<span>' + ord.date + '</span>';
-            html += '</div>';
-            html += '<ul style="margin:0; padding-right:16px; font-size:13px; color:#334155;">';
-            ord.items.forEach(function(it) {
-                html += '<li><b>' + (it.title || it.name || "منتج") + '</b> (الكمية: ' + (it.qty || 1) + ')</li>';
-            });
-            html += '</ul>';
-            html += '</div>';
-        });
-        container.innerHTML = html;
-    }
-    document.getElementById('myOrdersModal').style.display = 'flex';
-}
-
-function closeMyOrdersModal() {
-    document.getElementById('myOrdersModal').style.display = 'none';
-}
-
-// ربط فتح لوحة المسؤول بزر الثلاث نقاط الموجود في أقصى يسار الشريط العلوي
-function initThreeDotsAdminTrigger() {
-    let potentialDots = document.querySelectorAll('button, div, span, i');
-    potentialDots.forEach(el => {
-        let text = el.textContent ? el.textContent.trim() : '';
-        let htmlContent = el.innerHTML || '';
-        // البحث عن أيقونة الثلاث نقاط الرأسية أو الأفقية المعتادة في القوائم
-        if (text === '︙' || text === '⋮' || text === '⋯' || text === '...' || htmlContent.includes('fa-ellipsis') || htmlContent.includes('dots') || (el.className && el.className.includes('menu'))) {
-            el.style.cursor = 'pointer';
-            el.addEventListener('click', function(e) {
-                e.stopPropagation();
-                openAdminPasswordModal();
-            });
+function initExactThreeDotsTrigger() {
+    let targets = document.querySelectorAll('button, div, span, i');
+    targets.forEach(el => {
+        let t = el.textContent ? el.textContent.trim() : '';
+        let html = el.innerHTML || '';
+        if (t === '︙' || t === '⋮' || t === '⋯' || t === '...' || html.includes('ellipsis') || html.includes('dots')) {
+            if (!el.closest('.cart') && !el.textContent.includes('السلة')) {
+                el.style.cursor = 'pointer';
+                let newEl = el.cloneNode(true);
+                el.parentNode.replaceChild(newEl, el);
+                newEl.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openAdminPasswordModal();
+                });
+            }
         }
     });
-
-    // طريقة احتياطية دقيقة: إضافة مستمع لأول زر أو عنصر أقصى يسار الشاشة العلوي (مكان الثلاث نقاط عادة)
-    let header = document.querySelector('header, nav, .navbar');
-    if (header) {
-        let firstChild = header.firstElementChild;
-        if (firstChild) {
-            firstChild.style.cursor = 'pointer';
-            firstChild.addEventListener('click', function(e) {
-                // إذا لم يكن زر السلة
-                if (!this.textContent.includes('السلة')) {
-                    openAdminPasswordModal();
-                }
-            });
-        }
-    }
 }
 
 function openAdminPasswordModal() {
@@ -1219,155 +1084,29 @@ function verifyAdminPassword() {
     let pass = document.getElementById('adminPasswordInput').value;
     if (pass === "1234") {
         closeAdminPasswordModal();
-        document.getElementById('adminMasterModal').style.display = 'flex';
+        let tokenModal = document.getElementById('tokenSettingsModal');
+        let tokenInput = document.getElementById('savedGithubTokenInput');
+        if (tokenInput) {
+            tokenInput.value = localStorage.getItem('persistent_github_token') || '';
+        }
+        tokenModal.style.display = 'flex';
     } else {
         alert("❌ كلمة المرور غير صحيحة!");
     }
 }
 
-function closeAdminMasterModal() {
-    document.getElementById('adminMasterModal').style.display = 'none';
-}
-
-function openAddProductDirect() {
-    closeAdminMasterModal();
-    document.getElementById('quickAddProductModal').style.display = 'flex';
-}
-
-function saveQuickProduct() {
-    let name = document.getElementById('qpName').value.trim();
-    let price = document.getElementById('qpPrice').value.trim();
-    let img = document.getElementById('qpImage').value.trim();
-
-    if (!name || !price) {
-        alert("يرجى إدخال اسم المنتج والسعر على الأقل.");
+function saveGithubTokenPermanent() {
+    let token = document.getElementById('savedGithubTokenInput').value.trim();
+    if (!token) {
+        alert("الرجاء إدخال رمز التوكن صحيحاً.");
         return;
     }
-
-    let newProd = { id: Date.now(), title: name, price: price, image: img || 'https://via.placeholder.com/150' };
-    let customProds = [];
-    try {
-        customProds = JSON.parse(localStorage.getItem('custom_store_products') || '[]');
-    } catch(e) {}
-    customProds.push(newProd);
-    localStorage.setItem('custom_store_products', JSON.stringify(customProds));
-
-    alert("✅ تم إضافة المنتج بنجاح وسيظهر في المتجر!");
-    document.getElementById('quickAddProductModal').style.display = 'none';
-    location.reload();
-}
-
-function enableInlineEditingMode() {
-    closeAdminMasterModal();
-    localStorage.setItem('admin_edit_mode', 'true');
-    alert("✅ تم تفعيل وضع التعديل! يمكنك الآن تعديل أي منتج أو حذفه مباشرة من الواجهة.");
-    location.reload();
+    localStorage.setItem('persistent_github_token', token);
+    alert("✅ تم حفظ توكن غيت هاب بشكل دائم في المتجر!");
+    document.getElementById('tokenSettingsModal').style.display = 'none';
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initThreeDotsAdminTrigger, 500);
-
-    try {
-        let customProds = JSON.parse(localStorage.getItem('custom_store_products') || '[]');
-        if (customProds.length > 0) {
-            let grid = document.querySelector('.products-grid, #products, .row, main');
-            if (grid) {
-                customProds.forEach(p => {
-                    let card = document.createElement('div');
-                    card.className = 'custom-product-card';
-                    card.dataset.id = p.id;
-                    card.style.cssText = 'background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:12px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin-bottom:10px; position:relative;';
-                    card.innerHTML = `
-                        <img src="${p.image}" class="prod-img" style="width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:8px;">
-                        <h4 class="prod-title" style="margin:0 0 6px 0; font-size:15px; color:#0f172a;">${p.title}</h4>
-                        <div class="prod-price" style="color:#166534; font-weight:bold; font-size:14px; margin-bottom:8px;">${p.price} ل.س</div>
-                    `;
-                    grid.insertBefore(card, grid.firstChild);
-                });
-            }
-        }
-    } catch(e) {}
-
-    if (localStorage.getItem('admin_edit_mode') === 'true') {
-        let exitBar = document.createElement('div');
-        exitBar.style.cssText = 'position:fixed; top:0; left:0; width:100%; background:#dc2626; color:#fff; text-align:center; padding:8px; z-index:9999999; font-weight:bold; font-size:14px; display:flex; justify-content:center; align-items:center; gap:15px;';
-        exitBar.innerHTML = `
-            <span>⚠️ وضع التعديل الإداري مفعل</span>
-            <button onclick="localStorage.removeItem('admin_edit_mode'); location.reload();" style="background:#fff; color:#dc2626; border:none; padding:4px 12px; border-radius:6px; font-weight:bold; cursor:pointer;">إيقاف وضع التعديل</button>
-        `;
-        document.body.prepend(exitBar);
-
-        setTimeout(() => {
-            let productCards = document.querySelectorAll('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
-            productCards.forEach((card, idx) => {
-                if (card.querySelector('.admin-edit-toolbar')) return;
-                card.dataset.cardInternalId = "card_" + idx;
-                let toolbar = document.createElement('div');
-                toolbar.className = 'admin-edit-toolbar';
-                toolbar.style.cssText = 'margin-top:10px; padding-top:8px; border-top:1px dashed #cbd5e1; display:flex; gap:6px; justify-content:center;';
-                toolbar.innerHTML = `
-                    <button onclick="editCardItem(this)" style="background:#3b82f6; color:#fff; border:none; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer;">✏️ تعديل</button>
-                    <button onclick="deleteCardItem(this)" style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer;">🗑️ حذف</button>
-                `;
-                card.appendChild(toolbar);
-            });
-        }, 600);
-    }
+    setTimeout(initExactThreeDotsTrigger, 400);
 });
-
-let activeEditingCard = null;
-
-function editCardItem(btn) {
-    let card = btn.closest('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
-    if (!card) return;
-    activeEditingCard = card;
-
-    let titleEl = card.querySelector('h1, h2, h3, h4, .title, [class*="title"]');
-    let priceEl = card.querySelector('.price, [class*="price"], span');
-    let imgEl = card.querySelector('img');
-
-    let currentTitle = titleEl ? titleEl.textContent.trim() : "";
-    let rawPriceText = priceEl ? priceEl.textContent.replace(/[^0-9]/g, '') : "10000";
-    let currentImg = imgEl ? imgEl.src : "";
-
-    document.getElementById('epName').value = currentTitle;
-    document.getElementById('epPrice').value = rawPriceText;
-    document.getElementById('epImage').value = currentImg;
-
-    document.getElementById('customEditProductModal').style.display = 'flex';
-}
-
-function saveEditedCardItem() {
-    if (!activeEditingCard) return;
-
-    let newName = document.getElementById('epName').value.trim();
-    let newPrice = document.getElementById('epPrice').value.trim();
-    let newImg = document.getElementById('epImage').value.trim();
-
-    if (!newName || !newPrice) {
-        alert("يرجى إدخال الاسم والسعر على الأقل.");
-        return;
-    }
-
-    let titleEl = activeEditingCard.querySelector('h1, h2, h3, h4, .title, [class*="title"]');
-    let priceEl = activeCircleCard = activeEditingCard.querySelector('.price, [class*="price"], span');
-    let imgEl = activeEditingCard.querySelector('img');
-
-    if (titleEl) titleEl.textContent = newName;
-    if (priceEl) priceEl.textContent = newPrice + " ل.س";
-    if (imgEl && newImg) imgEl.src = newImg;
-
-    document.getElementById('customEditProductModal').style.display = 'none';
-    alert("✅ تم تحديث المنتج بنجاح!");
-}
-
-function deleteCardItem(btn) {
-    if (!confirm("هل أنت متأكد من حذف هذا المنتج من الواجهة؟")) return;
-    let card = btn.closest('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
-    if (card) {
-        card.style.transition = 'all 0.3s';
-        card.style.opacity = '0';
-        setTimeout(() => card.remove(), 300);
-    }
-}
 </script>
