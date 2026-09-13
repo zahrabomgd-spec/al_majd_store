@@ -1101,6 +1101,27 @@ ${itemsText}
     </div>
 </div>
 
+<!-- نافذة تعديل المنتج المباشرة المخصصة (بدل متصفح الهاتف) -->
+<div id="customEditProductModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:999999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
+    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
+        <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">✏️ تعديل بيانات المنتج</h3>
+        <input type="hidden" id="editCardRefIndex">
+        <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">اسم المنتج:</label>
+        <input type="text" id="epName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
+        
+        <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">السعر (ل.س):</label>
+        <input type="text" id="epPrice" placeholder="السعر..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
+
+        <label style="font-size:12px; color:#64748b; font-weight:bold; display:block; margin-bottom:4px;">رابط الصورة:</label>
+        <input type="text" id="epImage" placeholder="رابط الصورة..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
+
+        <div style="display:flex; gap:10px;">
+            <button onclick="saveEditedCardItem()" style="flex:1; background:#2563eb; color:#fff; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">حفظ التعديلات</button>
+            <button onclick="document.getElementById('customEditProductModal').style.display='none'" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">إلغاء</button>
+        </div>
+    </div>
+</div>
+
 <script>
 function showCustomSuccessModal() {
     var modal = document.getElementById('customSuccessModal');
@@ -1224,7 +1245,6 @@ function saveQuickProduct() {
     location.reload();
 }
 
-// تفعيل وضع التعديل المباشر على الواجهة الرئيسية
 function enableInlineEditingMode() {
     closeAdminMasterModal();
     localStorage.setItem('admin_edit_mode', 'true');
@@ -1241,7 +1261,6 @@ function openVisitorsDirect() {
 window.addEventListener('DOMContentLoaded', function() {
     trackVisitorAndFetch();
 
-    // عرض المنتجات المضافة حديثاً مع إمكانية التعديل
     try {
         let customProds = JSON.parse(localStorage.getItem('custom_store_products') || '[]');
         if (customProds.length > 0) {
@@ -1253,7 +1272,7 @@ window.addEventListener('DOMContentLoaded', function() {
                     card.dataset.id = p.id;
                     card.style.cssText = 'background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:12px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin-bottom:10px; position:relative;';
                     card.innerHTML = `
-                        <img src="${p.image}" style="width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:8px;">
+                        <img src="${p.image}" class="prod-img" style="width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:8px;">
                         <h4 class="prod-title" style="margin:0 0 6px 0; font-size:15px; color:#0f172a;">${p.title}</h4>
                         <div class="prod-price" style="color:#166534; font-weight:bold; font-size:14px; margin-bottom:8px;">${p.price} ل.س</div>
                     `;
@@ -1263,7 +1282,6 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     } catch(e) {}
 
-    // إذا كان وضع التعديل مفعل، أضف أزرار التعديل والحذف تحت كل منتج في الصفحة
     if (localStorage.getItem('admin_edit_mode') === 'true') {
         let exitBar = document.createElement('div');
         exitBar.style.cssText = 'position:fixed; top:0; left:0; width:100%; background:#dc2626; color:#fff; text-align:center; padding:8px; z-index:9999999; font-weight:bold; font-size:14px; display:flex; justify-content:center; align-items:center; gap:15px;';
@@ -1277,6 +1295,7 @@ window.addEventListener('DOMContentLoaded', function() {
             let productCards = document.querySelectorAll('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
             productCards.forEach((card, idx) => {
                 if (card.querySelector('.admin-edit-toolbar')) return;
+                card.dataset.cardInternalId = "card_" + idx;
                 let toolbar = document.createElement('div');
                 toolbar.className = 'admin-edit-toolbar';
                 toolbar.style.cssText = 'margin-top:10px; padding-top:8px; border-top:1px dashed #cbd5e1; display:flex; gap:6px; justify-content:center;';
@@ -1304,23 +1323,50 @@ window.addEventListener('DOMContentLoaded', function() {
     }, true);
 });
 
-// دوال التعديل والحذف المباشر من الواجهة
+// دوال التعديل عبر النافذة المخصصة الجديدة
+let activeEditingCard = null;
+
 function editCardItem(btn) {
-    let card = btn.closest('.product, .card, .item, [class*="product"], [class*="item"], .custom-product-card');
+    let card = btn.closest('.product, .card, .item, [class*="product"], [class*="item'], .custom-product-card');
     if (!card) return;
+    activeEditingCard = card;
+
     let titleEl = card.querySelector('h1, h2, h3, h4, .title, [class*="title"]');
     let priceEl = card.querySelector('.price, [class*="price"], span');
+    let imgEl = card.querySelector('img');
 
-    let currentTitle = titleEl ? titleEl.textContent.trim() : "منتج";
-    let newTitle = prompt("تعديل اسم المنتج:", currentTitle);
-    if (newTitle === null) return;
+    let currentTitle = titleEl ? titleEl.textContent.trim() : "";
+    let rawPriceText = priceEl ? priceEl.textContent.replace(/[^0-9]/g, '') : "10000";
+    let currentImg = imgEl ? imgEl.src : "";
 
-    let newPrice = prompt("تعديل السعر:", "10000");
-    if (newPrice === null) return;
+    document.getElementById('epName').value = currentTitle;
+    document.getElementById('epPrice').value = rawPriceText;
+    document.getElementById('epImage').value = currentImg;
 
-    if (titleEl) titleEl.textContent = newTitle;
-    if (priceEl && newPrice) priceEl.textContent = newPrice + " ل.س";
+    document.getElementById('customEditProductModal').style.display = 'flex';
+}
 
+function saveEditedCardItem() {
+    if (!activeEditingCard) return;
+
+    let newName = document.getElementById('epName').value.trim();
+    let newPrice = document.getElementById('epPrice').value.trim();
+    let newImg = document.getElementById('epImage').value.trim();
+
+    if (!newName || !newPrice) {
+        alert("يرجى إدخال الاسم والسعر على الأقل.");
+        return;
+    }
+
+    let titleEl = activeEditingCard.querySelector('h1, h2, h3, h4, .title, [class*="title"]');
+    let priceEl = activeEditingCard.querySelector('.price, [class*="price"], span');
+    let imgEl = activeEditingCard.querySelector('img');
+
+    if (titleEl) titleEl.textContent = newName;
+    if (priceEl) priceEl.textContent = newPrice + " ل.س";
+    if (imgEl && newImg) imgEl.src = newImg;
+
+    document.getElementById('customEditProductModal').style.display = 'none';
     alert("✅ تم تحديث المنتج بنجاح!");
 }
 
@@ -1382,7 +1428,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     async function sendOrderToTelegram(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
-        let name = "", phone = "", address = "", notes = "", payment = "نقداً عند الاستلام";
+        let name = "", phone = "", address = "", notes = "", payment = "نقداً عند الاستلاستلام";
         document.querySelectorAll('input, textarea, select').forEach(function(input) {
             let val = input.value ? input.value.trim() : "";
             let p = (input.placeholder || "").toLowerCase();
