@@ -1019,7 +1019,48 @@ ${itemsText}
 </script>
 
 <!-- TG_DIRECT_BOT_START -->
+<!-- تصميم النافذة المنبثقة الاحترافية -->
+<div id="customSuccessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
+    <div style="background:#ffffff; border-radius:20px; padding:28px 22px; width:88%; max-width:360px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.25); font-family: inherit; transform: scale(0.9); animation: popInModal 0.25s forwards ease-out;">
+        <div style="font-size:55px; margin-bottom:8px; line-height:1;">🎉</div>
+        <h3 style="margin:0 0 10px 0; color:#2e7d32; font-size:21px; font-weight:800;">تم تأكيد طلبك بنجاح!</h3>
+        <p style="margin:0 0 14px 0; color:#555; font-size:15px; line-height:1.5;">شكراً لتسوقك من المجد إكسبرس</p>
+        
+        <div style="background:#e8f5e9; border:1px solid #c8e6c9; color:#1b5e20; padding:12px 10px; border-radius:12px; font-size:14px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <span>🚚</span>
+            <span>سوف يتم التوصيل خلال 30 دقيقة إلى 60 دقيقة</span>
+        </div>
+
+        <button onclick="closeSuccessModal()" style="background:linear-gradient(135deg, #2e7d32, #1b5e20); color:#ffffff; border:none; padding:13px 0; font-size:16px; border-radius:12px; font-weight:bold; width:100%; cursor:pointer; box-shadow:0 4px 12px rgba(46,125,50,0.35);">
+            حسناً
+        </button>
+    </div>
+</div>
+
+<style>
+@keyframes popInModal {
+    to {
+        transform: scale(1);
+    }
+}
+</style>
+
 <script>
+function showCustomSuccessModal() {
+    var modal = document.getElementById('customSuccessModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeSuccessModal() {
+    try {
+        localStorage.clear();
+        if (typeof cart !== 'undefined') cart = [];
+    } catch(err) {}
+    location.reload();
+}
+
 window.addEventListener('DOMContentLoaded', function() {
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
     const CHAT_ID = "8651078564";
@@ -1030,7 +1071,6 @@ window.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
         }
 
-        // 1. قراءة بيانات حقول الإدخال
         let name = "", phone = "", address = "", notes = "", payment = "نقداً عند الاستلام";
 
         let inputs = document.querySelectorAll('input, textarea, select');
@@ -1057,7 +1097,6 @@ window.addEventListener('DOMContentLoaded', function() {
             else if (p.includes("ملاحظ") || n.includes("note") || id.includes("note")) notes = val;
         });
 
-        // الاستعانة بالترتيب في حال لم تتطابق أسماء الحقول
         if (!name || !phone || !address) {
             let visibleInputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"], textarea'))
                 .filter(i => i.value && i.value.trim() !== "");
@@ -1067,11 +1106,10 @@ window.addEventListener('DOMContentLoaded', function() {
         }
 
         if (!name || !phone || !address) {
-            alert("يرجى تعبئة كافة الحقول المطلوب (الاسم الكامل، رقم التواصل، وعنوان التوصيل).");
+            alert("يرجى تعبئة كافة الحقول المطلوبة (الاسم، رقم التواصل، والعنوان).");
             return false;
         }
 
-        // 2. قراءة منتجات السلة
         let cartItems = [];
         try {
             for (let i = 0; i < localStorage.length; i++) {
@@ -1095,22 +1133,32 @@ window.addEventListener('DOMContentLoaded', function() {
                 let price = i.price || 0;
                 if (price) totalVal += (price * qty);
                 return `• ${title} (الكمية: ${qty})`;
-            }).join('\n');
+            }).join('
+');
         }
 
         if (!itemsListStr) itemsListStr = "• طلب منتجات من المتجر";
 
-        // بناء نص الرسالة الموجهة لتيليجرام
-        let message = `🛒 *طلب جديد من المجد إكسبرس*\n\n` +
-                      `👤 *الزبون:* ${name}\n` +
-                      `📞 *الهاتف:* ${phone}\n` +
-                      `📍 *العنوان:* ${address}\n` +
-                      `💳 *طريقة الدفع:* ${payment}\n` +
-                      (notes ? `📝 *ملاحظات:* ${notes}\n` : '') +
-                      `\n📦 *تفاصيل الطلبات:*\n${itemsListStr}\n` +
-                      (totalVal > 0 ? `\n💰 *الإجمالي:* ${totalVal} ل.س` : '');
+        let message = `🛒 *طلب جديد من المجد إكسبرس*
 
-        // تغيير حالة الزر لتأكيد العملية للزبون
+` +
+                      `👤 *الزبون:* ${name}
+` +
+                      `📞 *الهاتف:* ${phone}
+` +
+                      `📍 *العنوان:* ${address}
+` +
+                      `💳 *طريقة الدفع:* ${payment}
+` +
+                      (notes ? `📝 *ملاحظات:* ${notes}
+` : '') +
+                      `
+📦 *تفاصيل الطلبات:*
+${itemsListStr}
+` +
+                      (totalVal > 0 ? `
+💰 *الإجمالي:* ${totalVal} ل.س` : '');
+
         document.querySelectorAll('button, a, input[type="submit"]').forEach(b => {
             let t = (b.textContent || b.value || "").trim();
             if (t.includes("واتساب") || t.includes("إرسال") || t.includes("تأكيد") || t.includes("طلب")) {
@@ -1133,21 +1181,12 @@ window.addEventListener('DOMContentLoaded', function() {
             console.error("TG Send Error:", err);
         }
 
-        alert("🎉 تم تأكيد طلبك بنجاح!\nشكراً لتسوقك من المجد إكسبرس، سنتواصل معك قريباً لتسليم الطلب.");
-
-        try {
-            localStorage.clear();
-            if (typeof cart !== 'undefined') cart = [];
-        } catch(err) {}
-
-        location.reload();
+        showCustomSuccessModal();
         return false;
     }
 
-    // اعتراض إرسال النموذج
     document.addEventListener('submit', sendOrderToTelegram, true);
 
-    // اعتراض الضغط على الأزرار
     document.addEventListener('click', function(e) {
         let btn = e.target.closest('button, a, input[type="submit"]');
         if (!btn) return;
@@ -1159,7 +1198,3 @@ window.addEventListener('DOMContentLoaded', function() {
     }, true);
 });
 </script>
-
-</body>
-</html>
-
