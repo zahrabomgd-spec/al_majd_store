@@ -1037,36 +1037,11 @@ ${itemsText}
     </div>
 </div>
 
-<!-- زر عائم "طلباتي" -->
+<!-- زر عائم "طلباتي" فقط للزبائن -->
 <button id="myOrdersFloatBtn" onclick="openMyOrdersModal()" style="position:fixed; bottom:20px; left:20px; z-index:99998; background:linear-gradient(135deg, #0284c7, #0369a1); color:#ffffff; border:none; padding:10px 18px; border-radius:30px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(2,132,199,0.4); cursor:pointer; display:flex; align-items:center; gap:6px; direction:rtl; font-family:inherit;">
     <span>📦</span>
     <span>طلباتي</span>
 </button>
-
-<!-- زر عائم للوحة التحكم (خاص بك) -->
-<button onclick="openAdminPanel()" style="position:fixed; bottom:20px; right:20px; z-index:99998; background:#0f172a; color:#ffffff; border:none; padding:10px 16px; border-radius:30px; font-weight:bold; font-size:13px; box-shadow:0 4px 15px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; gap:6px; direction:rtl; font-family:inherit; border:1px solid #334155;">
-    <span>⚙️</span>
-    <span>لوحة التحكم</span>
-</button>
-
-<!-- نافذة لوحة التحكم (Admin Panel) -->
-<div id="adminPanelModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:20px; padding:24px; width:90%; max-width:380px; box-shadow:0 12px 35px rgba(0,0,0,0.25); text-align:right; font-family:inherit; position:relative;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:18px;">
-            <h3 style="margin:0; color:#0f172a; font-size:18px; font-weight:800; display:flex; align-items:center; gap:6px;">
-                <span>⚙️</span> لوحة التحكم والإحصائيات
-            </h3>
-            <button onclick="closeAdminPanel()" style="background:#f1f5f9; border:none; border-radius:50%; width:32px; height:32px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b; display:flex; align-items:center; justify-content:center;">✕</button>
-        </div>
-        
-        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:16px; text-align:center;">
-            <div style="font-size:14px; color:#64748b; font-weight:bold; margin-bottom:6px;">إجمالي زوار الموقع</div>
-            <div id="adminVisitorCountVal" style="font-size:32px; font-weight:800; color:#0284c7;">...</div>
-        </div>
-        
-        <p style="margin:16px 0 0 0; font-size:12px; color:#94a3b8; text-align:center;">هذه اللوحة خاصة بك لمعرفة عدد الزيارات بدقة.</p>
-    </div>
-</div>
 
 <!-- نافذة "طلباتي" -->
 <div id="myOrdersModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
@@ -1148,17 +1123,8 @@ function closeMyOrdersModal() {
     document.getElementById('myOrdersModal').style.display = 'none';
 }
 
-function openAdminPanel() {
-    document.getElementById('adminPanelModal').style.display = 'flex';
-    fetchVisitorCountForAdmin();
-}
-
-function closeAdminPanel() {
-    document.getElementById('adminPanelModal').style.display = 'none';
-}
-
-// زيادة العداد عند كل زيارة حقيقية للزبون وجلب الرقم للوحة التحكم
-function trackAndFetchVisitorCount() {
+// زيادة العداد صامتاً مع كل زيارة حقيقية
+function trackVisitorSilently() {
     let siteKey = window.location.hostname || "al-majd-express-store";
     fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/up')
         .then(response => response.json())
@@ -1170,26 +1136,51 @@ function trackAndFetchVisitorCount() {
         .catch(() => {});
 }
 
-function fetchVisitorCountForAdmin() {
-    let siteKey = window.location.hostname || "al-majd-express-store";
-    fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/')
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.count) {
-                document.getElementById('adminVisitorCountVal').textContent = data.count;
-            } else if (window._siteVisitorCount) {
-                document.getElementById('adminVisitorCountVal').textContent = window._siteVisitorCount;
+// دالة فحص لوحة التحكم الموجودة مسبقاً في الموقع لدمج عداد الزوار بداخلها
+function injectCounterIntoExistingAdmin() {
+    setInterval(function() {
+        // البحث عن أي نافذة لوحة تحكم مفتوحة حالياً (تحتوي على كلمة مرور أو إعدادات الأدمن)
+        let modals = document.querySelectorAll('div, dialog, section');
+        modals.forEach(function(el) {
+            let txt = el.innerText || "";
+            if ((txt.includes("لوحة") || txt.includes("تحكم") || txt.includes("كلمة") || txt.includes("مرور") || txt.includes("admin")) && window.getComputedStyle(el).display !== 'none') {
+                if (!document.getElementById('injectedVisitorStatsBox')) {
+                    let statsBox = document.createElement('div');
+                    statsBox.id = 'injectedVisitorStatsBox';
+                    statsBox.style.cssText = 'margin:15px 0; padding:12px; background:#f0f9ff; border:1px solid #0284c7; border-radius:12px; text-align:center; direction:rtl;';
+                    statsBox.innerHTML = `
+                        <div style="font-size:13px; color:#0369a1; font-weight:bold; margin-bottom:4px;">👁️ إجمالي زوار الموقع:</div>
+                        <div id="adminModalVisitorVal" style="font-size:24px; font-weight:800; color:#0f172a;">جاري التحميل...</div>
+                    `;
+                    el.appendChild(statsBox);
+
+                    // جلب الرقم الفعلي
+                    let siteKey = window.location.hostname || "al-majd-express-store";
+                    fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/')
+                        .then(r => r.json())
+                        .then(d => {
+                            let val = (d && d.count) ? d.count : (window._siteVisitorCount || "1");
+                            let valEl = document.getElementById('adminModalVisitorVal');
+                            if (valEl) valEl.textContent = val;
+                        })
+                        .catch(() => {
+                            let valEl = document.getElementById('adminModalVisitorVal');
+                            if (valEl) valEl.textContent = window._siteVisitorCount || "1";
+                        });
+                }
             } else {
-                document.getElementById('adminVisitorCountVal').textContent = "1";
+                let existing = document.getElementById('injectedVisitorStatsBox');
+                if (existing && window.getComputedStyle(el).display === 'none') {
+                    existing.remove();
+                }
             }
-        })
-        .catch(() => {
-            document.getElementById('adminVisitorCountVal').textContent = window._siteVisitorCount || "1";
         });
+    }, 500);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-    trackAndFetchVisitorCount();
+    trackVisitorSilently();
+    injectCounterIntoExistingAdmin();
 
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
     const CHAT_ID = "8651078564";
@@ -1383,7 +1374,7 @@ window.addEventListener('DOMContentLoaded', function() {
         });
 
         try {
-            if (payment.includes("شam") && hasPhoto) {
+            if (payment.includes("شام") && hasPhoto) {
                 let formData = new FormData();
                 formData.append('chat_id', CHAT_ID);
                 formData.append('photo', fileInput.files[0]);
