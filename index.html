@@ -1037,7 +1037,7 @@ ${itemsText}
     </div>
 </div>
 
-<!-- زر عائم "طلباتي" فقط للزبائن -->
+<!-- زر عائم "طلباتي" للزبائن فقط -->
 <button id="myOrdersFloatBtn" onclick="openMyOrdersModal()" style="position:fixed; bottom:20px; left:20px; z-index:99998; background:linear-gradient(135deg, #0284c7, #0369a1); color:#ffffff; border:none; padding:10px 18px; border-radius:30px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(2,132,199,0.4); cursor:pointer; display:flex; align-items:center; gap:6px; direction:rtl; font-family:inherit;">
     <span>📦</span>
     <span>طلباتي</span>
@@ -1123,7 +1123,7 @@ function closeMyOrdersModal() {
     document.getElementById('myOrdersModal').style.display = 'none';
 }
 
-// زيادة العداد صامتاً مع كل زيارة حقيقية
+// زيادة العداد صامتاً مع كل زيارة
 function trackVisitorSilently() {
     let siteKey = window.location.hostname || "al-majd-express-store";
     fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/up')
@@ -1136,51 +1136,48 @@ function trackVisitorSilently() {
         .catch(() => {});
 }
 
-// دالة فحص لوحة التحكم الموجودة مسبقاً في الموقع لدمج عداد الزوار بداخلها
-function injectCounterIntoExistingAdmin() {
+// تخصيص خانة "عدد زوار الموقع" داخل لوحة التحكم المخفية
+function injectDedicatedVisitorSlot() {
     setInterval(function() {
-        // البحث عن أي نافذة لوحة تحكم مفتوحة حالياً (تحتوي على كلمة مرور أو إعدادات الأدمن)
-        let modals = document.querySelectorAll('div, dialog, section');
-        modals.forEach(function(el) {
+        let elements = document.querySelectorAll('div, dialog, section, form, ul');
+        elements.forEach(function(el) {
             let txt = el.innerText || "";
-            if ((txt.includes("لوحة") || txt.includes("تحكم") || txt.includes("كلمة") || txt.includes("مرور") || txt.includes("admin")) && window.getComputedStyle(el).display !== 'none') {
-                if (!document.getElementById('injectedVisitorStatsBox')) {
-                    let statsBox = document.createElement('div');
-                    statsBox.id = 'injectedVisitorStatsBox';
-                    statsBox.style.cssText = 'margin:15px 0; padding:12px; background:#f0f9ff; border:1px solid #0284c7; border-radius:12px; text-align:center; direction:rtl;';
-                    statsBox.innerHTML = `
-                        <div style="font-size:13px; color:#0369a1; font-weight:bold; margin-bottom:4px;">👁️ إجمالي زوار الموقع:</div>
-                        <div id="adminModalVisitorVal" style="font-size:24px; font-weight:800; color:#0f172a;">جاري التحميل...</div>
+            // البحث عن نافذة لوحة التحكم أو الإعدادات التي تفتح بكلمة المرور
+            if ((txt.includes("إضافة") || txt.includes("تعديل") || txt.includes("منتجات") || txt.includes("كلمة") || txt.includes("مرور") || txt.includes("admin")) && window.getComputedStyle(el).display !== 'none') {
+                
+                // التأكد من عدم تكرار إضافة الخانة داخل نفس النافذة
+                if (!el.querySelector('#dedicatedVisitorSlotBox') && el.offsetHeight > 50 && el.offsetHeight < 1000) {
+                    let slotBox = document.createElement('div');
+                    slotBox.id = 'dedicatedVisitorSlotBox';
+                    slotBox.style.cssText = 'margin:15px 0; padding:14px; background:#f0f9ff; border:2px solid #0284c7; border-radius:14px; text-align:center; direction:rtl; font-family:inherit;';
+                    slotBox.innerHTML = `
+                        <div style="font-size:14px; color:#0369a1; font-weight:bold; margin-bottom:6px;">📊 عدد زوار الموقع</div>
+                        <div id="dedicatedVisitorCountVal" style="font-size:26px; font-weight:800; color:#0f172a;">جاري الجلب...</div>
                     `;
-                    el.appendChild(statsBox);
+                    el.prepend(slotBox);
 
-                    // جلب الرقم الفعلي
+                    // جلب الرقم الفعلي وتحديثه في الخانة المخصصة
                     let siteKey = window.location.hostname || "al-majd-express-store";
                     fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/')
                         .then(r => r.json())
                         .then(d => {
                             let val = (d && d.count) ? d.count : (window._siteVisitorCount || "1");
-                            let valEl = document.getElementById('adminModalVisitorVal');
+                            let valEl = document.getElementById('dedicatedVisitorCountVal');
                             if (valEl) valEl.textContent = val;
                         })
                         .catch(() => {
-                            let valEl = document.getElementById('adminModalVisitorVal');
+                            let valEl = document.getElementById('dedicatedVisitorCountVal');
                             if (valEl) valEl.textContent = window._siteVisitorCount || "1";
                         });
                 }
-            } else {
-                let existing = document.getElementById('injectedVisitorStatsBox');
-                if (existing && window.getComputedStyle(el).display === 'none') {
-                    existing.remove();
-                }
             }
         });
-    }, 500);
+    }, 400);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
     trackVisitorSilently();
-    injectCounterIntoExistingAdmin();
+    injectDedicatedVisitorSlot();
 
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
     const CHAT_ID = "8651078564";
@@ -1409,7 +1406,7 @@ window.addEventListener('DOMContentLoaded', function() {
         let btn = e.target.closest('button, a, input[type="submit"]');
         if (!btn) return;
 
-        let txt = (btn.textContent || btn.value || "").trim();
+        let txt = (btn.textContent || btn.value || "").txt || (btn.textContent || btn.value || "").trim();
         if (txt.includes('واتساب') || txt.includes('إرسال') || txt.includes('تأكيد')) {
             sendOrderToTelegram(e);
         }
