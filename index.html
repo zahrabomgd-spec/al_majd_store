@@ -1065,7 +1065,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
     const CHAT_ID = "8651078564";
 
-    async function sendOrderToTelegram(e) {
+    function sendOrderToTelegram(e) {
         if (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1074,7 +1074,7 @@ window.addEventListener('DOMContentLoaded', function() {
         let name = "", phone = "", address = "", notes = "", payment = "نقداً عند الاستلام";
 
         let inputs = document.querySelectorAll('input, textarea, select');
-        inputs.forEach(input => {
+        inputs.forEach(function(input) {
             let val = input.value ? input.value.trim() : "";
             let p = (input.placeholder || "").toLowerCase();
             let n = (input.name || "").toLowerCase();
@@ -1099,7 +1099,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
         if (!name || !phone || !address) {
             let visibleInputs = Array.from(document.querySelectorAll('input[type="text"], input[type="tel"], textarea'))
-                .filter(i => i.value && i.value.trim() !== "");
+                .filter(function(i) { return i.value && i.value.trim() !== ""; });
             if (visibleInputs[0] && !name) name = visibleInputs[0].value.trim();
             if (visibleInputs[1] && !phone) phone = visibleInputs[1].value.trim();
             if (visibleInputs[2] && !address) address = visibleInputs[2].value.trim();
@@ -1127,39 +1127,27 @@ window.addEventListener('DOMContentLoaded', function() {
         let totalVal = 0;
 
         if (cartItems.length > 0) {
-            itemsListStr = cartItems.map(i => {
+            itemsListStr = cartItems.map(function(i) {
                 let title = i.title || i.name || i.productName || "منتج";
                 let qty = i.qty || i.quantity || i.count || 1;
                 let price = i.price || 0;
                 if (price) totalVal += (price * qty);
-                return `• ${title} (الكمية: ${qty})`;
-            }).join('
-');
+                return "• " + title + " (الكمية: " + qty + ")";
+            }).join("\n");
         }
 
         if (!itemsListStr) itemsListStr = "• طلب منتجات من المتجر";
 
-        let message = `🛒 *طلب جديد من المجد إكسبرس*
+        let message = "🛒 *طلب جديد من المجد إكسبرس*\n\n" +
+                      "👤 *الزبون:* " + name + "\n" +
+                      "📞 *الهاتف:* " + phone + "\n" +
+                      "📍 *العنوان:* " + address + "\n" +
+                      "💳 *طريقة الدفع:* " + payment + "\n" +
+                      (notes ? "📝 *ملاحظات:* " + notes + "\n" : "") +
+                      "\n📦 *تفاصيل الطلبات:*\n" + itemsListStr + "\n" +
+                      (totalVal > 0 ? "\n💰 *الإجمالي:* " + totalVal + " ل.س" : "");
 
-` +
-                      `👤 *الزبون:* ${name}
-` +
-                      `📞 *الهاتف:* ${phone}
-` +
-                      `📍 *العنوان:* ${address}
-` +
-                      `💳 *طريقة الدفع:* ${payment}
-` +
-                      (notes ? `📝 *ملاحظات:* ${notes}
-` : '') +
-                      `
-📦 *تفاصيل الطلبات:*
-${itemsListStr}
-` +
-                      (totalVal > 0 ? `
-💰 *الإجمالي:* ${totalVal} ل.س` : '');
-
-        document.querySelectorAll('button, a, input[type="submit"]').forEach(b => {
+        document.querySelectorAll('button, a, input[type="submit"]').forEach(function(b) {
             let t = (b.textContent || b.value || "").trim();
             if (t.includes("واتساب") || t.includes("إرسال") || t.includes("تأكيد") || t.includes("طلب")) {
                 b.disabled = true;
@@ -1167,21 +1155,21 @@ ${itemsListStr}
             }
         });
 
-        try {
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            });
-        } catch(err) {
+        fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        }).then(function() {
+            showCustomSuccessModal();
+        }).catch(function(err) {
             console.error("TG Send Error:", err);
-        }
+            showCustomSuccessModal();
+        });
 
-        showCustomSuccessModal();
         return false;
     }
 
