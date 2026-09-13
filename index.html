@@ -1,64 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-
-<script>
-(function() {
-    const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
-    const CHAT_ID = "8651078564";
-
-    function sendToTelegram(msgText) {
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: msgText
-            })
-        }).then(() => {
-            alert("🎉 تم تأكيد طلبك بنجاح!\nشكراً لتسوقك من المجد إكسبرس، سنتواصل معك قريباً.");
-            if (typeof cart !== 'undefined') cart = [];
-            localStorage.removeItem('cart');
-            location.reload();
-        }).catch(err => {
-            alert("🎉 تم تأكيد طلبك بنجاح!");
-            location.reload();
-        });
-    }
-
-    function extractAndSend(url) {
-        let msg = "🛒 طلب جديد من المجد إكسبرس";
-        try {
-            if (url && url.includes("text=")) {
-                let rawText = url.split("text=")[1].split("&")[0];
-                msg = decodeURIComponent(rawText);
-            }
-        } catch(e) {}
-        sendToTelegram(msg);
-    }
-
-    // اعتراض فتح الواتساب عبر النافذة
-    const origOpen = window.open;
-    window.open = function(url, target, features) {
-        if (url && (url.includes('wa.me') || url.includes('whatsapp.com'))) {
-            extractAndSend(url);
-            return null;
-        }
-        return origOpen.apply(this, arguments);
-    };
-
-    // اعتراض الضغط على روابط الواتساب
-    document.addEventListener('click', function(e) {
-        let a = e.target.closest('a');
-        if (a && a.href && (a.href.includes('wa.me') || a.href.includes('whatsapp.com'))) {
-            e.preventDefault();
-            e.stopPropagation();
-            extractAndSend(a.href);
-        }
-    }, true);
-})();
-</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بقالة المجد إكسبرس | Al-Majd Express</title>
@@ -284,7 +226,548 @@
 
     <div id="toast">تم التنفيذ بنجاح 🛒</div>
 
+    <script>
+        let allProducts = [];
+        let currentCat = 'all';
+        let cart = JSON.parse(localStorage.getItem("al_majd_ali_cart")) || [];
+        updateCartBadge();
+
+        async function loadProducts() {
+            try {
+                let res = await fetch('products.json?t=' + Date.now());
+                allProducts = await res.json();
+                renderProducts();
+            } catch(e) {
+                console.error("خطأ في جلب المنتجات", e);
+            }
+        }
+        loadProducts();
+
+        function showShopPage() {
+            document.getElementById("page-checkout").classList.remove("active");
+            document.getElementById("page-shop").classList.add("active");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showCheckoutPage() {
+            renderCheckoutCart();
+            document.getElementById("page-shop").classList.remove("active");
+            document.getElementById("page-checkout").classList.add("active");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleFileUpload(event, hiddenInputId, previewImgId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(hiddenInputId).value = e.target.result;
+                    let img = document.getElementById(previewImgId);
+                    img.src = e.target.result;
+                    if(img.parentElement.style) img.parentElement.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function filterCategory(cat, el) {
+            currentCat = cat;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            if(el) el.classList.add('active');
+            filterProducts();
+        }
+
+        function openAdmin() {
+            let pass = prompt("أدخل الرمز السري للوحة التحكم:");
+            if (pass === "123") {
+                let panel = document.getElementById("admin-panel");
+                panel.style.display = panel.style.display === "block" ? "none" : "block";
+                let savedToken = localStorage.getItem("al_majd_gh_token") || "";
+                document.getElementById("gh-token").value = savedToken;
+                renderAdminList();
+            } else if (pass !== null) {
+                alert("الرمز غير صحيح!");
+            }
+        }
+
+        function saveGhToken() {
+            let token = document.getElementById("gh-token").value.trim();
+            if(!token) { alert("أدخل الرمز أولاً"); return; }
+            localStorage.setItem("al_majd_gh_token", token);
+            alert("تم حفظ الرمز بنجاح!");
+        }
+
+        async function updateGitHubJsonFile(newProductsArray, actionMessage) {
+            let token = localStorage.getItem("al_majd_gh_token");
+            if(!token) {
+                alert("⚠️ يرجى إدخال رمز غيت هاب (GitHub Token) في أعلى لوحة التحكم أولاً.");
+                return false;
+            }
+
+            let owner = "zahrabomgd-spec";
+            let repo = "al_majd_store";
+            let path = "products.json";
+
+            showToast("جاري التحديث التلقائي على غيت هاب...");
+
+            try {
+                let getRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                    headers: { "Authorization": `token ${token}` }
+                });
+                let fileData = await getRes.json();
+                let sha = fileData.sha;
+
+                let jsonString = JSON.stringify(newProductsArray, null, 4);
+                let contentBase64 = btoa(unescape(encodeURIComponent(jsonString)));
+
+                let putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: actionMessage,
+                        content: contentBase64,
+                        sha: sha
+                    })
+                });
+
+                if(putRes.ok) {
+                    alert("✅ تم الرفع والتحديث التلقائي بنجاح للجميع!");
+                    return true;
+                } else {
+                    let err = await putRes.json();
+                    alert("خطأ: " + (err.message || "تأكد من صحة الرمز"));
+                    return false;
+                }
+            } catch(e) {
+                alert("حدث خطأ شبكي أثناء الرفع التلقائي.");
+                return false;
+            }
+        }
+
+        async function addProductAuto() {
+            let name = document.getElementById("p-name").value.trim();
+            let price = document.getElementById("p-price").value.trim();
+            let cat = document.getElementById("p-cat").value;
+            let img = document.getElementById("p-img").value;
+
+            if(!name || !price) { alert("يرجى إدخال اسم المنتج والسعر"); return; }
+            if(!img) { alert("يرجى رفع صورة للمنتج"); return; }
+
+            let newProd = {
+                id: Date.now(),
+                name: name,
+                price: Number(price),
+                oldPrice: Math.round(Number(price) * 1.15),
+                discount: "-15%",
+                rating: "5.0",
+                sold: "1+",
+                cat: cat,
+                img: img
+            };
+
+            allProducts.unshift(newProd);
+            let success = await updateGitHubJsonFile(allProducts, "Add product: " + name);
+            if(success) {
+                document.getElementById("p-name").value = "";
+                document.getElementById("p-price").value = "";
+                document.getElementById("p-img").value = "";
+                document.getElementById("add-preview-box").style.display = 'none';
+                renderProducts();
+                renderAdminList();
+            } else {
+                allProducts.shift();
+            }
+        }
+
+        function startEditProduct(id) {
+            let item = allProducts.find(p => p.id === id);
+            if(!item) return;
+
+            document.getElementById("edit-p-id").value = item.id;
+            document.getElementById("edit-p-name").value = item.name;
+            document.getElementById("edit-p-price").value = item.price;
+            document.getElementById("edit-p-cat").value = item.cat || "food";
+            document.getElementById("edit-p-img").value = item.img || "";
+            
+            let prev = document.getElementById("edit-preview");
+            prev.src = item.img || "";
+            prev.parentElement.style.display = 'block';
+
+            let formBox = document.getElementById("edit-form-box");
+            formBox.style.display = "block";
+            formBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function saveProductEditAuto() {
+            let id = Number(document.getElementById("edit-p-id").value);
+            let name = document.getElementById("edit-p-name").value.trim();
+            let price = Number(document.getElementById("edit-p-price").value);
+            let cat = document.getElementById("edit-p-cat").value;
+            let img = document.getElementById("edit-p-img").value;
+
+            if(!name || !price) { alert("يرجى ملء الاسم والسعر"); return; }
+
+            let backup = JSON.parse(JSON.stringify(allProducts));
+            let itemIndex = allProducts.findIndex(p => p.id === id);
+
+            if(itemIndex !== -1) {
+                allProducts[itemIndex].name = name;
+                allProducts[itemIndex].price = price;
+                allProducts[itemIndex].oldPrice = Math.round(price * 1.15);
+                allProducts[itemIndex].cat = cat;
+                if(img) allProducts[itemIndex].img = img;
+
+                let success = await updateGitHubJsonFile(allProducts, "Update product ID: " + id);
+                if(success) {
+                    renderProducts();
+                    renderAdminList();
+                    cancelEdit();
+                } else {
+                    allProducts = backup;
+                }
+            }
+        }
+
+        function cancelEdit() {
+            document.getElementById("edit-form-box").style.display = "none";
+        }
+
+        async function deleteProductAuto(id) {
+            if(!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
+            let backup = [...allProducts];
+            allProducts = allProducts.filter(p => p.id !== id);
+            
+            let success = await updateGitHubJsonFile(allProducts, "Delete product ID: " + id);
+            if(success) {
+                renderProducts();
+                renderAdminList();
+            } else {
+                allProducts = backup;
+            }
+        }
+
+        function renderAdminList() {
+            const container = document.getElementById("admin-products-list");
+            container.innerHTML = "";
+            if(allProducts.length === 0) {
+                container.innerHTML = "<p style='color:#888; text-align:center;'>لا توجد منتجات.</p>";
+                return;
+            }
+            allProducts.forEach(p => {
+                container.innerHTML += `
+                    <div class="admin-item-row">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="${p.img}" class="admin-thumb-img">
+                            <div>
+                                <div style="font-size:13px; font-weight:700;">${p.name}</div>
+                                <div style="font-size:11px; color:#777;">${p.price.toLocaleString()} ل.س</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn-edit-admin" onclick="startEditProduct(${p.id})">✏️ تعديل</button>
+                            <button class="btn-del-admin" onclick="deleteProductAuto(${p.id})">حذف 🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderProducts(itemsToRender = null) {
+            const list = itemsToRender || allProducts;
+            const container = document.getElementById("products-list");
+            container.innerHTML = "";
+            if(list.length === 0) {
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888; padding: 25px;'>لا توجد منتجات في هذا القسم.</p>";
+                return;
+            }
+            list.forEach(p => {
+                container.innerHTML += `
+                    <div class="ali-card">
+                        <span class="discount-badge">${p.discount || '-15%'}</span>
+                        <div>
+                            <div class="product-img-box"><img src="${p.img}"></div>
+                            <div class="product-details">
+                                <div class="product-title">${p.name}</div>
+                                <div class="social-proof"><span class="stars">★ ${p.rating || '5.0'}</span><span>| مبيعات ${p.sold || '1+'}</span></div>
+                                <span class="tag-express">توصيل سريع ⚡</span>
+                                <div class="price-container">
+                                    <span class="main-price">${p.price.toLocaleString()}</span>
+                                    <span class="currency">ل.س</span>
+                                    ${p.oldPrice ? `<span class="old-price">${p.oldPrice.toLocaleString()}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding: 0 10px 10px 10px;">
+                            <button class="btn-add-cart" onclick="addToCart(${p.id})">إضافة للسلة 🛒</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterProducts() {
+            let query = document.getElementById("search-input").value.toLowerCase();
+            let filtered = allProducts.filter(p => {
+                let matchesSearch = p.name.toLowerCase().includes(query);
+                let matchesCat = (currentCat === 'all') || (p.cat === currentCat);
+                return matchesSearch && matchesCat;
+            });
+            renderProducts(filtered);
+        }
+
+        function addToCart(id) {
+            let item = allProducts.find(p => p.id === id);
+            if(!item) return;
+            let exist = cart.find(c => c.id === id);
+            if(exist) exist.qty += 1;
+            else cart.push({...item, qty: 1});
+            saveCart();
+            showToast("تمت الإضافة للسلة 🛒");
+        }
+
+        function saveCart() {
+            localStorage.setItem("al_majd_ali_cart", JSON.stringify(cart));
+            updateCartBadge();
+        }
+
+        function updateCartBadge() {
+            document.getElementById("cart-count").innerText = cart.reduce((sum, i) => sum + i.qty, 0);
+        }
+
+        function selectPaymentMethod(method) {
+            document.getElementById("pay_cod").checked = (method === 'cod');
+            document.getElementById("pay_sham").checked = (method === 'sham');
+            document.getElementById("opt-cod").classList.toggle("selected", method === 'cod');
+            document.getElementById("opt-sham").classList.toggle("selected", method === 'sham');
+            document.getElementById("sham-details-box").style.display = (method === 'sham') ? "block" : "none";
+        }
+
+        function renderCheckoutCart() {
+            const container = document.getElementById("checkout-cart-items");
+            container.innerHTML = "";
+            if(cart.length === 0) {
+                container.innerHTML = "<p style='text-align:center; color:#888; padding:20px;'>السلة فارغة</p>";
+                document.getElementById("summary-items-count").innerText = "0";
+                document.getElementById("summary-total-price").innerText = "0 ل.س";
+                return;
+            }
+            let total = 0, totalQty = 0;
+            cart.forEach((item, index) => {
+                let sub = item.price * item.qty;
+                total += sub; totalQty += item.qty;
+                container.innerHTML += `
+                    <div class="checkout-item">
+                        <img src="${item.img}" class="checkout-item-img">
+                        <div style="flex-grow:1;">
+                            <div style="font-size:13px; font-weight:700;">${item.name}</div>
+                            <div style="color:var(--ali-red); font-weight:800; font-size:13px;">${item.price.toLocaleString()} ل.س</div>
+                            <div class="qty-controls">
+                                <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                                <span style="font-weight:700;">${item.qty}</span>
+                                <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                            </div>
+                        </div>
+                        <div style="text-align:left;">
+                            <div style="font-weight:800; color:var(--ali-red);">${sub.toLocaleString()} ل.س</div>
+                            <button onclick="removeCart(${index})" style="background:none; border:none; color:red; font-size:11px; cursor:pointer; margin-top:4px;">حذف 🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById("summary-items-count").innerText = totalQty;
+            document.getElementById("summary-total-price").innerText = total.toLocaleString() + " ل.س";
+        }
+
+        function changeQty(i, delta) {
+            cart[i].qty += delta;
+            if(cart[i].qty <= 0) cart.splice(i, 1);
+            saveCart(); renderCheckoutCart();
+        }
+
+        function removeCart(i) {
+            cart.splice(i, 1);
+            saveCart(); renderCheckoutCart();
+        }
+
+        function sendWhatsAppOrder() {
+            if(cart.length === 0) { alert("السلة فارغة!"); return; }
+            let name = document.getElementById("cust-name").value.trim();
+            if(!name) { alert("أدخل اسمك الكريم"); return; }
+            let phone = document.getElementById("cust-phone").value.trim();
+            let addr = document.getElementById("cust-address").value.trim();
+            let isSham = document.getElementById("pay_sham").checked;
+            let payText = isSham ? "📲 عبر شام كاش (298943552427ab9ae58697c9b040eab2)" : "💵 نقداً عند الاستلام";
+
+            let msg = `🛒 *طلب جديد من المجد إكسبرس*\n👤 *الاسم:* ${name}\n📞 *الهاتف:* ${phone}\n📍 *العنوان:* ${addr}\n\n📦 *المنتجات:*\n`;
+            let total = 0;
+            cart.forEach(i => {
+                let s = i.price * i.qty;
+                msg += `- ${i.name} × ${i.qty} = ${s.toLocaleString()} ل.س\n`;
+                total += s;
+            });
+            msg += `\n💰 *المجموع:* ${total.toLocaleString()} ل.س\n💳 *الدفع:* ${payText}`;
+            window.open("#" + encodeURIComponent(msg), "_blank");
+        }
+
+        function showToast(text) {
+            let t = document.getElementById("toast");
+            t.innerText = text;
+            t.style.display = "block";
+            setTimeout(() => t.style.display = "none", 3000);
+        }
+    </script>
+
+<script>
+async function sendOrderToTelegram(name, phone, address, notes, items, total) {
+    const token = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
+    const chatId = "8651078564";
     
+    let itemsText = items.map(i => `• ${i.name || i.title} (${i.qty || i.quantity || 1}x)`).join('\n');
+    let message = `🛒 *طلب جديد من المجد إكسبرس*\n\n` +
+                  `👤 *الزبون:* ${name}\n` +
+                  `📞 *الهاتف:* ${phone}\n` +
+                  `📍 *العنوان:* ${address}\n` +
+                  (notes ? `📝 *ملاحظات:* ${notes}\n` : '') +
+                  `\n📦 *الطلبات:*\n${itemsText}\n\n` +
+                  `💰 *الإجمالي:* ${total} ل.س`;
+
+    try {
+        const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        });
+        return res.ok;
+    } catch (e) {
+        console.error("Telegram send error:", e);
+        return false;
+    }
+}
+</script>
+
+
+
+
+
+<script>
+(function() {
+    const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
+    const CHAT_ID = "8651078564";
+
+    async function sendTelegramNotification(orderData) {
+        let itemsList = orderData.items.map(i => `• ${i.name || i.title || 'منتج'} (${i.qty || i.quantity || 1}x)`).join('\n');
+        let msg = `🛒 *طلب جديد من المجد إكسبرس*\n\n` +
+                  `👤 *الزبون:* ${orderData.name}\n` +
+                  `📞 *الهاتف:* ${orderData.phone}\n` +
+                  `📍 *العنوان:* ${orderData.address}\n` +
+                  `💳 *طريقة الدفع:* ${orderData.payment}\n` +
+                  (orderData.notes ? `📝 *ملاحظات:* ${orderData.notes}\n` : '') +
+                  `\n📦 *الطلبات:*\n${itemsList}\n\n` +
+                  `💰 *الإجمالي:* ${orderData.total} ل.س`;
+
+        try {
+            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: msg,
+                    parse_mode: 'Markdown'
+                })
+            });
+            return res.ok;
+        } catch(e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        // تحويل كافة أزرار الواتساب إلى أزرار تأكيد طلب عادية
+        document.querySelectorAll("a, button").forEach(el => {
+            if (el.href && (el.href.includes("wa.me") || el.href.includes("whatsapp"))) {
+                el.href = "javascript:void(0)";
+            }
+            if (el.textContent.includes("واتساب") || el.textContent.includes("الواتساب")) {
+                el.textContent = "تأكيد الطلب 🚀";
+                el.style.backgroundColor = "#28a745";
+            }
+        });
+
+        // الاعتراض التام على إرسال النموذج
+        document.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const form = e.target;
+            const inputs = form.querySelectorAll("input, textarea, select");
+            let name = "", phone = "", address = "", notes = "", payment = "نقداً عند الاستلام";
+
+            inputs.forEach(input => {
+                let placeholder = input.placeholder || "";
+                let nameAttr = input.name || "";
+
+                if (placeholder.includes("اسم") || nameAttr.includes("name")) name = input.value;
+                if (placeholder.includes("رقم") || input.type === "tel" || nameAttr.includes("phone")) phone = input.value;
+                if (placeholder.includes("عنوان") || nameAttr.includes("address")) address = input.value;
+                if (placeholder.includes("ملاحظات") || nameAttr.includes("note")) notes = input.value;
+                if (input.type === "radio" && input.checked) {
+                    payment = input.nextElementSibling?.textContent.trim() || input.value;
+                }
+            });
+
+            if (!name || !phone || !address) {
+                alert("يرجى تعبئة جميع الحقول المطلوبة (الاسم، رقم الهاتف، العنوان)");
+                return false;
+            }
+
+            let currentCart = [];
+            if (typeof cart !== 'undefined' && Array.isArray(cart)) currentCart = cart;
+            else if (localStorage.getItem('cart')) {
+                try { currentCart = JSON.parse(localStorage.getItem('cart')); } catch(err){}
+            }
+
+            let totalVal = 0;
+            if (typeof cartTotal !== 'undefined') totalVal = cartTotal;
+            else currentCart.forEach(i => totalVal += (i.price || 0) * (i.qty || 1));
+
+            const order = {
+                name, phone, address, notes, payment,
+                items: currentCart.length > 0 ? currentCart : [{name: "طلب من المتجر", qty: 1}],
+                total: totalVal
+            };
+
+            const submitBtn = form.querySelector("button") || form.querySelector("input[type='submit']");
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "جاري إرسال الطلب...";
+            }
+
+            const isSent = await sendTelegramNotification(order);
+
+            if (isSent) {
+                alert("🎉 تم تأكيد طلبك بنجاح!
+شكراً لتسوقك من المجد إكسبرس، سنتواصل معك قريباً لتسليم الطلب.");
+                if (typeof cart !== 'undefined') cart = [];
+                localStorage.removeItem('cart');
+                location.reload();
+            } else {
+                alert("✅ تم استلام طلبك وبانتظار التجهيز!");
+                location.reload();
+            }
+
+            return false;
+        }, true);
+    });
+})();
+</script>
 
 </body>
 </html>
