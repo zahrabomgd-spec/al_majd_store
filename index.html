@@ -1056,35 +1056,6 @@ ${itemsText}
     </div>
 </div>
 
-<!-- لوحة تحكم الأدمن المخفية (تفتح عبر الـ 3 نقاط) -->
-<div id="adminPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:20px; padding:25px; width:90%; max-width:340px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.25); font-family:inherit;">
-        <h3 style="margin-top:0; color:#0f172a; font-size:18px;">🔒 أدخل كلمة سر لوحة التحكم</h3>
-        <input type="password" id="adminPassInput" placeholder="كلمة المرور..." style="width:100%; padding:12px; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:10px; font-size:15px; margin:15px 0; text-align:center;">
-        <button onclick="verifyAdminPassword()" style="background:#0284c7; color:#white; border:none; padding:12px; width:100%; border-radius:10px; font-weight:bold; font-size:15px; cursor:pointer; color:#ffffff;">دخول</button>
-        <button onclick="closeAdminPassModal()" style="background:transparent; border:none; color:#64748b; margin-top:10px; cursor:pointer; font-size:13px;">إلغاء</button>
-    </div>
-</div>
-
-<div id="adminDashboardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:20px; padding:25px; width:90%; max-width:400px; text-align:right; box-shadow:0 12px 35px rgba(0,0,0,0.25); font-family:inherit; position:relative;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:15px;">
-            <h3 style="margin:0; color:#0f172a; font-size:18px; font-weight:800; display:flex; align-items:center; gap:6px;">
-                <span>⚙️</span> لوحة تحكم الأدمن
-            </h3>
-            <button onclick="closeAdminDashboard()" style="background:#f1f5f9; border:none; border-radius:50%; width:32px; height:32px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b; display:flex; align-items:center; justify-content:center;">✕</button>
-        </div>
-        
-        <!-- خانة عدد زوار الموقع المخصصة -->
-        <div style="background:#f0f9ff; border:2px solid #0284c7; border-radius:14px; padding:16px; text-align:center; margin-bottom:20px;">
-            <div style="font-size:14px; color:#0369a1; font-weight:bold; margin-bottom:6px;">📊 عدد زوار الموقع</div>
-            <div id="adminPanelVisitorCountVal" style="font-size:32px; font-weight:800; color:#0f172a;">جاري الجلب...</div>
-        </div>
-
-        <button onclick="closeAdminDashboard()" style="background:#0f172a; color:#ffffff; border:none; padding:12px; width:100%; border-radius:12px; font-weight:bold; cursor:pointer; font-size:15px;">إغلاق اللوحة</button>
-    </div>
-</div>
-
 <style>
 @keyframes popInModal {
     to {
@@ -1165,57 +1136,46 @@ function trackVisitorSilently() {
         .catch(() => {});
 }
 
-// دالة التحقق من الضغط على الـ 3 نقاط أو الأزرار المشابهة لفتح لوحة التحكم الخاصة بنا
-function setupThreeDotsInterceptor() {
-    document.addEventListener('click', function(e) {
-        let el = e.target.closest('button, div, span, a');
-        if (!el) return;
-        let txt = (el.textContent || el.innerText || "").trim();
-        // إذا قام الزائر أو أنت بالضغط على أي أيقونة أو زر يمثل 3 نقاط (⋮) أو كلمة "مشرف" أو "أدمن" أو إعدادات مخفية
-        if (txt === '⋮' || txt === '...' || txt.includes('⋮') || el.classList.contains('fa-ellipsis-v') || el.classList.contains('fa-ellipsis-h')) {
-            e.preventDefault();
-            e.stopPropagation();
-            document.getElementById('adminPasswordModal').style.display = 'flex';
-            document.getElementById('adminPassInput').value = '';
-            document.getElementById('adminPassInput').focus();
-        }
-    }, true);
-}
+// حقن خانة "عدد زوار الموقع" بذكاء داخل نافذة الأدمن الأصلية فور فتحها دون حذف أي محتوى
+function injectVisitorSlotToOriginalAdmin() {
+    setInterval(function() {
+        let modals = document.querySelectorAll('div, dialog, section');
+        modals.forEach(function(el) {
+            let txt = el.innerText || "";
+            // البحث عن نافذة لوحة التحكم الأصلية التي تحتوي على خيارات التعديل أو الحذف أو إضافة المنتجات
+            if ((txt.includes("إضافة منتج") || txt.includes("تعديل") || txt.includes("حذف") || txt.includes("قائمة المنتجات") || txt.includes("لوحة التحكم")) && window.getComputedStyle(el).display !== 'none') {
+                if (!el.querySelector('#siteVisitorCounterBox') && el.offsetHeight > 80) {
+                    let counterBox = document.createElement('div');
+                    counterBox.id = 'siteVisitorCounterBox';
+                    counterBox.style.cssText = 'margin:12px 0; padding:14px; background:#f0f9ff; border:2px solid #0284c7; border-radius:12px; text-align:center; direction:rtl; font-family:inherit; clear:both;';
+                    counterBox.innerHTML = `
+                        <div style="font-size:14px; color:#0369a1; font-weight:bold; margin-bottom:4px;">📊 عدد زوار الموقع</div>
+                        <div id="realVisitorCountVal" style="font-size:24px; font-weight:800; color:#0f172a;">جاري الجلب...</div>
+                    `;
+                    el.prepend(counterBox);
 
-function closeAdminPassModal() {
-    document.getElementById('adminPasswordModal').style.display = 'none';
-}
-
-function verifyAdminPassword() {
-    let pass = document.getElementById('adminPassInput').value;
-    // كلمة المرور الافتراضية الخاصة بك أو يمكنك تعديلها (مثلاً: 1234 أو كلمة سر متجرك)
-    if (pass === "1234" || pass === "admin" || pass === "0000" || pass.length > 0) {
-        closeAdminPassModal();
-        document.getElementById('adminDashboardModal').style.display = 'flex';
-        
-        // جلب عدد الزوار وعرضه فوراً
-        let siteKey = window.location.hostname || "al-majd-express-store";
-        fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/')
-            .then(r => r.json())
-            .then(d => {
-                let val = (d && d.count) ? d.count : (window._siteVisitorCount || "1");
-                document.getElementById('adminPanelVisitorCountVal').textContent = val;
-            })
-            .catch(() => {
-                document.getElementById('adminPanelVisitorCountVal').textContent = window._siteVisitorCount || "1";
-            });
-    } else {
-        alert("كلمة المرور غير صحيحة!");
-    }
-}
-
-function closeAdminDashboard() {
-    document.getElementById('adminDashboardModal').style.display = 'none';
+                    // جلب الرقم الحقيقي للزوار
+                    let siteKey = window.location.hostname || "al-majd-express-store";
+                    fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/')
+                        .then(r => r.json())
+                        .then(d => {
+                            let val = (d && d.count) ? d.count : (window._siteVisitorCount || "1");
+                            let valEl = document.getElementById('realVisitorCountVal');
+                            if (valEl) valEl.textContent = val;
+                        })
+                        .catch(() => {
+                            let valEl = document.getElementById('realVisitorCountVal');
+                            if (valEl) valEl.textContent = window._siteVisitorCount || "1";
+                        });
+                }
+            }
+        });
+    }, 500);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
     trackVisitorSilently();
-    setupThreeDotsInterceptor();
+    injectVisitorSlotToOriginalAdmin();
 
     const BOT_TOKEN = "8800028488:AAGU5fB-O9CSGyzzwragRUDD4IuLdnNaaYk";
     const CHAT_ID = "8651078564";
