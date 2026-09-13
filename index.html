@@ -1056,7 +1056,21 @@ ${itemsText}
     </div>
 </div>
 
-<!-- لوحة التحكم الاحترافية للمسؤول (دخول المسؤول فقط) -->
+<!-- نافذة إدخال كلمة سر المسؤول -->
+<div id="adminPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
+    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:340px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:center; font-family:inherit;">
+        <div style="font-size:45px; margin-bottom:10px;">🔐</div>
+        <h3 style="margin:0 0 5px 0; color:#0f172a; font-size:18px; font-weight:800;">دخول المسؤول فقط</h3>
+        <p style="margin:0 0 15px 0; color:#64748b; font-size:13px;">يرجى إدخال كلمة المرور للوصول إلى لوحة التحكم</p>
+        <input type="password" id="adminPasswordInput" placeholder="كلمة المرور..." style="width:100%; box-sizing:border-box; padding:12px; border:2px solid #cbd5e1; border-radius:12px; font-size:16px; text-align:center; margin-bottom:15px; outline:none; font-family:inherit;">
+        <div style="display:flex; gap:10px;">
+            <button onclick="verifyAdminPassword()" style="flex:1; background:#0284c7; color:#fff; border:none; padding:12px; border-radius:12px; font-weight:bold; font-size:15px; cursor:pointer;">دخول</button>
+            <button onclick="closeAdminPasswordModal()" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:12px; border-radius:12px; font-weight:bold; font-size:15px; cursor:pointer;">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- لوحة التحكم الاحترافية للمسؤول -->
 <div id="adminMasterModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit; position:relative;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:18px;">
@@ -1164,15 +1178,41 @@ function trackVisitorAndFetch() {
         });
 }
 
+// إدارة نوافذ الأدمن وكلمة السر
+function openAdminPasswordModal() {
+    document.getElementById('adminPasswordModal').style.display = 'flex';
+    let passInput = document.getElementById('adminPasswordInput');
+    if (passInput) {
+        passInput.value = '';
+        setTimeout(() => passInput.focus(), 100);
+    }
+}
+
+function closeAdminPasswordModal() {
+    document.getElementById('adminPasswordModal').style.display = 'none';
+}
+
+function verifyAdminPassword() {
+    let pass = document.getElementById('adminPasswordInput').value;
+    // كلمة المرور الافتراضية هي 1234 (يمكنك تغييرها لاحقاً برقم سري خاص بك)
+    if (pass === "1234") {
+        closeAdminPasswordModal();
+        trackVisitorAndFetch();
+        document.getElementById('adminMasterModal').style.display = 'flex';
+    } else {
+        alert("❌ كلمة المرور غير صحيحة!");
+    }
+}
+
 function closeAdminMasterModal() {
     document.getElementById('adminMasterModal').style.display = 'none';
 }
 
-// ربط أزرار لوحة التحكم الجديدة بالوظائف الفعلية في المتجر
+// تفعيل الأزرار لفتح النماذج الأصلية للمتجر
 function openAddProductModalReal() {
     closeAdminMasterModal();
-    // البحث عن أي نافذة أو دالة قديمة لإضافة المنتجات في الكود الأصلي وتفعيلها
     let opened = false;
+    // محاولة النقر على زر الإضافة الأصلي في صفحتك
     document.querySelectorAll('button, a').forEach(el => {
         let t = el.textContent.trim();
         if ((t.includes('إضافة منتج') || t.includes('أضف منتج') || t.includes('جديد')) && !opened && el.id !== 'myOrdersFloatBtn') {
@@ -1185,7 +1225,7 @@ function openAddProductModalReal() {
         opened = true;
     }
     if (!opened) {
-        alert("يرجى استخدام نموذج إضافة المنتجات المدمج في متجرك.");
+        alert("يرجى فتح نموذج إضافة المنتجات من واجهة المتجر الأساسية.");
     }
 }
 
@@ -1200,21 +1240,20 @@ function openEditProductModalReal() {
         }
     });
     if (!opened) {
-        alert("يرجى اختيار المنتج المراد تعديله مباشرة من واجهة المنتجات.");
+        alert("يرجى اختيار المنتج المراد تعديله من قائمة المنتجات الظاهرة في المتجر.");
     }
 }
 
 function openVisitorsModalReal() {
     let countEl = document.getElementById('adminVisitorCountText');
     let val = countEl ? countEl.textContent : "1";
-    alert("📊 عدد زوار الموقع الإجمالي: " + val + " زائر");
+    alert("📊 عدد زوار الموقع الإجمالي حتى الآن: " + val + " زائر");
 }
 
-// اعتراض زر القائمة (الثلاث نقاط) ليقوم بفتح لوحة التحكم الخاصة بنا مباشرة
+// اعتراض زر القائمة (الثلاث نقاط) لطلب كلمة السر أولاً
 window.addEventListener('DOMContentLoaded', function() {
     trackVisitorAndFetch();
 
-    // البحث عن زر القائمة (الـ 3 نقاط) أو أي زر يقود للأدمن واعتراضه
     document.addEventListener('click', function(e) {
         let btn = e.target.closest('button, a, div');
         if (!btn) return;
@@ -1222,11 +1261,10 @@ window.addEventListener('DOMContentLoaded', function() {
         let txt = (btn.textContent || "").trim();
         let ariaLabel = (btn.getAttribute('aria-label') || "").toLowerCase();
         
-        // إذا كان الزر هو زر القائمة (الثلاث نقاط في اليسار العلوي)
         if (btn.querySelector('.bi-three-dots') || btn.innerHTML.includes('⋮') || ariaLabel.includes('menu') || txt === '⋮') {
             e.preventDefault();
             e.stopPropagation();
-            document.getElementById('adminMasterModal').style.display = 'flex';
+            openAdminPasswordModal();
         }
     }, true);
 });
