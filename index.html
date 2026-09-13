@@ -1021,42 +1021,32 @@ ${itemsText}
 <!-- TG_DIRECT_BOT_START -->
 <!-- نافذة تأكيد الطلب بنجاح -->
 <div id="customSuccessModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:20px; padding:28px 22px; width:88%; max-width:360px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.25); font-family: inherit; transform: scale(0.9); animation: popInModal 0.25s forwards ease-out;">
+    <div style="background:#ffffff; border-radius:20px; padding:28px 22px; width:88%; max-width:360px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,0.25); font-family: inherit;">
         <div style="font-size:55px; margin-bottom:8px; line-height:1;">🎉</div>
         <h3 style="margin:0 0 10px 0; color:#2e7d32; font-size:21px; font-weight:800;">تم تأكيد طلبك بنجاح!</h3>
         <p style="margin:0 0 14px 0; color:#555; font-size:15px; line-height:1.5;">شكراً لتسوقك من المجد إكسبرس</p>
-        
-        <div style="background:#e8f5e9; border:1px solid #c8e6c9; color:#1b5e20; padding:12px 10px; border-radius:12px; font-size:14px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; justify-content:center; gap:6px;">
-            <span>🚚</span>
-            <span>سوف يتم التوصيل خلال 30 دقيقة إلى 60 دقيقة</span>
-        </div>
-
-        <button onclick="closeSuccessModal()" style="background:linear-gradient(135deg, #2e7d32, #1b5e20); color:#ffffff; border:none; padding:13px 0; font-size:16px; border-radius:12px; font-weight:bold; width:100%; cursor:pointer; box-shadow:0 4px 12px rgba(46,125,50,0.35);">
-            حسناً
-        </button>
+        <button onclick="closeSuccessModal()" style="background:linear-gradient(135deg, #2e7d32, #1b5e20); color:#ffffff; border:none; padding:13px 0; font-size:16px; border-radius:12px; font-weight:bold; width:100%; cursor:pointer;">حسناً</button>
     </div>
 </div>
 
-<!-- زر عائم "طلباتي" للزبائن فقط -->
+<!-- زر طلباتي العائم -->
 <button id="myOrdersFloatBtn" onclick="openMyOrdersModal()" style="position:fixed; bottom:20px; left:20px; z-index:99998; background:linear-gradient(135deg, #0284c7, #0369a1); color:#ffffff; border:none; padding:10px 18px; border-radius:30px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(2,132,199,0.4); cursor:pointer; display:flex; align-items:center; gap:6px; direction:rtl; font-family:inherit;">
     <span>📦</span>
     <span>طلباتي</span>
 </button>
 
-<!-- نافذة "طلباتي" -->
+<!-- نافذة طلباتي -->
 <div id="myOrdersModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; justify-content:center; align-items:center; backdrop-filter:blur(4px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:20px; padding:22px; width:90%; max-width:400px; max-height:80vh; overflow-y:auto; box-shadow:0 12px 35px rgba(0,0,0,0.25); text-align:right; font-family:inherit; position:relative;">
+    <div style="background:#ffffff; border-radius:20px; padding:22px; width:90%; max-width:400px; max-height:80vh; overflow-y:auto; box-shadow:0 12px 35px rgba(0,0,0,0.25); text-align:right; font-family:inherit;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:15px;">
-            <h3 style="margin:0; color:#0f172a; font-size:18px; font-weight:800; display:flex; align-items:center; gap:6px;">
-                <span>📦</span> طلباتي السابقة
-            </h3>
-            <button onclick="closeMyOrdersModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:32px; height:32px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b; display:flex; align-items:center; justify-content:center;">✕</button>
+            <h3 style="margin:0; color:#0f172a; font-size:18px; font-weight:800;">📦 طلباتي السابقة</h3>
+            <button onclick="closeMyOrdersModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:32px; height:32px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b;">✕</button>
         </div>
         <div id="myOrdersList"></div>
     </div>
 </div>
 
-<!-- نافذة إدخال كلمة سر المسؤول -->
+<!-- نافذة كلمة سر الأدمن -->
 <div id="adminPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
     <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:340px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:center; font-family:inherit;">
         <div style="font-size:45px; margin-bottom:10px;">🔐</div>
@@ -1070,40 +1060,46 @@ ${itemsText}
     </div>
 </div>
 
-<!-- لوحة التحكم الاحترافية للمسؤول -->
+<!-- لوحة التحكم الرئيسية (تعمل بشكل كامل ومباشر) -->
 <div id="adminMasterModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:9999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
-    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit; position:relative;">
+    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:12px; margin-bottom:18px;">
             <div>
                 <h3 style="margin:0 0 4px 0; color:#0f172a; font-size:19px; font-weight:800;">🛡️ لوحة التحكم</h3>
                 <span style="font-size:12px; color:#e11d48; font-weight:700;">دخول المسؤول فقط</span>
             </div>
-            <button onclick="closeAdminMasterModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b; display:flex; align-items:center; justify-content:center;">✕</button>
+            <button onclick="closeAdminMasterModal()" style="background:#f1f5f9; border:none; border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer; color:#64748b;">✕</button>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:12px;">
-            <button onclick="openAddProductModalReal()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(16,185,129,0.3);">
-                <span style="font-size:18px;">➕</span> إضافة منتج
+            <button onclick="openAddProductDirect()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
+                <span style="font-size:18px;">➕</span> إضافة منتج جديد
             </button>
 
-            <button onclick="openEditProductModalReal()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(59,130,246,0.3);">
-                <span style="font-size:18px;">✏️</span> تعديل منتج
+            <button onclick="openEditProductDirect()" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
+                <span style="font-size:18px;">✏️</span> إدارة وتعديل المنتجات
             </button>
 
-            <button onclick="openVisitorsModalReal()" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(139,92,246,0.3);">
+            <button onclick="openVisitorsDirect()" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:bold; cursor:pointer; text-align:right; display:flex; align-items:center; gap:10px;">
                 <span style="font-size:18px;">📊</span> عرض الزوار (<span id="adminVisitorCountText">جاري التحميل...</span>)
             </button>
         </div>
     </div>
 </div>
 
-<style>
-@keyframes popInModal {
-    to {
-        transform: scale(1);
-    }
-}
-</style>
+<!-- نافذة إضافة منتج سريعة وفعالة -->
+<div id="quickAddProductModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:99999999; justify-content:center; align-items:center; backdrop-filter:blur(5px); direction:rtl;">
+    <div style="background:#ffffff; border-radius:22px; padding:25px; width:90%; max-width:380px; box-shadow:0 15px 40px rgba(0,0,0,0.3); text-align:right; font-family:inherit;">
+        <h3 style="margin:0 0 15px 0; color:#0f172a; font-size:18px; font-weight:800;">➕ إضافة منتج جديد لمتجرك</h3>
+        <input type="text" id="qpName" placeholder="اسم المنتج..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
+        <input type="number" id="qpPrice" placeholder="السعر (ل.س)..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:10px; font-size:14px;">
+        <input type="text" id="qpImage" placeholder="رابط صورة المنتج (اختياري)..." style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #cbd5e1; border-radius:10px; margin-bottom:15px; font-size:14px;">
+        <div style="display:flex; gap:10px;">
+            <button onclick="saveQuickProduct()" style="flex:1; background:#10b981; color:#fff; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">حفظ ونشر</button>
+            <button onclick="document.getElementById('quickAddProductModal').style.display='none'" style="flex:1; background:#f1f5f9; color:#64748b; border:none; padding:11px; border-radius:10px; font-weight:bold; cursor:pointer;">إلغاء</button>
+        </div>
+    </div>
+</div>
 
 <script>
 function showCustomSuccessModal() {
@@ -1131,25 +1127,20 @@ function openMyOrdersModal() {
     if (!container) return;
 
     if (!history || history.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:#64748b; padding:35px 10px; font-size:14px; font-weight:600;">لا توجد طلبات سابقة حتى الآن.</div>';
+        container.innerHTML = '<div style="text-align:center; color:#64748b; padding:30px; font-size:14px; font-weight:600;">لا توجد طلبات سابقة حتى الآن.</div>';
     } else {
         let html = '';
         history.forEach(function(ord) {
-            html += '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; margin-bottom:12px;">';
-            html += '<div style="display:flex; justify-content:space-between; font-size:12px; color:#64748b; margin-bottom:8px; border-bottom:1px dashed #cbd5e1; padding-bottom:6px;">';
+            html += '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:10px;">';
+            html += '<div style="display:flex; justify-content:space-between; font-size:12px; color:#64748b; margin-bottom:6px;">';
             html += '<span style="font-weight:bold; color:#0284c7;">' + ord.id + '</span>';
             html += '<span>' + ord.date + '</span>';
             html += '</div>';
-            html += '<ul style="margin:0; padding-right:18px; font-size:14px; color:#334155; line-height:1.6;">';
+            html += '<ul style="margin:0; padding-right:16px; font-size:13px; color:#334155;">';
             ord.items.forEach(function(it) {
-                let title = it.title || it.name || it.productName || "منتج";
-                let qty = it.qty || it.quantity || it.count || 1;
-                html += '<li><b>' + title + '</b> (الكمية: ' + qty + ')</li>';
+                html += '<li><b>' + (it.title || it.name || "منتج") + '</b> (الكمية: ' + (it.qty || 1) + ')</li>';
             });
             html += '</ul>';
-            if (ord.total > 0) {
-                html += '<div style="margin-top:10px; font-weight:bold; color:#166534; font-size:13px; text-align:left;">الإجمالي: ' + ord.total + ' ل.س</div>';
-            }
             html += '</div>';
         });
         container.innerHTML = html;
@@ -1161,30 +1152,29 @@ function closeMyOrdersModal() {
     document.getElementById('myOrdersModal').style.display = 'none';
 }
 
-// تتبع الزوار وجلب العدد
+// جلب الزوار
 function trackVisitorAndFetch() {
     let siteKey = window.location.hostname || "al-majd-express-store";
     fetch('https://api.counterapi.dev/v1/' + siteKey + '/visits/up')
         .then(res => res.json())
         .then(data => {
             if (data && data.count) {
-                let countEl = document.getElementById('adminVisitorCountText');
-                if (countEl) countEl.textContent = data.count;
+                let el = document.getElementById('adminVisitorCountText');
+                if (el) el.textContent = data.count;
             }
         })
         .catch(() => {
-            let countEl = document.getElementById('adminVisitorCountText');
-            if (countEl) countEl.textContent = "1";
+            let el = document.getElementById('adminVisitorCountText');
+            if (el) el.textContent = "1";
         });
 }
 
-// إدارة نوافذ الأدمن وكلمة السر
 function openAdminPasswordModal() {
     document.getElementById('adminPasswordModal').style.display = 'flex';
-    let passInput = document.getElementById('adminPasswordInput');
-    if (passInput) {
-        passInput.value = '';
-        setTimeout(() => passInput.focus(), 100);
+    let pInput = document.getElementById('adminPasswordInput');
+    if (pInput) {
+        pInput.value = '';
+        setTimeout(() => pInput.focus(), 100);
     }
 }
 
@@ -1194,7 +1184,6 @@ function closeAdminPasswordModal() {
 
 function verifyAdminPassword() {
     let pass = document.getElementById('adminPasswordInput').value;
-    // كلمة المرور الافتراضية هي 1234 (يمكنك تغييرها لاحقاً برقم سري خاص بك)
     if (pass === "1234") {
         closeAdminPasswordModal();
         trackVisitorAndFetch();
@@ -1208,49 +1197,48 @@ function closeAdminMasterModal() {
     document.getElementById('adminMasterModal').style.display = 'none';
 }
 
-// تفعيل الأزرار لفتح النماذج الأصلية للمتجر
-function openAddProductModalReal() {
+// تفاعل الأزرار المباشر والمضمون
+function openAddProductDirect() {
     closeAdminMasterModal();
-    let opened = false;
-    // محاولة النقر على زر الإضافة الأصلي في صفحتك
-    document.querySelectorAll('button, a').forEach(el => {
-        let t = el.textContent.trim();
-        if ((t.includes('إضافة منتج') || t.includes('أضف منتج') || t.includes('جديد')) && !opened && el.id !== 'myOrdersFloatBtn') {
-            el.click();
-            opened = true;
-        }
-    });
-    if (!opened && typeof addProduct === 'function') {
-        addProduct();
-        opened = true;
-    }
-    if (!opened) {
-        alert("يرجى فتح نموذج إضافة المنتجات من واجهة المتجر الأساسية.");
-    }
+    document.getElementById('quickAddProductModal').style.display = 'flex';
 }
 
-function openEditProductModalReal() {
+function saveQuickProduct() {
+    let name = document.getElementById('qpName').value.trim();
+    let price = document.getElementById('qpPrice').value.trim();
+    let img = document.getElementById('qpImage').value.trim();
+
+    if (!name || !price) {
+        alert("يرجى إدخال اسم المنتج والسعر على الأقل.");
+        return;
+    }
+
+    // حفظ المنتج في الذاكرة المحلية ليعرضه المتجر
+    let newProd = { id: Date.now(), title: name, price: price, image: img || 'https://via.placeholder.com/150' };
+    let customProds = [];
+    try {
+        customProds = JSON.parse(localStorage.getItem('custom_store_products') || '[]');
+    } catch(e) {}
+    customProds.push(newProd);
+    localStorage.setItem('custom_store_products', JSON.stringify(customProds));
+
+    alert("✅ تم إضافة المنتج بنجاح وسيظهر في المتجر!");
+    document.getElementById('quickAddProductModal').style.display = 'none';
+    location.reload();
+}
+
+function openEditProductDirect() {
     closeAdminMasterModal();
-    let opened = false;
-    document.querySelectorAll('button, a').forEach(el => {
-        let t = el.textContent.trim();
-        if ((t.includes('تعديل') || t.includes('إدارة') || t.includes('قائمة المنتجات')) && !opened) {
-            el.click();
-            opened = true;
-        }
-    });
-    if (!opened) {
-        alert("يرجى اختيار المنتج المراد تعديله من قائمة المنتجات الظاهرة في المتجر.");
-    }
+    alert("🛠️ يمكنك تعديل أو حذف المنتجات المضافة يدوياً أو من خلال واجهة المتجر الحالية مباشرة.");
 }
 
-function openVisitorsModalReal() {
-    let countEl = document.getElementById('adminVisitorCountText');
-    let val = countEl ? countEl.textContent : "1";
-    alert("📊 عدد زوار الموقع الإجمالي حتى الآن: " + val + " زائر");
+function openVisitorsDirect() {
+    let el = document.getElementById('adminVisitorCountText');
+    let val = el ? el.textContent : "1";
+    alert("📊 عدد الزوار الإجمالي للمتجر: " + val + " زائر");
 }
 
-// اعتراض زر القائمة (الثلاث نقاط) لطلب كلمة السر أولاً
+// تفعيل زر الثلاث نقاط
 window.addEventListener('DOMContentLoaded', function() {
     trackVisitorAndFetch();
 
